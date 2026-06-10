@@ -40,6 +40,15 @@ public final class ItemStackDataHelper {
 		return tag.contains(key) ? tag.getInt(key) : fallback;
 	}
 
+	public static void setIntArray(ItemStack stack, String key, int[] value) {
+		update(stack, tag -> tag.putIntArray(key, value));
+	}
+
+	public static int[] getIntArray(ItemStack stack, String key) {
+		CompoundTag tag = data(stack);
+		return tag.contains(key, Tag.TAG_INT_ARRAY) ? tag.getIntArray(key) : new int[0];
+	}
+
 	public static void setLong(ItemStack stack, String key, long value) {
 		update(stack, tag -> tag.putLong(key, value));
 	}

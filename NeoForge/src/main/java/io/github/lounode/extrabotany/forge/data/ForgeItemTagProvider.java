@@ -69,15 +69,17 @@ public class ForgeItemTagProvider extends net.minecraft.data.tags.ItemTagsProvid
 	private void generateAccessoryTags() {
 		tag(accessory("ring")).add(RINGS);
 		tag(accessory("necklace")).add(pureDaisyPendant);
+		tag(accessory("head")).add(HEAD);
 		tag(accessory(("body"))).add(BODY);
 		tag(accessory("curio")).add(ALL_SLOT);
+		tag(accessory("mount")).add(motorAccessory, cosmicCarKeyAccessory);
 	}
 
 	private void generateToolTags() {
-		this.tag(ItemTags.HEAD_ARMOR).add(starryIdolHeadgear, pleiadesCombatMaidHeadgear, shadowWarriorHelmet, goblinSlayerHelmet);
-		this.tag(ItemTags.CHEST_ARMOR).add(starryIdolSuit, pleiadesCombatMaidSuit, sanguinePleiadesCombatMaidSuit, shadowWarriorChestplate, goblinSlayerChestplate);
-		this.tag(ItemTags.LEG_ARMOR).add(starryIdolSkirt, pleiadesCombatMaidSkirt, shadowWarriorLeggings, goblinSlayerLeggings);
-		this.tag(ItemTags.FOOT_ARMOR).add(starryIdolBoots, pleiadesCombatMaidBoots, shadowWarriorBoots, goblinSlayerBoots);
+		this.tag(ItemTags.HEAD_ARMOR).add(starryIdolHeadgear, pleiadesCombatMaidHeadgear, shadowWarriorHelmet, goblinSlayerHelmet, mikuHelm, shootingGuardianHelm, silentSagesHelm);
+		this.tag(ItemTags.CHEST_ARMOR).add(starryIdolSuit, pleiadesCombatMaidSuit, sanguinePleiadesCombatMaidSuit, shadowWarriorChestplate, goblinSlayerChestplate, mikuChest, shootingGuardianChest, silentSagesChest);
+		this.tag(ItemTags.LEG_ARMOR).add(starryIdolSkirt, pleiadesCombatMaidSkirt, shadowWarriorLeggings, goblinSlayerLeggings, mikuLegs, shootingGuardianLegs, silentSagesLegs);
+		this.tag(ItemTags.FOOT_ARMOR).add(starryIdolBoots, pleiadesCombatMaidBoots, shadowWarriorBoots, goblinSlayerBoots, mikuBoots, shootingGuardianBoots, silentSagesBoots);
 		this.tag(Items.TOOLS_SHIELD).add(SHIELDS);
 		this.tag(Items.TOOLS_BOW).add(BOWS);
 	}

@@ -22,5 +22,8 @@ public class ExtrabotanyLayerDefinitions {
 		consumer.accept(ExtrabotanyModelLayers.SHADOW_WARRIOR_ARMOR_LEGGINGS, () -> LayerDefinition.create(ShadowWarriorArmorModel.createLeggingsMesh(), 128, 128));
 		consumer.accept(ExtrabotanyModelLayers.GOBLIN_SLAYER_ARMOR_NORMAL, () -> LayerDefinition.create(GoblinSlayerArmorModel.createNormalMesh(), 128, 128));
 		consumer.accept(ExtrabotanyModelLayers.GOBLIN_SLAYER_ARMOR_LEGGINGS, () -> LayerDefinition.create(GoblinSlayerArmorModel.createLeggingsMesh(), 128, 128));
+		consumer.accept(ExtrabotanyModelLayers.UFO, UfoModel::createLayer);
+		consumer.accept(ExtrabotanyModelLayers.MOTOR, MotorModel::createLayer);
+		consumer.accept(ExtrabotanyModelLayers.FLYING_BOAT, FlyingBoatModel::createLayer);
 	}
 }

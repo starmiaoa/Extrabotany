@@ -25,6 +25,7 @@ import io.github.lounode.extrabotany.data.loot.EntityLootProvider;
 import io.github.lounode.extrabotany.data.loot.RewardBagLootProvider;
 import io.github.lounode.extrabotany.data.recipes.BrewProvider;
 import io.github.lounode.extrabotany.data.recipes.CraftingRecipeProvider;
+import io.github.lounode.extrabotany.data.recipes.CraftingRecipeOverrideProvider;
 import io.github.lounode.extrabotany.data.recipes.EdelweissRecipeProvider;
 import io.github.lounode.extrabotany.data.recipes.ElvenTradeProvider;
 import io.github.lounode.extrabotany.data.recipes.ManaInfusionProvider;
@@ -50,6 +51,8 @@ import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.BACKFI
 import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.BACKFIRE_DAMAGE;
 import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.EXCALIBUR;
 import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.EXCALIBUR_BEAM_DAMAGE;
+import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.FLAMESCION_FLAME;
+import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.FLAMESCION_FLAME_DAMAGE;
 import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.JINGWEI;
 import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.JINGWEI_PUNCH_DAMAGE;
 import static io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes.LINK;
@@ -85,6 +88,7 @@ public class ForgeDatagenInitializer {
 
 		generator.addProvider(evt.includeServer(), new PedestalRecipeProvider(output).withLookupProvider(evt.getLookupProvider()));
 		generator.addProvider(evt.includeServer(), new CraftingRecipeProvider(output).withLookupProvider(evt.getLookupProvider()));
+		generator.addProvider(evt.includeServer(), new CraftingRecipeOverrideProvider(output));
 		generator.addProvider(evt.includeServer(), new SmeltingProvider(output).withLookupProvider(evt.getLookupProvider()));
 		generator.addProvider(evt.includeServer(), new SmithingRecipeProvider(output).withLookupProvider(evt.getLookupProvider()));
 		generator.addProvider(evt.includeServer(), new ElvenTradeProvider(output).withLookupProvider(evt.getLookupProvider()));
@@ -128,5 +132,6 @@ public class ForgeDatagenInitializer {
 		context.register(JINGWEI_PUNCH_DAMAGE, JINGWEI);
 		context.register(REVERSE_HEAL_DAMAGE, REVERSE_HEAL);
 		context.register(BACKFIRE_DAMAGE, BACKFIRE);
+		context.register(FLAMESCION_FLAME_DAMAGE, FLAMESCION_FLAME);
 	}
 }

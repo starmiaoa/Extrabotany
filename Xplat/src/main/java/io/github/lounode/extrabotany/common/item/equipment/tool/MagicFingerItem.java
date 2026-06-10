@@ -28,10 +28,6 @@ public class MagicFingerItem extends Item {
 	public InteractionResult useOn(UseOnContext context) {
 		Player player = context.getPlayer();
 		Level world = context.getLevel();
-		if (!player.isShiftKeyDown()) {
-			return InteractionResult.PASS;
-		}
-
 		BlockPos pos = context.getClickedPos();
 		BlockEntity tile = world.getBlockEntity(pos);
 

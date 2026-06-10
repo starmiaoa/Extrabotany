@@ -34,6 +34,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		take(soundEvents, FEATHER_OF_JINGWEI_SHOOT);
 		take(soundEvents, PLAYER_BACKFIRE);
 		take(soundEvents, MUSIC_GAIA3);
+		take(soundEvents, MUSIC_HERRSCHER);
 		take(soundEvents, REWARD_BAG_OPEN);
 		take(soundEvents, PANDORAS_BOX_OPEN);
 
@@ -92,12 +93,26 @@ public class SoundProvider extends SoundDefinitionsProvider {
 				)
 		);
 
+		this.add(MUSIC_HERRSCHER, SoundDefinitionsProvider.definition()
+				.with(
+						SoundDefinitionsProvider.sound(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "music/salvation"))
+								.stream()
+								.volume(1.3F)
+				)
+		);
+
 		take(soundEvents, WALKING_CANE_USE);
 		this.add(WALKING_CANE_USE, SoundDefinitionsProvider.definition()
 				.subtitle(title(WALKING_CANE_USE))
 				.with(
 						SoundDefinitionsProvider.sound(SoundEvents.FISHING_BOBBER_RETRIEVE.getLocation(), SoundDefinition.SoundType.EVENT)
 				)
+		);
+
+		take(soundEvents, SPEAR_OF_SUBSPACE_USE);
+		this.add(SPEAR_OF_SUBSPACE_USE, SoundDefinitionsProvider.definition()
+				.subtitle(title(SPEAR_OF_SUBSPACE_USE))
+				.with(SoundDefinitionsProvider.sound(relocateOggPath(SPEAR_OF_SUBSPACE_USE.getLocation())))
 		);
 
 		take(soundEvents, ARMOR_EQUIP_MAID);

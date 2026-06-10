@@ -7,4 +7,8 @@ public class LibPotionNames {
 	public static final String DISCOUNT = "discount";
 	public static final String WARM = "warm";
 	public static final String THIRROR = "thirror";
+	public static final String ETERNITY = "eternity";
+	public static final String INCANDESCENCE = "incandescence";
+	public static final String TIMELOCK = "timelock";
+	public static final String FLAMESCION = "flamescion";
 }

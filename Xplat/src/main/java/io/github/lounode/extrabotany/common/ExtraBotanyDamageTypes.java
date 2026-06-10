@@ -23,12 +23,15 @@ public class ExtraBotanyDamageTypes {
 			ResourceKey.create(Registries.DAMAGE_TYPE, prefix("reverse_heal"));
 	public static final ResourceKey<DamageType> BACKFIRE_DAMAGE =
 			ResourceKey.create(Registries.DAMAGE_TYPE, prefix("backfire"));
+	public static final ResourceKey<DamageType> FLAMESCION_FLAME_DAMAGE =
+			ResourceKey.create(Registries.DAMAGE_TYPE, prefix("flamescion_flame"));
 
 	public static final DamageType LINK = new DamageType("extrabotany.link", 0.1f);
 	public static final DamageType EXCALIBUR = new DamageType("extrabotany.excalibur", 0.1f);
 	public static final DamageType JINGWEI = new DamageType("extrabotany.jingwei", 0.1f);
 	public static final DamageType REVERSE_HEAL = new DamageType("extrabotany.reverse_heal", 0.1f);
 	public static final DamageType BACKFIRE = new DamageType("extrabotany.backfire", 0.1f);
+	public static final DamageType FLAMESCION_FLAME = new DamageType("extrabotany.flamescion_flame", 0.1f);
 
 	public static class Sources {
 
@@ -66,6 +69,10 @@ public class ExtraBotanyDamageTypes {
 
 		public static DamageSource backfireDamage(RegistryAccess ra) {
 			return source(ra, BACKFIRE_DAMAGE);
+		}
+
+		public static DamageSource flamescionFlameDamage(RegistryAccess ra) {
+			return source(ra, FLAMESCION_FLAME_DAMAGE);
 		}
 	}
 }

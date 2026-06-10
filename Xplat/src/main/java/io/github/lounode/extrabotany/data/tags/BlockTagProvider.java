@@ -109,7 +109,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 		Block[] functionalSpecialFlowers = {
 				tradeOrchid, woodienia, annoyingflower, serenitian,
 				mirrowtunia, necrofleur, necrofleurChibi, manalink,
-				enchanter
+				enchanter, stardustLotus
 		};
 		tag(BotaniaTags.Blocks.FUNCTIONAL_SPECIAL_FLOWERS).add(functionalSpecialFlowers);
 
@@ -133,7 +133,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 						tinklePotted, bloodEnchantressPotted,
 						//Func
 						tradeOrchidPotted, woodieniaPotted, annoyingflowerPotted, serenitianPotted, mirrowtuniaPotted,
-						necrofleurPotted, necrofleurChibiPotted, manalinkPotted, enchanterPotted
+						necrofleurPotted, necrofleurChibiPotted, manalinkPotted, enchanterPotted, stardustLotusPotted
 				);
 
 		registerMiningTags();
@@ -146,7 +146,7 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 		//Pickaxe
 		Set<Block> pickaxe = new HashSet<>(Set.of(
 				aerialiteBlock, orichalcosBlock, photoniumBlock, shadowiumBlock,
-				dimensionCatalyst, powerFrame
+				dimensionCatalyst, powerFrame, manaBuffer, quantumManaBuffer, manaGenerator, livingrockBarrel, trophy
 		));
 		pickaxe.addAll(List.of(ALL_PEDESTALS));
 		pickaxe.addAll(List.of(ALL_QUARTZ));

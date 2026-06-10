@@ -5,11 +5,13 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,6 +19,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -52,15 +55,11 @@ public class CameraItem extends RelicItem implements IShadowium {
 	private static final int MANA_PER_USE = 1500;
 	private static final int RANGE = 20;
 	private static final int ADVANCEMENT_REQUIRE = 10;
+	private static final TagKey<EntityType<?>> BOSSES = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", "bosses"));
 
 	public CameraItem(Properties props) {
 		super(props);
 	}
-	//TODO 拍照UI 投掷物变成P点飞过来
-
-	//拿着相机受伤时播放东方受伤音效
-	//Z键 饰品栏也能拍照
-	//车万女仆联动
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
@@ -107,7 +106,9 @@ public class CameraItem extends RelicItem implements IShadowium {
 					.filter(entity -> entity.getTeam() == null || !entity.getTeam().isAlliedTo(player.getTeam()))
 					.toList();
 			for (var livingEntity : livingEntities) {
-				//livingEntity.addEffect(new MobEffectInstance(ExtrabotanyMobEffects.IMMOBILIZE, 100));
+				int duration = isBoss(livingEntity) ? 40 : 100;
+				livingEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, duration, 5));
+				livingEntity.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.IMMOBILIZE, duration));
 				livingEntity.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.LINK, 20 * 10));
 			}
 
@@ -222,6 +223,11 @@ public class CameraItem extends RelicItem implements IShadowium {
 				center.x - halfRange, center.y - halfRange, center.z - halfRange,
 				center.x + halfRange, center.y + halfRange, center.z + halfRange
 		);
+	}
+
+	private static boolean isBoss(LivingEntity entity) {
+		return entity.getType().is(BOSSES)
+				|| entity instanceof io.github.lounode.extrabotany.common.entity.gaia.Gaia;
 	}
 
 	public static Relic makeRelic(ItemStack stack) {

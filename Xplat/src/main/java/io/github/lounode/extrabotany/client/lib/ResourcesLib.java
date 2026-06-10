@@ -21,4 +21,7 @@ public class ResourcesLib {
 	public static final String MODEL_PLEIADES_COMBAT_MAID = PREFIX_ARMOR + "pleiades_combat_maid.png";
 	public static final String MODEL_SHADOW_WARRIOR = PREFIX_ARMOR + "shadow_warrior.png";
 	public static final String MODEL_GOBLIN_SLAYER = PREFIX_ARMOR + "goblin_slayer.png";
+	public static final String MODEL_MIKU = PREFIX_ARMOR + "miku.png";
+	public static final String MODEL_SHOOTING_GUARDIAN = PREFIX_ARMOR + "shootingguardian.png";
+	public static final String MODEL_SHOOTING_GUARDIAN_HELMET = PREFIX_ARMOR + "shootingguardian_helmet.png";
 }

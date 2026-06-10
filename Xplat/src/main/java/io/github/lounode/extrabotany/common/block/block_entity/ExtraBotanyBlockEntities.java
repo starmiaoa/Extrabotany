@@ -24,6 +24,18 @@ public class ExtraBotanyBlockEntities {
 	);
 	public static final BlockEntityType<ManaChargerBlockEntity> MANA_CHARGER =
 			type(prefix(LibBlockNames.MANA_CHARGER), ManaChargerBlockEntity::new, manaCharger);
+	public static final BlockEntityType<ManaBufferBlockEntity> MANA_BUFFER =
+			type(prefix(LibBlockNames.MANA_BUFFER), ManaBufferBlockEntity::new, manaBuffer);
+	public static final BlockEntityType<QuantumManaBufferBlockEntity> QUANTUM_MANA_BUFFER =
+			type(prefix(LibBlockNames.QUANTUM_MANA_BUFFER), QuantumManaBufferBlockEntity::new, quantumManaBuffer);
+	public static final BlockEntityType<ManaGeneratorBlockEntity> MANA_GENERATOR =
+			type(prefix(LibBlockNames.MANA_GENERATOR), ManaGeneratorBlockEntity::new, manaGenerator);
+	public static final BlockEntityType<ManaLiquefactionBlockEntity> MANA_LIQUEFACTION =
+			type(prefix(LibBlockNames.MANA_LIQUEFACTION), ManaLiquefactionBlockEntity::new, manaLiquefaction);
+	public static final BlockEntityType<CocoonOfDesireBlockEntity> COCOON_OF_DESIRE =
+			type(prefix(LibBlockNames.COCOON_OF_DESIRE), CocoonOfDesireBlockEntity::new, cocoonOfDesire);
+	public static final BlockEntityType<LivingrockBarrelBlockEntity> LIVINGROCK_BARREL =
+			type(prefix(LibBlockNames.ELF_JAR), LivingrockBarrelBlockEntity::new, livingrockBarrel);
 	public static final BlockEntityType<PowerFrameBlockEntity> POWER_FRAME =
 			type(prefix(LibBlockNames.POWER_FRAME), PowerFrameBlockEntity::new, powerFrame);
 

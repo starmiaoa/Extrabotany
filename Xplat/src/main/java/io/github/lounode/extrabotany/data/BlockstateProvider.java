@@ -1,12 +1,21 @@
 package io.github.lounode.extrabotany.data;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.data.models.blockstates.Variant;
+import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.ModelTemplate;
 import net.minecraft.data.models.model.ModelTemplates;
 import net.minecraft.data.models.model.TextureMapping;
 import net.minecraft.data.models.model.TextureSlot;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
@@ -19,6 +28,7 @@ import vazkii.botania.mixin.BlockModelGeneratorsAccessor;
 
 import io.github.lounode.extrabotany.common.block.ExtraBotanyBlocks;
 import io.github.lounode.extrabotany.common.block.PedestalBlock;
+import io.github.lounode.extrabotany.common.fluid.ExtraBotanyFluids;
 import io.github.lounode.extrabotany.common.lib.LibMisc;
 
 import java.util.HashSet;
@@ -52,6 +62,32 @@ public class BlockstateProvider extends vazkii.botania.data.BlockstateProvider {
 		//ManaCharger
 		manualModel(remainingBlocks, ExtraBotanyBlocks.manaCharger);
 		manualModel(remainingBlocks, ExtraBotanyBlocks.powerFrame);
+		manualModel(remainingBlocks, ExtraBotanyBlocks.livingrockBarrel);
+		trophy(remainingBlocks);
+		cocoonOfDesire(remainingBlocks);
+		singleVariantBlockState(ExtraBotanyBlocks.manaBuffer,
+				ModelTemplates.CUBE_BOTTOM_TOP.create(ExtraBotanyBlocks.manaBuffer,
+						new TextureMapping()
+								.put(TextureSlot.SIDE, prefix("block/manabarrel_side"))
+								.put(TextureSlot.BOTTOM, prefix("block/manabarrel_bottom"))
+								.put(TextureSlot.TOP, prefix("block/manabarrel_top"))
+								.putForced(TextureSlot.PARTICLE, prefix("block/manabarrel_side")),
+						this.modelOutput));
+		remainingBlocks.remove(ExtraBotanyBlocks.manaBuffer);
+		singleVariantBlockState(ExtraBotanyBlocks.quantumManaBuffer,
+				ModelTemplates.CUBE_BOTTOM_TOP.create(ExtraBotanyBlocks.quantumManaBuffer,
+						new TextureMapping()
+								.put(TextureSlot.SIDE, prefix("block/quantummanabuffer_side"))
+								.put(TextureSlot.BOTTOM, prefix("block/quantummanabuffer_down"))
+								.put(TextureSlot.TOP, prefix("block/quantummanabuffer_up"))
+								.putForced(TextureSlot.PARTICLE, prefix("block/quantummanabuffer_side")),
+						this.modelOutput));
+		remainingBlocks.remove(ExtraBotanyBlocks.quantumManaBuffer);
+		singleVariantBlockState(ExtraBotanyBlocks.manaGenerator,
+				ModelTemplates.CUBE_ALL.create(ExtraBotanyBlocks.manaGenerator,
+						TextureMapping.cube(prefix("block/managenerator")),
+						this.modelOutput));
+		remainingBlocks.remove(ExtraBotanyBlocks.manaGenerator);
 
 		//Pedestal
 		var pedestalTemplate = new ModelTemplate(Optional.of(prefix("block/shapes/pedestal")), Optional.empty(),
@@ -168,6 +204,80 @@ public class BlockstateProvider extends vazkii.botania.data.BlockstateProvider {
 			singleVariantBlockState(b, getModelLocation(b));
 		});
 
+		Block fluidedMana = BuiltInRegistries.BLOCK.get(ExtraBotanyFluids.FLUIDED_MANA_ID);
+		if (remainingBlocks.remove(fluidedMana)) {
+			singleVariantBlockState(fluidedMana,
+					ModelTemplates.CUBE_ALL.create(fluidedMana,
+							TextureMapping.cube(prefix("block/fluid/fluidedmana_still")),
+							this.modelOutput));
+		}
+
 		remainingBlocks.forEach(this::cubeAllNoRemove);
+	}
+
+	private void trophy(Set<Block> remainingBlocks) {
+		ResourceLocation model = getModelLocation(ExtraBotanyBlocks.trophy);
+		this.blockstates.add(MultiVariantGenerator.multiVariant(ExtraBotanyBlocks.trophy)
+				.with(PropertyDispatch.property(HorizontalDirectionalBlock.FACING)
+						.select(Direction.SOUTH, Variant.variant().with(VariantProperties.MODEL, model))
+						.select(Direction.WEST, Variant.variant().with(VariantProperties.MODEL, model).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))
+						.select(Direction.NORTH, Variant.variant().with(VariantProperties.MODEL, model).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R180))
+						.select(Direction.EAST, Variant.variant().with(VariantProperties.MODEL, model).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R270))));
+		remainingBlocks.remove(ExtraBotanyBlocks.trophy);
+	}
+
+	private void cocoonOfDesire(Set<Block> remainingBlocks) {
+		ResourceLocation model = getModelLocation(ExtraBotanyBlocks.cocoonOfDesire);
+		this.modelOutput.accept(model, BlockstateProvider::cocoonOfDesireModel);
+		singleVariantBlockState(ExtraBotanyBlocks.cocoonOfDesire, model);
+		remainingBlocks.remove(ExtraBotanyBlocks.cocoonOfDesire);
+	}
+
+	private static JsonObject cocoonOfDesireModel() {
+		JsonObject root = new JsonObject();
+		root.addProperty("parent", "minecraft:block/block");
+
+		JsonObject textures = new JsonObject();
+		textures.addProperty("bottom", "extrabotany:block/cocoon_top");
+		textures.addProperty("top", "extrabotany:block/cocoon_top");
+		textures.addProperty("north", "extrabotany:block/cocoon_side");
+		textures.addProperty("south", "extrabotany:block/cocoon_side");
+		textures.addProperty("west", "extrabotany:block/cocoon_side");
+		textures.addProperty("east", "extrabotany:block/cocoon_side");
+		textures.addProperty("particle", "extrabotany:block/cocoon_side");
+		root.add("textures", textures);
+
+		JsonObject element = new JsonObject();
+		element.add("from", jsonArray(3.0F, 0.0F, 3.0F));
+		element.add("to", jsonArray(13.0F, 14.0F, 13.0F));
+
+		JsonObject faces = new JsonObject();
+		faces.add("west", face("#west", 3.0F, 1.0F, 13.0F, 15.0F));
+		faces.add("north", face("#north", 3.0F, 1.0F, 13.0F, 15.0F));
+		faces.add("south", face("#south", 3.0F, 1.0F, 13.0F, 15.0F));
+		faces.add("east", face("#east", 3.0F, 1.0F, 13.0F, 15.0F));
+		faces.add("up", face("#top", 3.0F, 3.0F, 13.0F, 13.0F));
+		faces.add("down", face("#bottom", 3.0F, 3.0F, 13.0F, 13.0F));
+		element.add("faces", faces);
+
+		JsonArray elements = new JsonArray();
+		elements.add(element);
+		root.add("elements", elements);
+		return root;
+	}
+
+	private static JsonObject face(String texture, float u1, float v1, float u2, float v2) {
+		JsonObject face = new JsonObject();
+		face.addProperty("texture", texture);
+		face.add("uv", jsonArray(u1, v1, u2, v2));
+		return face;
+	}
+
+	private static JsonArray jsonArray(float... values) {
+		JsonArray array = new JsonArray();
+		for (float value : values) {
+			array.add(value);
+		}
+		return array;
 	}
 }

@@ -27,6 +27,17 @@ public class FeatherOfJingweiItem extends BaubleItem {
 
 	public static void leftClick(PlayerInteractEventWrapper.LeftClickEmpty event) {
 		Player player = event.getEntity();
+		sendLeftClickPacketIfReady(player);
+	}
+
+	public static void leftClickBlock(PlayerInteractEventWrapper.LeftClickBlock event) {
+		sendLeftClickPacketIfReady(event.getEntity());
+	}
+
+	private static void sendLeftClickPacketIfReady(Player player) {
+		if (!player.getMainHandItem().isEmpty()) {
+			return;
+		}
 		if (!EquipmentHandler.findOrEmpty(ExtraBotanyItems.featherOfJingwei, player).isEmpty()) {
 			ExClientXplatAbstractions.INSTANCE.sendToServer(LeftClickPacketJingwei.INSTANCE);
 		}

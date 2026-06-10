@@ -9,6 +9,7 @@ import vazkii.botania.network.TriConsumer;
 
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyBrews;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
+import io.github.lounode.extrabotany.common.item.SeasonalItemHelper;
 import io.github.lounode.extrabotany.common.item.equipment.armor.pleiades_combat_maid.SanguinePleiadesCombatMaidSuitItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.OrichalcosHammer;
 import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.RheinHammerItem;
@@ -82,6 +83,12 @@ public class ExtraBotanyItemProperties {
 		};
 
 		consumer.accept(ExtraBotanyItems.voidArchives, prefix("variant"), voidArchivesVariantGetter);
+
+		ClampedItemPropertyFunction seasonalChristmas = (stack, world, entity, seed) -> SeasonalItemHelper.isChristmas() ? 1.0F : 0.0F;
+		consumer.accept(ExtraBotanyItems.candyBag, prefix("seasonal_christmas"), seasonalChristmas);
+		consumer.accept(ExtraBotanyItems.candyEins, prefix("seasonal_christmas"), seasonalChristmas);
+		consumer.accept(ExtraBotanyItems.candyZwei, prefix("seasonal_christmas"), seasonalChristmas);
+		consumer.accept(ExtraBotanyItems.candyDrei, prefix("seasonal_christmas"), seasonalChristmas);
 
 		consumer.accept(ExtraBotanyItems.terrasteelHammer, prefix("active"),
 				(stack, world, entity, seed) -> TerrasteelHammerItem.isEnabled(stack) ? 1 : 0);

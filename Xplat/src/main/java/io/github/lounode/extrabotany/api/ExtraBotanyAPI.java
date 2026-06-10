@@ -103,4 +103,16 @@ public interface ExtraBotanyAPI {
 	default Holder<ArmorMaterial> getShadowWarriorArmorMaterial() {
 		return DUMMY_ARMOR_MATERIAL;
 	}
+
+	default Holder<ArmorMaterial> getMikuArmorMaterial() {
+		return DUMMY_ARMOR_MATERIAL;
+	}
+
+	default Holder<ArmorMaterial> getShootingGuardianArmorMaterial() {
+		return DUMMY_ARMOR_MATERIAL;
+	}
+
+	default Holder<ArmorMaterial> getSilentSagesArmorMaterial() {
+		return DUMMY_ARMOR_MATERIAL;
+	}
 }

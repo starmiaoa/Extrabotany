@@ -38,6 +38,9 @@ import io.github.lounode.extrabotany.common.impl.WindImpl;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.brew.InfiniteWineItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.NatureOrbItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.MoonPendantItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.SilentEternityItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.SunRingItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.RheinHammerItem;
 import io.github.lounode.extrabotany.common.item.relic.*;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
@@ -158,12 +161,24 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> CameraItem.makeRelic(st), ExtraBotanyItems.camera);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> FailnaughtItem.makeRelic(st), ExtraBotanyItems.failnaught);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> ExcaliburItem.makeRelic(st), ExtraBotanyItems.excalibur);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.trueTerrablade);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.trueShadowKatana);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.influxWaver);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.starWrath);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.firstFractal);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> SpearOfSubspaceItem.makeRelic(st), ExtraBotanyItems.spearOfSubspace);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> JudahOathItem.makeRelic(st), ExtraBotanyItems.judahOath);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> JudahOathItem.makeRelic(st), ExtraBotanyItems.judahOathKira);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> JudahOathItem.makeRelic(st), ExtraBotanyItems.judahOathSakura);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> CoreOfTheVoidItem.makeRelic(st), ExtraBotanyItems.coreOfTheVoid);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> PandorasBoxItem.makeRelic(st), ExtraBotanyItems.pandorasBox);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> InfiniteWineItem.makeRelic(st), ExtraBotanyItems.infiniteWine);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> VoidArchivesItem.makeRelic(st), ExtraBotanyItems.voidArchives);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> RheinHammerItem.makeRelic(st), ExtraBotanyItems.rheinHammer);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> AchillesShieldItem.makeRelic(st), ExtraBotanyItems.achillesShield);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> SunRingItem.makeRelic(st), ExtraBotanyItems.sunRing);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> MoonPendantItem.makeRelic(st), ExtraBotanyItems.moonPendant);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> SilentEternityItem.makeRelic(st), ExtraBotanyItems.silentEternity);
 	}
 
 	private void registerFuels() {

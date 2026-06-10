@@ -70,6 +70,7 @@ public class FabricItemTagProvider extends ItemTagProvider {
 		this.tag(accessory("chest/necklace")).add(pureDaisyPendant);
 		this.tag(accessory("all")).add(ALL_SLOT);
 		this.tag(accessory("chest/cape")).add(BODY);
+		this.tag(accessory("mount")).add(motorAccessory, cosmicCarKeyAccessory);
 	}
 
 	private void generateCompatTags() {

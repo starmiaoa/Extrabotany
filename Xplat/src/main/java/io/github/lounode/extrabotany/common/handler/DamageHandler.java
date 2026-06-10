@@ -3,7 +3,12 @@ package io.github.lounode.extrabotany.common.handler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
+
+import vazkii.botania.common.handler.EquipmentHandler;
+
+import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,18 +20,15 @@ public class DamageHandler {
 		if (target == source) {
 			return false;
 		}
-		/*TODO Peacemulet
-		if(source instanceof Player sourcePlayer){
-			boolean sourceEquipped = !EquipmentHandler.findOrEmpty(ModItems.peaceamulet, sourcePlayer).isEmpty();
-			if(target instanceof Player targetPlayer){
-				return !sourceEquipped && EquipmentHandler.findOrEmpty(ModItems.peaceamulet, targetPlayer).isEmpty();
+		if (source instanceof Player sourcePlayer) {
+			boolean sourceEquipped = !EquipmentHandler.findOrEmpty(ExtraBotanyItems.peaceAmulet, sourcePlayer).isEmpty();
+			if (target instanceof Player targetPlayer) {
+				return !sourceEquipped && EquipmentHandler.findOrEmpty(ExtraBotanyItems.peaceAmulet, targetPlayer).isEmpty();
 			}
-			//TODO BOSS check
-			//if(sourceEquipped && !(target instanceof Mob) && target.isNonBoss())
-			//    return false;
+			if (sourceEquipped && target instanceof Mob mob && !(mob instanceof Enemy)) {
+				return false;
+			}
 		}
-		
-		*/
 
 		if (source instanceof Mob) {
 			return target instanceof Player;

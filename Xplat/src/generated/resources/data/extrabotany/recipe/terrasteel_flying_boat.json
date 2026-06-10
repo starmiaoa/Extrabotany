@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "extrabotany:elementium_flying_boat"
+    },
+    "T": {
+      "tag": "c:ingots/terrasteel"
+    }
+  },
+  "pattern": [
+    "TBT",
+    "TTT"
+  ],
+  "result": {
+    "count": 1,
+    "id": "extrabotany:terrasteel_flying_boat"
+  }
+}

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.client.model.armor.ArmorModel;
 
 import io.github.lounode.extrabotany.common.item.equipment.armor.goblin_slayer.GoblinSlayerArmorItem;
+import io.github.lounode.extrabotany.common.item.equipment.armor.old.OldExbotanyArmorItem;
 import io.github.lounode.extrabotany.common.item.equipment.armor.pleiades_combat_maid.PleiadesCombatMaidArmorItem;
 import io.github.lounode.extrabotany.common.item.equipment.armor.shadow_warrior.ShadowWarriorArmorItem;
 import io.github.lounode.extrabotany.common.item.equipment.armor.starry_idol.StarryIdolArmorItem;
@@ -25,6 +26,7 @@ public class ArmorModels {
 	private static Map<EquipmentSlot, ArmorModel> pleiadesCombatMaid = Collections.emptyMap();
 	private static Map<EquipmentSlot, ArmorModel> shadowWarrior = Collections.emptyMap();
 	private static Map<EquipmentSlot, ArmorModel> goblinSlayer = Collections.emptyMap();
+	private static Map<EquipmentSlot, ArmorModel> oldExbotany = Collections.emptyMap();
 
 	private static Map<EquipmentSlot, ArmorModel> make(EntityRendererProvider.Context ctx, ModelLayerLocation inner, ModelLayerLocation outer) {
 		Map<EquipmentSlot, ArmorModel> ret = new EnumMap<>(EquipmentSlot.class);
@@ -58,6 +60,7 @@ public class ArmorModels {
 		pleiadesCombatMaid = makeIdol(ctx, ExtrabotanyModelLayers.PLEIADES_COMBAT_MAID_ARMOR_NORMAL, ExtrabotanyModelLayers.PLEIADES_COMBAT_MAID_ARMOR_DRESS);
 		shadowWarrior = makeIdol(ctx, ExtrabotanyModelLayers.SHADOW_WARRIOR_ARMOR_NORMAL, ExtrabotanyModelLayers.SHADOW_WARRIOR_ARMOR_LEGGINGS);
 		goblinSlayer = makeIdol(ctx, ExtrabotanyModelLayers.GOBLIN_SLAYER_ARMOR_NORMAL, ExtrabotanyModelLayers.GOBLIN_SLAYER_ARMOR_LEGGINGS);
+		oldExbotany = make(ctx, ExtrabotanyModelLayers.SHADOW_WARRIOR_ARMOR_LEGGINGS, ExtrabotanyModelLayers.SHADOW_WARRIOR_ARMOR_NORMAL);
 	}
 
 	@Nullable
@@ -73,6 +76,10 @@ public class ArmorModels {
 
 		if (item instanceof GoblinSlayerArmorItem goblin) {
 			return goblinSlayer.get(goblin.getEquipmentSlot());
+		}
+
+		if (item instanceof OldExbotanyArmorItem armor) {
+			return oldExbotany.get(armor.getEquipmentSlot());
 		}
 
 		if (item instanceof StarryIdolArmorItem idol) {

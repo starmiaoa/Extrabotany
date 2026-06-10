@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "O": {
+      "tag": "extrabotany:orichalcos_ingots"
+    },
+    "Q": {
+      "item": "botania:sunny_quartz"
+    },
+    "T": {
+      "item": "botania:flight_tiara"
+    }
+  },
+  "pattern": [
+    "QOQ",
+    "QTQ",
+    "QQQ"
+  ],
+  "result": {
+    "count": 1,
+    "id": "extrabotany:core_of_the_void"
+  }
+}

@@ -5,11 +5,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.*;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -20,15 +23,23 @@ import vazkii.botania.api.block.WandHUD;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import io.github.lounode.extrabotany.client.ExtraBotanyItemProperties;
+import io.github.lounode.extrabotany.client.FlyingBoatInputHandler;
+import io.github.lounode.extrabotany.client.MotorInputHandler;
+import io.github.lounode.extrabotany.client.MountAccessoryInputHandler;
+import io.github.lounode.extrabotany.client.UfoInputHandler;
 import io.github.lounode.extrabotany.client.core.ExtraBotanyModels;
 import io.github.lounode.extrabotany.client.gui.HUD;
+import io.github.lounode.extrabotany.client.hud.ManaBufferWandHud;
 import io.github.lounode.extrabotany.client.model.ExtrabotanyLayerDefinitions;
 import io.github.lounode.extrabotany.client.renderer.BlockRenderLayers;
 import io.github.lounode.extrabotany.client.renderer.ColorHandler;
 import io.github.lounode.extrabotany.client.renderer.entity.EntityRenderers;
+import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockEntities;
+import io.github.lounode.extrabotany.common.block.block_entity.ManaBufferBlockEntity;
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.common.lib.LibMisc;
 import io.github.lounode.extrabotany.common.lib.ResourceLocationHelper;
+import io.github.lounode.extrabotany.forge.fluid.NeoForgeExtraBotanyFluids;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
 import java.util.stream.Stream;
@@ -79,6 +90,10 @@ public class ForgeClientInitializer {
 		});
 		
 		*/
+		bus.addListener((ClientTickEvent.Post event) -> UfoInputHandler.tick(Minecraft.getInstance()));
+		bus.addListener((ClientTickEvent.Post event) -> MotorInputHandler.tick(Minecraft.getInstance()));
+		bus.addListener((ClientTickEvent.Post event) -> FlyingBoatInputHandler.tick(Minecraft.getInstance()));
+		bus.addListener((ClientTickEvent.Post event) -> MountAccessoryInputHandler.tick(Minecraft.getInstance()));
 		bus.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> HUD.onDisconnected());
 	}
 
@@ -91,12 +106,31 @@ public class ForgeClientInitializer {
 						blockEntityType, (blockEntity, context) -> factory.apply(blockEntity)
 				)
 		));
+		e.registerBlockEntity(wandHudBlockCap, ExtraBotanyBlockEntities.MANA_BUFFER,
+				(blockEntity, context) -> new ManaBufferWandHud((ManaBufferBlockEntity) blockEntity));
+		e.registerBlockEntity(wandHudBlockCap, ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER,
+				(blockEntity, context) -> new ManaBufferWandHud((ManaBufferBlockEntity) blockEntity));
 	}
 
 	@SubscribeEvent
 	public static void registerGuiOverlays(RegisterGuiLayersEvent e) {
 		e.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, ResourceLocationHelper.prefix("hud"),
 				(gui, deltaTracker) -> hud.onDrawScreenPost(gui, deltaTracker.getGameTimeDeltaPartialTick(Minecraft.getInstance().level != null)));
+	}
+
+	@SubscribeEvent
+	public static void registerClientExtensions(RegisterClientExtensionsEvent e) {
+		e.registerFluidType(new IClientFluidTypeExtensions() {
+			@Override
+			public ResourceLocation getStillTexture() {
+				return NeoForgeExtraBotanyFluids.stillTexture();
+			}
+
+			@Override
+			public ResourceLocation getFlowingTexture() {
+				return NeoForgeExtraBotanyFluids.flowingTexture();
+			}
+		}, NeoForgeExtraBotanyFluids.fluidedManaType());
 	}
 
 	@SubscribeEvent

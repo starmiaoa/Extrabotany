@@ -12,9 +12,17 @@ import io.github.lounode.extrabotany.network.clientbound.ColorfulBossEventPacket
 import io.github.lounode.extrabotany.network.clientbound.GaiaBossEventPacket;
 import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlyingBoatInputPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlamescionShiftPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlamescionUltPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
+import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketFlamescion;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketJingwei;
+import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketOldRelicSword;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketVoidArchives;
+import io.github.lounode.extrabotany.network.serverbound.MountAccessoryPacket;
+import io.github.lounode.extrabotany.network.serverbound.MotorInputPacket;
+import io.github.lounode.extrabotany.network.serverbound.UfoInputPacket;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -24,8 +32,16 @@ public class ForgePacketHandler {
 		PayloadRegistrar registrar = event.registrar("1");
 
 		registrar.playToServer(LeftClickPacketExcalibur.TYPE, LeftClickPacketExcalibur.STREAM_CODEC, makeServerBoundHandler(LeftClickPacketExcalibur::handle));
+		registrar.playToServer(LeftClickPacketFlamescion.TYPE, LeftClickPacketFlamescion.STREAM_CODEC, makeServerBoundHandler(LeftClickPacketFlamescion::handle));
 		registrar.playToServer(LeftClickPacketJingwei.TYPE, LeftClickPacketJingwei.STREAM_CODEC, makeServerBoundHandler(LeftClickPacketJingwei::handle));
+		registrar.playToServer(LeftClickPacketOldRelicSword.TYPE, LeftClickPacketOldRelicSword.STREAM_CODEC, makeServerBoundHandler(LeftClickPacketOldRelicSword::handle));
 		registrar.playToServer(LeftClickPacketVoidArchives.TYPE, LeftClickPacketVoidArchives.STREAM_CODEC, makeServerBoundHandler(LeftClickPacketVoidArchives::handle));
+		registrar.playToServer(UfoInputPacket.TYPE, UfoInputPacket.STREAM_CODEC, makeServerBoundHandler(UfoInputPacket::handle));
+		registrar.playToServer(MotorInputPacket.TYPE, MotorInputPacket.STREAM_CODEC, makeServerBoundHandler(MotorInputPacket::handle));
+		registrar.playToServer(FlyingBoatInputPacket.TYPE, FlyingBoatInputPacket.STREAM_CODEC, makeServerBoundHandler(FlyingBoatInputPacket::handle));
+		registrar.playToServer(MountAccessoryPacket.TYPE, MountAccessoryPacket.STREAM_CODEC, makeServerBoundHandler(MountAccessoryPacket::handle));
+		registrar.playToServer(FlamescionShiftPacket.TYPE, FlamescionShiftPacket.STREAM_CODEC, makeServerBoundHandler(FlamescionShiftPacket::handle));
+		registrar.playToServer(FlamescionUltPacket.TYPE, FlamescionUltPacket.STREAM_CODEC, makeServerBoundHandler(FlamescionUltPacket::handle));
 
 		registrar.playToClient(ManaReaderPacket.TYPE, ManaReaderPacket.STREAM_CODEC, makeClientBoundHandler(() -> (packet, player) -> ManaReaderPacket.Handler.handle(packet)));
 		registrar.playToClient(SpawnGaiaPacket.TYPE, SpawnGaiaPacket.STREAM_CODEC, makeClientBoundHandler(() -> (packet, player) -> SpawnGaiaPacket.Handler.handle(packet)));

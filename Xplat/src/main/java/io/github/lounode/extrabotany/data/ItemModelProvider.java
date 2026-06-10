@@ -24,6 +24,7 @@ import vazkii.botania.mixin.TextureSlotAccessor;
 
 import io.github.lounode.extrabotany.api.ExtraBotanyAPI;
 import io.github.lounode.extrabotany.api.item.VoidArchivesVariant;
+import io.github.lounode.extrabotany.common.fluid.ExtraBotanyFluids;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.variants.*;
 import io.github.lounode.extrabotany.common.lib.LibMisc;
 
@@ -106,16 +107,34 @@ public class ItemModelProvider implements DataProvider {
 	private static void registerItems(Set<Item> items, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
 		//Manual items
 		items.remove(failnaught);
+		items.remove(shadowKatana);
+		items.remove(silverBullet);
+		BuiltInRegistries.ITEM.getOptional(ExtraBotanyFluids.FLUIDED_MANA_BUCKET_ID).ifPresent(bucket -> {
+			GENERATED_0.create(ModelLocationUtils.getModelLocation(bucket), TextureMapping.layer0(prefix("block/fluid/fluidedmana_still")), consumer);
+			items.remove(bucket);
+		});
 
 		takeAll(items, manasteelHammer, elementiumHammer, gaiaHammer,
 				photoniumHammer, shadowiumHammer, aerialiteHammer,
-				walkingCane, magicFinger, manaReader
+				walkingCane, magicFinger, manaReader, rodOfDiscord, uuzFan, photonShotgun,
+				kingGarden, flamescionWeapon, motor, flyingBoat, elementiumFlyingBoat, terrasteelFlyingBoat,
+				trueTerrablade, trueShadowKatana, influxWaver, starWrath, firstFractal, spearOfSubspace
 		).forEach(i -> ModelTemplates.FLAT_HANDHELD_ITEM.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(i), consumer));
+
+		takeAll(items, recordHerrscherOfTheVoid)
+				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/music_disc_herrscher_of_the_void")), consumer));
+
+		takeAll(items, universalPetal)
+				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/universal_petal")), consumer));
 
 		takeAll(items, i -> true).forEach(i -> ModelTemplates.FLAT_ITEM.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(i), consumer));
 	}
 
 	private static void registerItemOverrides(Set<Item> items, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+		seasonalChristmasModel(candyBag, items, consumer);
+		seasonalChristmasModel(candyEins, items, consumer);
+		seasonalChristmasModel(candyZwei, items, consumer);
+		seasonalChristmasModel(candyDrei, items, consumer);
 
 		OverrideHolder manaCocktailOverrides = new OverrideHolder();
 		for (int i = 1; i <= 7; i++) {
@@ -305,6 +324,16 @@ public class ItemModelProvider implements DataProvider {
 
 			items.remove(shield);
 		}
+	}
+
+	private static void seasonalChristmasModel(Item item, Set<Item> items, BiConsumer<ResourceLocation, Supplier<JsonElement>> consumer) {
+		ResourceLocation christmasModel = ModelLocationUtils.getModelLocation(item, "_christmas");
+		GENERATED_0.create(christmasModel, TextureMapping.layer0(christmasModel), consumer);
+		GENERATED_OVERRIDES.create(ModelLocationUtils.getModelLocation(item),
+				TextureMapping.layer0(item),
+				new OverrideHolder().add(christmasModel, Pair.of(prefix("seasonal_christmas"), 1.0)),
+				consumer);
+		items.remove(item);
 	}
 
 	@NotNull

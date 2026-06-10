@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -26,8 +27,8 @@ import java.util.List;
 
 public class HolyWaterGrenadeEntity extends ThrownPotion {
 
-	public static final double SPLASH_RANGE = 4.0D;
-	private static final double SPLASH_RANGE_SQ = 16.0D;
+	public static final double SPLASH_RANGE = 5.0D;
+	private static final double SPLASH_RANGE_SQ = 25.0D;
 
 	public HolyWaterGrenadeEntity(EntityType<? extends HolyWaterGrenadeEntity> entityType, Level level) {
 		super(entityType, level);
@@ -68,6 +69,9 @@ public class HolyWaterGrenadeEntity extends ThrownPotion {
 		}
 
 		if (!this.level().isClientSide) {
+			if (result instanceof EntityHitResult entityHit) {
+				entityHit.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 5.0F);
+			}
 			Brew brew = getBrew();
 
 			List<MobEffectInstance> list = BrewUtil.getPotionEffects(brew);
@@ -98,26 +102,28 @@ public class HolyWaterGrenadeEntity extends ThrownPotion {
 				continue;
 			}
 
-			double d1 = victim == target ? 1.0D : 1.0D - Math.sqrt(distanceToSqr) / SPLASH_RANGE;
-			boolean isSource = victim == source;
+			boolean playerTarget = victim instanceof Player;
+
+			if (!playerTarget) {
+				victim.hurt(this.damageSources().magic(), 10.0F);
+			}
 
 			for (MobEffectInstance tmpInstance : effectInstances) {
 				var effectHolder = tmpInstance.getEffect();
 				var mobeffect = effectHolder.value();
 				boolean isBeneficial = mobeffect.isBeneficial();
 
-				//Only give beneficial to owner. harmful to others
-				if ((isBeneficial && !isSource) || (!isBeneficial && isSource)) {
+				if ((isBeneficial && !playerTarget) || (!isBeneficial && playerTarget)) {
 					continue;
 				}
 
 				if (mobeffect.isInstantenous()) {
-					mobeffect.applyInstantenousEffect(this, this.getOwner(), victim, tmpInstance.getAmplifier(), d1);
+					mobeffect.applyInstantenousEffect(this, this.getOwner(), victim, tmpInstance.getAmplifier(), 1.0D);
 					continue;
 				}
 
 				int durationAdjustByDistance = tmpInstance.mapDuration(
-						(originalDuration) -> (int) (d1 * (double) originalDuration + 0.5D));
+						(originalDuration) -> (int) ((double) originalDuration * 0.6D));
 
 				MobEffectInstance apply = new MobEffectInstance(effectHolder, durationAdjustByDistance, tmpInstance.getAmplifier(), tmpInstance.isAmbient(), tmpInstance.isVisible());
 				if (!apply.endsWithin(20)) {

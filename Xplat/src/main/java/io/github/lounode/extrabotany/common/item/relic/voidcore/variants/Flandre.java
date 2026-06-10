@@ -15,14 +15,14 @@ import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.common.helper.VecHelper;
 
-import io.github.lounode.extrabotany.api.item.CoreOfTheVoidVariant;
+import io.github.lounode.extrabotany.api.item.ClientCoreOfTheVoidVariant;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
 import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
-public class Flandre implements CoreOfTheVoidVariant {
+public class Flandre implements ClientCoreOfTheVoidVariant {
 
 	private static final String ID = "flandre";
 	private static final ResourceLocation WING_MODEL = prefix("wing/flandre");

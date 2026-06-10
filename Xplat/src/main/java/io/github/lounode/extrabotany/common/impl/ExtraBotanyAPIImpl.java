@@ -36,6 +36,21 @@ public class ExtraBotanyAPIImpl implements ExtraBotanyAPI {
 	}
 
 	@Override
+	public Holder<ArmorMaterial> getMikuArmorMaterial() {
+		return ArmorsMaterial.MIKU;
+	}
+
+	@Override
+	public Holder<ArmorMaterial> getShootingGuardianArmorMaterial() {
+		return ArmorsMaterial.SHOOTING_GUARDIAN;
+	}
+
+	@Override
+	public Holder<ArmorMaterial> getSilentSagesArmorMaterial() {
+		return ArmorsMaterial.SILENT_SAGES;
+	}
+
+	@Override
 	public void registerCOVVariant(CoreOfTheVoidVariant variant) {
 		this.covVariants.put(variant.getId(), variant);
 	}

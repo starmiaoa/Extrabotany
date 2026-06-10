@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
 import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -36,6 +38,9 @@ import org.slf4j.Logger;
 
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.BotaniaRegistries;
+import vazkii.botania.api.block.Wandable;
+import vazkii.botania.api.mana.ManaReceiver;
+import vazkii.botania.api.mana.spark.SparkAttachable;
 import vazkii.botania.api.item.Relic;
 import vazkii.botania.api.mana.ManaItem;
 import vazkii.botania.common.handler.EquipmentHandler;
@@ -46,6 +51,7 @@ import vazkii.botania.neoforge.integration.curios.CurioIntegration;
 import io.github.lounode.extrabotany.api.ExtraBotaniaRegistries;
 import io.github.lounode.extrabotany.api.ExtrabotanyForgeCapabilities;
 import io.github.lounode.extrabotany.api.item.NatureEnergyItem;
+import io.github.lounode.extrabotany.common.block.block_entity.LivingrockBarrelBlockEntity;
 import io.github.lounode.extrabotany.common.advancements.ExtrabotanyCriteriaTriggers;
 import io.github.lounode.extrabotany.common.block.ExtraBotanyBlocks;
 import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockEntities;
@@ -55,10 +61,14 @@ import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.crafting.ExtraBotanyRecipeTypes;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyEntityType;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyMemoryType;
+import io.github.lounode.extrabotany.forge.fluid.NeoForgeExtraBotanyFluids;
 import io.github.lounode.extrabotany.common.impl.WindImpl;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.brew.InfiniteWineItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.NatureOrbItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.MoonPendantItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.SilentEternityItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.SunRingItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.RheinHammerItem;
 import io.github.lounode.extrabotany.common.item.material.ArmorsMaterial;
 import io.github.lounode.extrabotany.common.item.relic.*;
@@ -69,6 +79,8 @@ import io.github.lounode.extrabotany.common.loot.RewardBagManager;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.forge.network.ForgePacketHandler;
 import io.github.lounode.extrabotany.forge.event.NeoForgeEventBridge;
+import io.github.lounode.extrabotany.forge.xplat.LivingrockBarrelFluidHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -115,6 +127,10 @@ public class ForgeCommonInitializer {
 		bind(modEventBus, Registries.SOUND_EVENT, ExtraBotanySounds::init);
 		bindRegistry(modEventBus, Registries.ARMOR_MATERIAL, ArmorsMaterial::registerArmorMaterials);
 		//Block&ItemBlock&Items
+		bind(modEventBus, NeoForgeExtraBotanyFluids.fluidTypeRegistryKey(), NeoForgeExtraBotanyFluids::registerFluidTypes);
+		bind(modEventBus, Registries.FLUID, NeoForgeExtraBotanyFluids::registerFluids);
+		bind(modEventBus, Registries.BLOCK, NeoForgeExtraBotanyFluids::registerBlocks);
+		bindForItems(modEventBus, NeoForgeExtraBotanyFluids::registerItems);
 		bind(modEventBus, Registries.BLOCK, ExtraBotanyBlocks::registerBlocks);
 		bindForItems(modEventBus, ExtraBotanyBlocks::registerItemBlocks);
 		bind(modEventBus, Registries.BLOCK_ENTITY_TYPE, ExtraBotanyBlockEntities::registerTiles);
@@ -184,6 +200,22 @@ public class ForgeCommonInitializer {
 	@SubscribeEvent
 	private void attachCapabilities(RegisterCapabilitiesEvent e) {
 		attachItemCaps(e);
+		attachBlockCaps(e);
+	}
+
+	private void attachBlockCaps(RegisterCapabilitiesEvent e) {
+		e.registerBlockEntity(blockApi(ManaReceiver.LOOKUP), ExtraBotanyBlockEntities.MANA_BUFFER, (be, direction) -> be);
+		e.registerBlockEntity(blockApi(SparkAttachable.LOOKUP), ExtraBotanyBlockEntities.MANA_BUFFER, (be, ignored) -> be);
+		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.MANA_BUFFER, (be, direction) -> be);
+		e.registerBlockEntity(blockApi(ManaReceiver.LOOKUP), ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, (be, direction) -> be);
+		e.registerBlockEntity(blockApi(SparkAttachable.LOOKUP), ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, (be, ignored) -> be);
+		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, (be, direction) -> be);
+		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.MANA_GENERATOR, (be, direction) -> be);
+		e.registerBlockEntity(blockApi(ManaReceiver.LOOKUP), ExtraBotanyBlockEntities.MANA_LIQUEFACTION, (be, direction) -> be);
+		e.registerBlockEntity(blockApi(SparkAttachable.LOOKUP), ExtraBotanyBlockEntities.MANA_LIQUEFACTION, (be, ignored) -> be);
+		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.MANA_LIQUEFACTION, (be, direction) -> be);
+		e.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ExtraBotanyBlockEntities.LIVINGROCK_BARREL,
+				(LivingrockBarrelBlockEntity be, Direction direction) -> new LivingrockBarrelFluidHandler(be));
 	}
 
 	private void attachItemCaps(RegisterCapabilitiesEvent e) {
@@ -205,24 +237,45 @@ public class ForgeCommonInitializer {
 				capability, (stack, context) -> provider.apply(stack), item));
 	}
 
+	private static <A, C> BlockCapability<A, C> blockApi(vazkii.botania.api.capability.BlockApiWithContext<A, C> api) {
+		return BlockCapability.create(api.getId(), api.getApiClass(), api.getContextClass());
+	}
+
+	private static <A> BlockCapability<A, Void> blockApi(vazkii.botania.api.capability.BlockApiNoContext<A> api) {
+		return BlockCapability.create(api.getId(), api.getApiClass(), Void.class);
+	}
+
 	private static final Supplier<Map<Item, Function<ItemStack, NatureEnergyItem>>> NATURE_ENERGY_ITEM = Suppliers.memoize(() -> Map.of(
 			ExtraBotanyItems.natureOrb, NatureOrbItem.NatureEnergyImpl::new
 	));
 
 	private static final Supplier<Map<Item, Function<ItemStack, ManaItem>>> MANA_ITEM = Suppliers.memoize(() -> Map.of(
-			ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem.ExtendManaItemImpl::new
+			ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem.ExtendManaItemImpl::new,
+			ExtraBotanyItems.silentEternity, SilentEternityItem.SilentEternityManaItem::new
 	));
-	private static final Supplier<Map<Item, Function<ItemStack, Relic>>> RELIC = Suppliers.memoize(() -> Map.of(
-			ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem::makeRelic,
-			ExtraBotanyItems.camera, CameraItem::makeRelic,
-			ExtraBotanyItems.failnaught, FailnaughtItem::makeRelic,
-			ExtraBotanyItems.excalibur, ExcaliburItem::makeRelic,
-			ExtraBotanyItems.coreOfTheVoid, CoreOfTheVoidItem::makeRelic,
-			ExtraBotanyItems.pandorasBox, PandorasBoxItem::makeRelic,
-			ExtraBotanyItems.infiniteWine, InfiniteWineItem::makeRelic,
-			ExtraBotanyItems.voidArchives, VoidArchivesItem::makeRelic,
-			ExtraBotanyItems.rheinHammer, RheinHammerItem::makeRelic,
-			ExtraBotanyItems.achillesShield, AchillesShieldItem::makeRelic
+	private static final Supplier<Map<Item, Function<ItemStack, Relic>>> RELIC = Suppliers.memoize(() -> Map.ofEntries(
+			Map.entry(ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem::makeRelic),
+			Map.entry(ExtraBotanyItems.camera, CameraItem::makeRelic),
+			Map.entry(ExtraBotanyItems.failnaught, FailnaughtItem::makeRelic),
+			Map.entry(ExtraBotanyItems.excalibur, ExcaliburItem::makeRelic),
+			Map.entry(ExtraBotanyItems.trueTerrablade, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.trueShadowKatana, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.influxWaver, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.starWrath, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.firstFractal, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.spearOfSubspace, SpearOfSubspaceItem::makeRelic),
+			Map.entry(ExtraBotanyItems.judahOath, JudahOathItem::makeRelic),
+			Map.entry(ExtraBotanyItems.judahOathKira, JudahOathItem::makeRelic),
+			Map.entry(ExtraBotanyItems.judahOathSakura, JudahOathItem::makeRelic),
+			Map.entry(ExtraBotanyItems.coreOfTheVoid, CoreOfTheVoidItem::makeRelic),
+			Map.entry(ExtraBotanyItems.pandorasBox, PandorasBoxItem::makeRelic),
+			Map.entry(ExtraBotanyItems.infiniteWine, InfiniteWineItem::makeRelic),
+			Map.entry(ExtraBotanyItems.voidArchives, VoidArchivesItem::makeRelic),
+			Map.entry(ExtraBotanyItems.rheinHammer, RheinHammerItem::makeRelic),
+			Map.entry(ExtraBotanyItems.achillesShield, AchillesShieldItem::makeRelic),
+			Map.entry(ExtraBotanyItems.sunRing, SunRingItem::makeRelic),
+			Map.entry(ExtraBotanyItems.moonPendant, MoonPendantItem::makeRelic),
+			Map.entry(ExtraBotanyItems.silentEternity, SilentEternityItem::makeRelic)
 	));
 
 	private static <T> void bind(IEventBus modEventBus, ResourceKey<Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {

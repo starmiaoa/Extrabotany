@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -64,6 +65,36 @@ public final class ArmorsMaterial {
 			),
 			28, Holder.direct(ExtraBotanySounds.ARMOR_EQUIP_WARRIOR), 1.5F, 0,
 			() -> Ingredient.of(ExtraBotanyItems.shadowium));
+
+	public static final Holder<ArmorMaterial> MIKU = create("miku", 5,
+			Map.of(
+					ArmorItem.Type.BOOTS, 1,
+					ArmorItem.Type.LEGGINGS, 5,
+					ArmorItem.Type.CHESTPLATE, 4,
+					ArmorItem.Type.HELMET, 2
+			),
+			22, SoundEvents.ARMOR_EQUIP_LEATHER, 0, 0,
+			() -> Ingredient.of(ExtraBotanyItems.manaDrink));
+
+	public static final Holder<ArmorMaterial> SHOOTING_GUARDIAN = create("shootingguardian", 34,
+			Map.of(
+					ArmorItem.Type.BOOTS, 4,
+					ArmorItem.Type.LEGGINGS, 8,
+					ArmorItem.Type.CHESTPLATE, 7,
+					ArmorItem.Type.HELMET, 3
+			),
+			34, SoundEvents.ARMOR_EQUIP_IRON, 2, 0,
+			() -> Ingredient.of(ExtraBotanyItems.orichalcos));
+
+	public static final Holder<ArmorMaterial> SILENT_SAGES = create("silentsages", 50,
+			Map.of(
+					ArmorItem.Type.BOOTS, 5,
+					ArmorItem.Type.LEGGINGS, 9,
+					ArmorItem.Type.CHESTPLATE, 8,
+					ArmorItem.Type.HELMET, 4
+			),
+			40, SoundEvents.ARMOR_EQUIP_IRON, 3, 0,
+			() -> Ingredient.of(ExtraBotanyItems.orichalcos));
 
 	private ArmorsMaterial() {}
 

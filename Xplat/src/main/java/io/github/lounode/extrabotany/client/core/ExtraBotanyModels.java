@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import io.github.lounode.extrabotany.api.ExtraBotanyAPI;
+import io.github.lounode.extrabotany.api.item.ClientCoreOfTheVoidVariant;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,9 @@ public class ExtraBotanyModels {
 		modelConsumers = new HashMap<>();
 
 		for (var variant : ExtraBotanyAPI.instance().getCOVVariants().values()) {
-			variant.onModelInit(modelConsumers);
+			if (variant instanceof ClientCoreOfTheVoidVariant clientVariant) {
+				clientVariant.onModelInit(modelConsumers);
+			}
 		}
 
 	}

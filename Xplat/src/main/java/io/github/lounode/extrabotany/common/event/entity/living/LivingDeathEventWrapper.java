@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 public class LivingDeathEventWrapper {
 	private final LivingEntity entity;
 	private final DamageSource source;
+	private boolean canceled;
 
 	public LivingDeathEventWrapper(LivingEntity entity, DamageSource source) {
 		this.entity = entity;
@@ -18,5 +19,13 @@ public class LivingDeathEventWrapper {
 
 	public DamageSource getSource() {
 		return source;
+	}
+
+	public boolean isCanceled() {
+		return canceled;
+	}
+
+	public void setCanceled(boolean canceled) {
+		this.canceled = canceled;
 	}
 }

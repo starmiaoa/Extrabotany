@@ -21,8 +21,11 @@ public class ExtraBotanySounds {
 	public static final SoundEvent REWARD_BAG_OPEN = makeSoundEvent("item.reward_bag.open");
 	public static final SoundEvent PANDORAS_BOX_OPEN = makeSoundEvent("item.pandoras_box.open");
 	public static final SoundEvent WALKING_CANE_USE = makeSoundEvent("item.walking_cane.use");
+	public static final SoundEvent SPEAR_OF_SUBSPACE_USE = makeSoundEvent("item.spear_of_subspace.use");
+	public static final SoundEvent FLAMESCION_ULT = makeSoundEvent("item.flamescion_weapon.ult");
 
 	public static final SoundEvent MUSIC_GAIA3 = makeSoundEvent("music.gaia3");
+	public static final SoundEvent MUSIC_HERRSCHER = makeSoundEvent("music.herrscher");
 	public static final SoundEvent ARMOR_EQUIP_MAID = makeSoundEvent("item.armor.equip_maid");
 	public static final SoundEvent ARMOR_EQUIP_IDOL = makeSoundEvent("item.armor.equip_idol");;
 	public static final SoundEvent HAMMER_USE = makeSoundEvent("item.hammer.use");

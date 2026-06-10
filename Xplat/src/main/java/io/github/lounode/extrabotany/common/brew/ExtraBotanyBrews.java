@@ -23,6 +23,7 @@ public class ExtraBotanyBrews {
 			new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 20 * 60)
 	).setNotBloodPendantInfusable().setNotIncenseInfusable();
 	public final static Brew revolution = new Brew(0x483D8B, 10000,
+			new MobEffectInstance(MobEffects.UNLUCK, 20 * 90, 2),
 			new MobEffectInstance(MobEffects.DIG_SPEED, 20 * 90, 2)
 	);
 	public final static Brew shield = new Brew(0x006400, 10000,

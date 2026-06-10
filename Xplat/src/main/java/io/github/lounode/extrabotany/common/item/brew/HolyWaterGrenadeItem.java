@@ -73,7 +73,7 @@ public class HolyWaterGrenadeItem extends Item implements BrewItem, CustomCreati
 
 			HolyWaterGrenadeEntity grenade = new HolyWaterGrenadeEntity(level, player);
 			grenade.setItem(stack);
-			grenade.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.5F, 1.0F);
+			grenade.shootFromRotation(player, player.getXRot(), player.getYRot(), -5.0F, 0.8F, 1.0F);
 
 			level.addFreshEntity(grenade);
 		}

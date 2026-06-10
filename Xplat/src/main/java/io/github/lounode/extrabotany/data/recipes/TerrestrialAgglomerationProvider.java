@@ -34,6 +34,11 @@ public class TerrestrialAgglomerationProvider extends ExtraBotanyRecipeProvider 
 				Ingredient.of(BotaniaItems.enderAirBottle),
 				Ingredient.of(BotaniaItems.dragonstone),
 				Ingredient.of(Items.PHANTOM_MEMBRANE));
+		save(recipeOutput, idFor("orichalcos_ingot"), ManaPoolBlock.MAX_MANA / 2,
+				new ItemStack(ExtraBotanyItems.orichalcos),
+				Ingredient.of(BotaniaItems.gaiaIngot),
+				Ingredient.of(ExtraBotanyItems.gildedPotatoMashed),
+				Ingredient.of(ExtraBotanyItems.heroMedal));
 		save(recipeOutput, idFor("the_universe"), ManaPoolBlock.MAX_MANA,
 				new ItemStack(ExtraBotanyItems.theUniverse),
 				Ingredient.of(ExtraBotanyItems.theChaos),

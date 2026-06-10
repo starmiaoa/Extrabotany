@@ -82,6 +82,7 @@ public class PetalApothecaryProvider extends ExtraBotanyRecipeProvider {
 		save(recipeOutput, ExtrabotanyFlowerBlocks.manalink, cyan, cyan, cyan, lightBlue, lightBlue, runeSloth, runeLust, gaiaSpirit);
 		save(recipeOutput, ExtrabotanyFlowerBlocks.necrofleur, gray, gray, pink, pink, red, runeWrath, manaDust);
 		save(recipeOutput, ExtrabotanyFlowerBlocks.enchanter, purple, purple, magenta, lime, lime, runePride, runeGreed, runeGluttony, gaiaSpirit);
+		save(recipeOutput, ExtrabotanyFlowerBlocks.stardustLotus, purple, purple, purple, magenta, magenta, runeEnvy, runePride, gaiaSpirit);
 
 	}
 

@@ -38,6 +38,28 @@ public final class EntityRenderers {
 		consumer.accept(ExtraBotanyEntityType.SKULL_LANDMINE_RED, SkullLandMineRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SKULL_LANDMINE_GREEN, SkullLandMineRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.HOLY_WATER_GRENADE, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.BUTTERFLY_PROJECTILE, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.BOTTLED_STAR, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.PHOTON_SHOTGUN_PROJECTILE, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.FLOWER_WEAPON, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.FLAMESCION_SLASH, NoopRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.STRENGTHEN_SLASH, NoopRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.FLAMESCION_SWORD, NoopRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.FLAMESCION_VOID, NoopRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.FLAMESCION_ULT, NoopRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.TRUE_TERRABLADE_PROJECTILE, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.TRUE_SHADOW_KATANA_PROJECTILE, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.INFLUX_WAVER_PROJECTILE, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.PHANTOM_SWORD, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.STAR_WRATH_FALLING_STAR, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.SUBSPACE, NoopRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.SUBSPACE_SPEAR, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.JUDAH_OATH, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.JUDAH_SPEAR, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.JUDAH_SWORD, NoopRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.UFO, UfoRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.MOTOR, MotorRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.FLYING_BOAT, FlyingBoatRenderer::new);
 	}
 
 	public static void registerBlockEntityRenderers(BERConsumer consumer) {
@@ -65,6 +87,7 @@ public final class EntityRenderers {
 		consumer.register(ExtrabotanyFlowerBlocks.NECROFLEUR_CHIBI, SpecialFlowerBlockEntityRenderer::new);
 		consumer.register(ExtrabotanyFlowerBlocks.MANALINK, SpecialFlowerBlockEntityRenderer::new);
 		consumer.register(ExtrabotanyFlowerBlocks.ENCHANTER, SpecialFlowerBlockEntityRenderer::new);
+		consumer.register(ExtrabotanyFlowerBlocks.STARDUST_LOTUS, SpecialFlowerBlockEntityRenderer::new);
 
 	}
 }

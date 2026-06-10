@@ -39,16 +39,14 @@ import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 import vazkii.botania.common.item.relic.RelicImpl;
 import vazkii.botania.common.proxy.Proxy;
 
+import io.github.lounode.extrabotany.client.core.CoreOfTheVoidClientVariants;
 import io.github.lounode.extrabotany.common.event.entity.living.*;
 import io.github.lounode.extrabotany.common.event.entity.player.PlayerEventWrapper;
 import io.github.lounode.extrabotany.api.ExtraBotanyAPI;
+import io.github.lounode.extrabotany.api.item.ClientCoreOfTheVoidVariant;
 import io.github.lounode.extrabotany.api.item.CoreOfTheVoidVariant;
 import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Flandre;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Herrscher;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Jim;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Steampunk;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.common.util.SoundEventUtil;
 
@@ -69,11 +67,19 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 
 	public CoreOfTheVoidItem(Properties properties) {
 		super(properties);
-		ExtraBotanyAPI.instance().registerCOVVariant(new Herrscher());
-		ExtraBotanyAPI.instance().registerCOVVariant(new Flandre());
-		ExtraBotanyAPI.instance().registerCOVVariant(new Jim());
-		ExtraBotanyAPI.instance().registerCOVVariant(new Steampunk());
-		Proxy.INSTANCE.runOnClient(() -> () -> AccessoryRenderRegistry.register(this, new Renderer()));
+		registerVariant("herrscher");
+		registerVariant("flandre");
+		registerVariant("rainbow");
+		registerVariant("jim");
+		registerVariant("steampunk");
+		Proxy.INSTANCE.runOnClient(() -> () -> {
+			CoreOfTheVoidClientVariants.register();
+			AccessoryRenderRegistry.register(this, new Renderer());
+		});
+	}
+
+	private static void registerVariant(String id) {
+		ExtraBotanyAPI.instance().registerCOVVariant(() -> id);
 	}
 
 	@Override
@@ -229,7 +235,9 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 			}
 
 			CoreOfTheVoidVariant variant = ExtraBotanyAPI.instance().getCOVVariants().get(variantID);
-			variant.render(bipedModel, stack, living, ms, buffers, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+			if (variant instanceof ClientCoreOfTheVoidVariant clientVariant) {
+				clientVariant.render(bipedModel, stack, living, ms, buffers, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+			}
 		}
 	}
 
@@ -252,10 +260,13 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	public Multimap<Holder<Attribute>, AttributeModifier> getEquippedAttributeModifiers(ItemStack stack, ResourceLocation slotId) {
 		Multimap<Holder<Attribute>, AttributeModifier> attributes = HashMultimap.create();
 		//TODO 反噬以及无魔力时去除Attribute
+		// Movement/flying speed use Lounode's flat values; attack damage restored from the old Core of God.
 		attributes.put(Attributes.MOVEMENT_SPEED,
 				new AttributeModifier(slotId.withSuffix("_movement_speed"), 0.1F, AttributeModifier.Operation.ADD_VALUE));
 		attributes.put(Attributes.FLYING_SPEED,
 				new AttributeModifier(slotId.withSuffix("_flying_speed"), 0.6F, AttributeModifier.Operation.ADD_VALUE));
+		attributes.put(Attributes.ATTACK_DAMAGE,
+				new AttributeModifier(slotId.withSuffix("_attack_damage"), 0.25F, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
 
 		return attributes;
 	}

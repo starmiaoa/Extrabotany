@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
-    "extrabotany:excalibur"
+    "extrabotany:excalibur",
+    "extrabotany:shadow_katana",
+    "extrabotany:spear_of_subspace",
+    "extrabotany:judah_oath",
+    "extrabotany:judah_oath_kira",
+    "extrabotany:judah_oath_sakura"
   ]
 }

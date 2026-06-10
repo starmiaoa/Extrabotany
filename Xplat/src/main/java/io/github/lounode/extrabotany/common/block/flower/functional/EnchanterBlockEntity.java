@@ -9,11 +9,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -24,6 +26,7 @@ import vazkii.botania.api.block_entity.RadiusDescriptor;
 import vazkii.botania.client.core.helper.RenderHelper;
 import vazkii.botania.client.gui.HUDHandler;
 import vazkii.botania.common.block.BotaniaBlocks;
+import vazkii.botania.common.item.BotaniaItems;
 
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
@@ -33,13 +36,15 @@ import java.util.*;
 public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 
 	private static final String TAG_CONSUMED = "consumedMana";
+	private static final String TAG_HAS_LOTUS = "hasLotus";
 
-	public static final int RANGE = 3;
+	public static final int RANGE = 4;
 
 	public static final int CONSUME_SPEED = 400;
-	public static final int TRANSFORM_COST = 250000;
+	public static final int TRANSFORM_COST = 200000;
 
 	private int consumedMana;
+	private boolean hasLotus;
 
 	public EnchanterBlockEntity(BlockEntityType<? extends EnchanterBlockEntity> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -56,7 +61,11 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 			return;
 		}
 
-		if (consumedMana < getTransformCost()) {
+		if (!hasLotus) {
+			consumeNearbyBlackLotus();
+		}
+
+		if (hasLotus && consumedMana < getTransformCost()) {
 			int manaCanConsume = Math.min(getConsumeSpeed(), getMana());
 			if (manaCanConsume > 0) {
 				addMana(-manaCanConsume);
@@ -78,7 +87,23 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 		getLevel().setBlockAndUpdate(transformPos, BotaniaBlocks.infusedGrass.defaultBlockState());
 
 		setConsumedMana(0);
+		setHasLotus(false);
 		sync();
+	}
+
+	private void consumeNearbyBlackLotus() {
+		AABB box = new AABB(getEffectivePos()).inflate(1);
+		List<ItemEntity> items = getLevel().getEntitiesOfClass(ItemEntity.class, box,
+				item -> item.isAlive() && item.getItem().is(BotaniaItems.blackLotus));
+		for (ItemEntity item : items) {
+			ItemStack stack = item.getItem();
+			if (!stack.isEmpty()) {
+				stack.shrink(1);
+				setHasLotus(true);
+				sync();
+				return;
+			}
+		}
 	}
 
 	@Nullable
@@ -87,7 +112,8 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 		Random rng = new Random();
 		BlockPos pos = getEffectivePos();
 
-		for (BlockPos pos_ : BlockPos.betweenClosed(pos.offset(-RANGE, -RANGE, -RANGE), pos.offset(RANGE, RANGE, RANGE))) {
+		int range = getTransformRange();
+		for (BlockPos pos_ : BlockPos.betweenClosed(pos.offset(-range, -range, -range), pos.offset(range, range, range))) {
 			BlockState state = getLevel().getBlockState(pos_);
 			BlockState above = getLevel().getBlockState(pos_.above());
 			if (!state.is(Blocks.GRASS_BLOCK) || !above.isAir()) {
@@ -121,9 +147,13 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 		return ExtraBotanyConfig.common().enchanterConsumeSpeed();
 	}
 
+	public int getTransformRange() {
+		return ExtraBotanyConfig.common().enchanterTransformRange();
+	}
+
 	@Override
 	public int getMaxMana() {
-		return getConsumeSpeed() * 4;
+		return 10000;
 	}
 
 	@Override
@@ -133,7 +163,7 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 
 	@Override
 	public @Nullable RadiusDescriptor getRadius() {
-		return RadiusDescriptor.Rectangle.square(getEffectivePos(), RANGE);
+		return RadiusDescriptor.Rectangle.square(getEffectivePos(), getTransformRange());
 	}
 
 	public int getConsumedMana() {
@@ -144,16 +174,26 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 		this.consumedMana = consumedMana;
 	}
 
+	public boolean hasLotus() {
+		return hasLotus;
+	}
+
+	public void setHasLotus(boolean hasLotus) {
+		this.hasLotus = hasLotus;
+	}
+
 	@Override
 	protected void saveAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.saveAdditional(cmp, registries);
 		cmp.putInt(TAG_CONSUMED, getConsumedMana());
+		cmp.putBoolean(TAG_HAS_LOTUS, hasLotus());
 	}
 
 	@Override
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 		setConsumedMana(cmp.getInt(TAG_CONSUMED));
+		setHasLotus(cmp.getBoolean(TAG_HAS_LOTUS));
 	}
 
 	public static class WandHUD extends BindableFlowerWandHud<EnchanterBlockEntity> {
@@ -191,9 +231,11 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 
 			ItemStack grass = new ItemStack(Items.GRASS_BLOCK);
 			ItemStack enchanted = new ItemStack(BotaniaBlocks.infusedGrass);
+			ItemStack blackLotus = new ItemStack(BotaniaItems.blackLotus);
 
-			gui.renderItem(grass, centerX - 31, centerY + 34);
-			gui.renderItem(enchanted, centerX + 15, centerY + 34);
+			gui.renderItem(blackLotus, centerX - 45, centerY + 34);
+			gui.renderItem(grass, centerX - 11, centerY + 34);
+			gui.renderItem(enchanted, centerX + 31, centerY + 34);
 		}
 	}
 }

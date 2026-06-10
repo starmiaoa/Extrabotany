@@ -1,0 +1,32 @@
+{
+  "type": "botania:runic_altar",
+  "catalysts": [],
+  "ingredients": [
+    {
+      "item": "extrabotany:the_origin"
+    },
+    {
+      "item": "botania:knockback_belt"
+    },
+    {
+      "item": "botania:super_cloud_pendant"
+    },
+    {
+      "item": "botania:super_lava_pendant"
+    },
+    {
+      "item": "botania:ice_pendant"
+    },
+    {
+      "item": "botania:itemfinder"
+    }
+  ],
+  "mana": 500000,
+  "output": {
+    "count": 1,
+    "id": "extrabotany:moon_pendant"
+  },
+  "reagent": {
+    "item": "botania:livingrock"
+  }
+}

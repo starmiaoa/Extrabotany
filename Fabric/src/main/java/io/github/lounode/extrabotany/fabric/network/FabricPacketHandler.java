@@ -13,9 +13,17 @@ import io.github.lounode.extrabotany.network.clientbound.ColorfulBossEventPacket
 import io.github.lounode.extrabotany.network.clientbound.GaiaBossEventPacket;
 import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlyingBoatInputPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlamescionShiftPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlamescionUltPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
+import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketFlamescion;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketJingwei;
+import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketOldRelicSword;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketVoidArchives;
+import io.github.lounode.extrabotany.network.serverbound.MountAccessoryPacket;
+import io.github.lounode.extrabotany.network.serverbound.MotorInputPacket;
+import io.github.lounode.extrabotany.network.serverbound.UfoInputPacket;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -25,8 +33,16 @@ public class FabricPacketHandler {
 
 	public static void init() {
 		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketExcalibur.ID, makeServerBoundHandler(LeftClickPacketExcalibur::decode, LeftClickPacketExcalibur::handle));
+		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketFlamescion.ID, makeServerBoundHandler(LeftClickPacketFlamescion::decode, LeftClickPacketFlamescion::handle));
 		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketJingwei.ID, makeServerBoundHandler(LeftClickPacketJingwei::decode, LeftClickPacketJingwei::handle));
+		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketOldRelicSword.ID, makeServerBoundHandler(LeftClickPacketOldRelicSword::decode, LeftClickPacketOldRelicSword::handle));
 		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketVoidArchives.ID, makeServerBoundHandler(LeftClickPacketVoidArchives::decode, LeftClickPacketVoidArchives::handle));
+		ServerPlayNetworking.registerGlobalReceiver(UfoInputPacket.ID, makeServerBoundHandler(UfoInputPacket::decode, UfoInputPacket::handle));
+		ServerPlayNetworking.registerGlobalReceiver(MotorInputPacket.ID, makeServerBoundHandler(MotorInputPacket::decode, MotorInputPacket::handle));
+		ServerPlayNetworking.registerGlobalReceiver(FlyingBoatInputPacket.ID, makeServerBoundHandler(FlyingBoatInputPacket::decode, FlyingBoatInputPacket::handle));
+		ServerPlayNetworking.registerGlobalReceiver(MountAccessoryPacket.ID, makeServerBoundHandler(MountAccessoryPacket::decode, MountAccessoryPacket::handle));
+		ServerPlayNetworking.registerGlobalReceiver(FlamescionShiftPacket.ID, makeServerBoundHandler(FlamescionShiftPacket::decode, FlamescionShiftPacket::handle));
+		ServerPlayNetworking.registerGlobalReceiver(FlamescionUltPacket.ID, makeServerBoundHandler(FlamescionUltPacket::decode, FlamescionUltPacket::handle));
 		registerOperation();
 	}
 

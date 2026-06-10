@@ -123,6 +123,10 @@ public class ExtrabotanyFlowerBlocks {
 	public static final Block enchanterFloating = new FloatingSpecialFlowerBlock(FLOATING_PROPS, () -> ExtrabotanyFlowerBlocks.ENCHANTER);
 	public static final Block enchanterPotted = ExtraBotanyBlocks.flowerPot(enchanter, 0);
 
+	public static final Block stardustLotus = new StardustLotusBlock(MobEffects.LEVITATION, 0, FLOWER_PROPS, () -> ExtrabotanyFlowerBlocks.STARDUST_LOTUS);
+	public static final Block stardustLotusFloating = new FloatingStardustLotusBlock(FLOATING_PROPS, () -> ExtrabotanyFlowerBlocks.STARDUST_LOTUS);
+	public static final Block stardustLotusPotted = ExtraBotanyBlocks.flowerPot(stardustLotus, 0);
+
 	public static final BlockEntityType<TradeOrchidBlockEntity> TRADE_ORCHID = BlockEntityType.Builder.of(TradeOrchidBlockEntity::new, tradeOrchid, tradeOrchidFloating).build(null);
 	public static final BlockEntityType<WoodieniaBlockEntity> WOODIENIA = BlockEntityType.Builder.of(WoodieniaBlockEntity::new, woodienia, woodieniaFloating).build(null);
 	public static final BlockEntityType<ReikarlilyBlockEntity> REIKARLILY = BlockEntityType.Builder.of(ReikarlilyBlockEntity::new, reikarlily, reikarlilyFloating).build(null);
@@ -143,6 +147,7 @@ public class ExtrabotanyFlowerBlocks {
 	public static final BlockEntityType<NecrofleurBlockEntity.Mini> NECROFLEUR_CHIBI = BlockEntityType.Builder.of(NecrofleurBlockEntity.Mini::new, necrofleurChibi, necrofleurChibiFloating).build(null);
 	public static final BlockEntityType<ManalinkBlockEntity> MANALINK = BlockEntityType.Builder.of(ManalinkBlockEntity::new, manalink, manalinkFloating).build(null);
 	public static final BlockEntityType<EnchanterBlockEntity> ENCHANTER = BlockEntityType.Builder.of(EnchanterBlockEntity::new, enchanter, enchanterFloating).build(null);
+	public static final BlockEntityType<StardustLotusBlockEntity> STARDUST_LOTUS = BlockEntityType.Builder.of(StardustLotusBlockEntity::new, stardustLotus, stardustLotusFloating).build(null);
 
 	private static ResourceLocation floating(ResourceLocation orig) {
 		return ResourceLocation.fromNamespaceAndPath(orig.getNamespace(), "floating_" + orig.getPath());
@@ -266,6 +271,10 @@ public class ExtrabotanyFlowerBlocks {
 		r.accept(enchanterFloating, floating(LibBlockNames.ENCHANTER));
 		r.accept(enchanterPotted, potted(LibBlockNames.ENCHANTER));
 
+		r.accept(stardustLotus, LibBlockNames.STARDUST_LOTUS);
+		r.accept(stardustLotusFloating, floating(LibBlockNames.STARDUST_LOTUS));
+		r.accept(stardustLotusPotted, potted(LibBlockNames.STARDUST_LOTUS));
+
 	}
 
 	public static void registerItemBlocks(BiConsumer<Item, ResourceLocation> r) {
@@ -328,6 +337,9 @@ public class ExtrabotanyFlowerBlocks {
 		r.accept(new SpecialFlowerBlockItem(enchanter, props()), getId(enchanter));
 		r.accept(new SpecialFlowerBlockItem(enchanterFloating, props()), getId(enchanterFloating));
 
+		r.accept(new SpecialFlowerBlockItem(stardustLotus, props()), getId(stardustLotus));
+		r.accept(new SpecialFlowerBlockItem(stardustLotusFloating, props()), getId(stardustLotusFloating));
+
 	}
 
 	private static Item.Properties props() {
@@ -355,6 +367,7 @@ public class ExtrabotanyFlowerBlocks {
 		r.accept(NECROFLEUR_CHIBI, getId(necrofleurChibi));
 		r.accept(MANALINK, getId(manalink));
 		r.accept(ENCHANTER, getId(enchanter));
+		r.accept(STARDUST_LOTUS, getId(stardustLotus));
 	}
 
 	public static void registerWandHudCaps(BotaniaBlockEntities.BECapConsumer<WandHUD> consumer) {
@@ -369,6 +382,7 @@ public class ExtrabotanyFlowerBlocks {
 		consumer.accept(be -> new AnnoyingFlowerBlockEntity.WandHud((AnnoyingFlowerBlockEntity) be), ANNOYINGFLOWER);
 		consumer.accept(be -> new ManalinkBlockEntity.WandHUD((ManalinkBlockEntity) be), MANALINK);
 		consumer.accept(be -> new EnchanterBlockEntity.WandHUD((EnchanterBlockEntity) be), ENCHANTER);
+		consumer.accept(be -> new StardustLotusBlockEntity.WandHUD((StardustLotusBlockEntity) be), STARDUST_LOTUS);
 	}
 
 	public static void registerFlowerPotPlants(BiConsumer<ResourceLocation, Supplier<? extends Block>> consumer) {

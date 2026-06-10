@@ -15,7 +15,14 @@ public class LibBlockNames {
 	public static final String GAIA_QUARTZ = "gaia_quartz";
 	public static final String ELEMENTIUM_QUARTZ = "elementium_quartz";
 	public static final String MANA_CHARGER = "mana_charger";
+	public static final String MANA_BUFFER = "manabuffer";
+	public static final String QUANTUM_MANA_BUFFER = "quantummanabuffer";
+	public static final String MANA_GENERATOR = "managenerator";
+	public static final String MANA_LIQUEFACTION = "manaliquefaction";
+	public static final String COCOON_OF_DESIRE = "cocoondesire";
+	public static final String ELF_JAR = "elfjar";
 	public static final String POWER_FRAME = "power_frame";
+	public static final String TROPHY = "trophy";
 	public static final ResourceLocation TRADE_ORCHID = prefix("trade_orchid");
 	public static final ResourceLocation WOODIENIA = prefix("woodienia");
 	public static final ResourceLocation REIKARLILY = prefix("reikarlily");
@@ -36,4 +43,5 @@ public class LibBlockNames {
 	public static final ResourceLocation NECROFLEUR = prefix("necrofleur");
 	public static final ResourceLocation MANALINK = prefix("manalink");
 	public static final ResourceLocation ENCHANTER = prefix("enchanter");
+	public static final ResourceLocation STARDUST_LOTUS = prefix("stardustlotus");
 }

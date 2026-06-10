@@ -52,6 +52,12 @@ public abstract class PlayerInteractEventWrapper {
 		}
 	}
 
+	public static class LeftClickBlock extends PlayerInteractEventWrapper {
+		public LeftClickBlock(Player entity, InteractionHand hand, BlockPos pos) {
+			super(entity, hand, pos);
+		}
+	}
+
 	public static class RightClickBlock extends PlayerInteractEventWrapper {
 		public RightClickBlock(Player entity, InteractionHand hand, BlockPos pos) {
 			super(entity, hand, pos);

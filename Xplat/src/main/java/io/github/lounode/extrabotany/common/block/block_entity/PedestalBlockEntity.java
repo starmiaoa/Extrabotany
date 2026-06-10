@@ -50,6 +50,7 @@ import io.github.lounode.extrabotany.api.gaia.BlockTagPredicate;
 import io.github.lounode.extrabotany.api.recipe.PedestalRecipe;
 import io.github.lounode.extrabotany.common.block.PedestalBlock;
 import io.github.lounode.extrabotany.common.crafting.ExtraBotanyRecipeTypes;
+import io.github.lounode.extrabotany.common.item.equipment.tool.KingGardenItem;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
@@ -181,6 +182,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		List<Function<Void, Map.Entry<InteractionResult, Boolean>>> handlers = Arrays.asList(
 				(Void v) -> handleExtractFinishItem(state, world, pos, player, hand, hit),
 				(Void v) -> handleSmashNew(state, world, pos, player, hand, hit),
+				(Void v) -> handleKingGardenConfigure(state, world, pos, player, hand, hit),
 				(Void v) -> handleReversePlaceItem(state, world, pos, player, hand, hit),
 				(Void v) -> handlePlaceItemNew(state, world, pos, player, hand, hit)
 		);
@@ -282,6 +284,35 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		}
 
 		return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME, swingOffHand);
+	}
+
+	public Map.Entry<InteractionResult, Boolean> handleKingGardenConfigure(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (isEmpty() || !(getItem().getItem() instanceof KingGardenItem) || !KingGardenItem.canAddFlower(getItem())) {
+			return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME, false);
+		}
+
+		ItemStack mainHandItem = player.getMainHandItem();
+		ItemStack offHandItem = player.getOffhandItem();
+		boolean swingOffHand = false;
+		ItemStack flowerStack = ItemStack.EMPTY;
+		if (KingGardenItem.typeForFlower(mainHandItem) >= 0) {
+			flowerStack = mainHandItem;
+		} else if (KingGardenItem.typeForFlower(offHandItem) >= 0) {
+			flowerStack = offHandItem;
+			swingOffHand = true;
+		}
+		if (flowerStack.isEmpty()) {
+			return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME, false);
+		}
+
+		if (!world.isClientSide() && KingGardenItem.addFlower(getItem(), flowerStack)) {
+			flowerStack.shrink(1);
+			setStrikes(0);
+			markUpdated();
+			world.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F,
+					((world.random.nextFloat() - world.random.nextFloat()) * 0.2F + 1F) * 1.5F);
+		}
+		return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME_PARTIAL, swingOffHand);
 	}
 
 	public Map.Entry<InteractionResult, Boolean> handleReversePlaceItem(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {

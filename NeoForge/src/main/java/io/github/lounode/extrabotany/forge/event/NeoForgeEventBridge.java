@@ -1,14 +1,20 @@
 package io.github.lounode.extrabotany.forge.event;
 
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.PlayLevelSoundEvent;
+import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.AdvancementEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -16,7 +22,10 @@ import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
+import vazkii.botania.api.mana.ManaDiscountEvent;
+
 import io.github.lounode.extrabotany.common.block.flower.generating.ResoncundBlockEntity;
+import io.github.lounode.extrabotany.common.brew.effect.EternityMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.HealReverseMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.LinkMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.ThirrorMobEffect;
@@ -38,20 +47,33 @@ import io.github.lounode.extrabotany.common.event.level.LevelEventWrapper;
 import io.github.lounode.extrabotany.common.event.server.ServerStartedEventWrapper;
 import io.github.lounode.extrabotany.common.event.server.ServerStoppingEventWrapper;
 import io.github.lounode.extrabotany.common.impl.WindImpl;
+import io.github.lounode.extrabotany.common.handler.OldExbotanyStatRewardHandler;
+import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.NightmareFuelItem;
 import io.github.lounode.extrabotany.common.item.SpiritFuelItem;
 import io.github.lounode.extrabotany.common.item.equipment.armor.goblin_slayer.GoblinSlayerHelmetItem;
 import io.github.lounode.extrabotany.common.item.equipment.armor.pleiades_combat_maid.PleiadesCombatMaidSuitItem;
 import io.github.lounode.extrabotany.common.item.equipment.armor.pleiades_combat_maid.SanguinePleiadesCombatMaidSuitItem;
 import io.github.lounode.extrabotany.common.item.equipment.armor.shadow_warrior.ShadowWarriorHelmetItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.AquaStoneItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.CosmeticBaubleItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.FeatherOfJingweiItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.MoonPendantItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.NatureOrbItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.PeaceAmuletItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.PotatoChipsItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.PureDaisyPendantItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.SilentEternityItem;
 import io.github.lounode.extrabotany.common.item.equipment.shield.ManasteelShieldItem;
+import io.github.lounode.extrabotany.common.item.equipment.tool.FlamescionWeaponItem;
+import io.github.lounode.extrabotany.common.item.equipment.tool.ShadowKatanaItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.RheinHammerItem;
 import io.github.lounode.extrabotany.common.item.relic.ExcaliburItem;
+import io.github.lounode.extrabotany.common.item.relic.OldExbotanyRelicSwordItem;
+import io.github.lounode.extrabotany.common.item.relic.SpearOfSubspaceItem;
 import io.github.lounode.extrabotany.common.item.relic.voidcore.CoreOfTheVoidItem;
 import io.github.lounode.extrabotany.common.telemetry.ExtraBotanyTelemetry;
+import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
 public final class NeoForgeEventBridge {
 	private NeoForgeEventBridge() {}
@@ -66,13 +88,17 @@ public final class NeoForgeEventBridge {
 		bus.addListener(NeoForgeEventBridge::onDamagePost);
 		bus.addListener(NeoForgeEventBridge::onLivingHeal);
 		bus.addListener(NeoForgeEventBridge::onLivingDeath);
+		bus.addListener(NeoForgeEventBridge::onManaDiscount);
+		bus.addListener(NeoForgeEventBridge::onFinalizeSpawn);
 		bus.addListener(NeoForgeEventBridge::onEffectApplicable);
 		bus.addListener(NeoForgeEventBridge::onEffectAdded);
 		bus.addListener(NeoForgeEventBridge::onEffectRemoved);
 		bus.addListener(NeoForgeEventBridge::onEffectExpired);
 		bus.addListener(NeoForgeEventBridge::onShieldBlock);
+		bus.addListener(NeoForgeEventBridge::onAdvancementEarned);
 		bus.addListener(NeoForgeEventBridge::onAttackEntity);
 		bus.addListener(NeoForgeEventBridge::onLeftClickEmpty);
+		bus.addListener(NeoForgeEventBridge::onLeftClickBlock);
 		bus.addListener(NeoForgeEventBridge::onRightClickBlock);
 		bus.addListener(NeoForgeEventBridge::onBreakSpeed);
 		bus.addListener(NeoForgeEventBridge::onPlayerLoggedOut);
@@ -110,7 +136,10 @@ public final class NeoForgeEventBridge {
 		LivingAttackEventWrapper attack = new LivingAttackEventWrapper(event.getEntity(), event.getSource(), event.getAmount());
 		WarmMobEffect.EventHandler.onEntityHurt(attack);
 		ThirrorMobEffect.EventHandler.onLivingAttack(attack);
+		MoonPendantItem.EventHandler.onLivingAttack(attack);
+		FlamescionWeaponItem.onLivingAttack(attack);
 		CoreOfTheVoidItem.onLivingAttack(attack);
+		EternityMobEffect.onLivingAttack(attack);
 		applyIncoming(event, attack);
 		if (event.isCanceled()) {
 			return;
@@ -122,6 +151,8 @@ public final class NeoForgeEventBridge {
 		GoblinSlayerHelmetItem.EventHandler.onPlayerAttack(hurt);
 		PleiadesCombatMaidSuitItem.EventHandler.onEntityAttacked(hurt);
 		PleiadesCombatMaidSuitItem.EventHandler.onPlayerAttacked(hurt);
+		PeaceAmuletItem.EventHandler.onLivingHurt(hurt);
+		CosmeticBaubleItem.EventHandler.onLivingHurt(hurt);
 		CoreOfTheVoidItem.onLivingHurt(hurt);
 		applyIncoming(event, hurt);
 		if (event.isCanceled()) {
@@ -148,12 +179,44 @@ public final class NeoForgeEventBridge {
 	private static void onLivingHeal(LivingHealEvent event) {
 		LivingHealEventWrapper wrapper = new LivingHealEventWrapper(event.getEntity(), event.getAmount());
 		HealReverseMobEffect.onLivingHeal(wrapper);
+		SilentEternityItem.EventHandler.onLivingHeal(wrapper);
 		event.setAmount(wrapper.getAmount());
 	}
 
 	private static void onLivingDeath(LivingDeathEvent event) {
-		SanguinePleiadesCombatMaidSuitItem.EventHandler.onKilled(
-				new LivingDeathEventWrapper(event.getEntity(), event.getSource()));
+		LivingDeathEventWrapper wrapper = new LivingDeathEventWrapper(event.getEntity(), event.getSource());
+		SanguinePleiadesCombatMaidSuitItem.EventHandler.onKilled(wrapper);
+		PotatoChipsItem.EventHandler.onPlayerDeath(wrapper);
+		if (wrapper.isCanceled()) {
+			event.setCanceled(true);
+		}
+	}
+
+	private static void onManaDiscount(ManaDiscountEvent event) {
+		if (AquaStoneItem.hasDiscount(event.getEntityPlayer())) {
+			event.setDiscount(event.getDiscount() + AquaStoneItem.MANA_DISCOUNT);
+		}
+	}
+
+	private static void onFinalizeSpawn(FinalizeSpawnEvent event) {
+		var config = ExtraBotanyConfig.common();
+		if (config == null || !config.enableCandyBagMobSpawn()) {
+			return;
+		}
+
+		var mob = event.getEntity();
+		if (!(mob instanceof Zombie || mob instanceof AbstractSkeleton)) {
+			return;
+		}
+		if (!mob.getItemBySlot(EquipmentSlot.OFFHAND).isEmpty()) {
+			return;
+		}
+		if (mob.getRandom().nextDouble() >= config.candyBagMobSpawnChance()) {
+			return;
+		}
+
+		mob.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ExtraBotanyItems.candyBag));
+		mob.setDropChance(EquipmentSlot.OFFHAND, 1.0F);
 	}
 
 	private static void onEffectApplicable(MobEffectEvent.Applicable event) {
@@ -188,9 +251,19 @@ public final class NeoForgeEventBridge {
 				new ShieldBlockEventWrapper(event.getEntity(), event.getDamageSource(), event.getBlockedDamage()));
 	}
 
+	private static void onAdvancementEarned(AdvancementEvent.AdvancementEarnEvent event) {
+		if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+			OldExbotanyStatRewardHandler.onAdvancementEarned(serverPlayer, event.getAdvancement().id());
+		}
+	}
+
 	private static void onAttackEntity(AttackEntityEvent event) {
 		AttackEntityEventWrapper wrapper = new AttackEntityEventWrapper(event.getEntity(), event.getTarget());
 		ExcaliburItem.attackEntity(wrapper);
+		OldExbotanyRelicSwordItem.attackEntity(wrapper);
+		FlamescionWeaponItem.attackEntity(wrapper);
+		ShadowKatanaItem.attackEntity(wrapper);
+		SpearOfSubspaceItem.attackEntity(wrapper);
 		FeatherOfJingweiItem.attackEntity(wrapper);
 		io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Excalibur.attackEntity(wrapper);
 		if (wrapper.isCanceled()) {
@@ -201,8 +274,15 @@ public final class NeoForgeEventBridge {
 	private static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
 		PlayerInteractEventWrapper.LeftClickEmpty wrapper = new PlayerInteractEventWrapper.LeftClickEmpty(event.getEntity());
 		ExcaliburItem.leftClick(wrapper);
+		OldExbotanyRelicSwordItem.leftClick(wrapper);
+		FlamescionWeaponItem.leftClick(wrapper);
 		FeatherOfJingweiItem.leftClick(wrapper);
 		io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Excalibur.leftClick(wrapper);
+	}
+
+	private static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+		FeatherOfJingweiItem.leftClickBlock(
+				new PlayerInteractEventWrapper.LeftClickBlock(event.getEntity(), event.getHand(), event.getPos()));
 	}
 
 	private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
@@ -232,6 +312,9 @@ public final class NeoForgeEventBridge {
 
 	private static void onPlayerTickPost(PlayerTickEvent.Post event) {
 		CoreOfTheVoidItem.updatePlayerFlyStatus(event.getEntity());
+		FlamescionWeaponItem.onPlayerTick(event.getEntity());
+		EternityMobEffect.onPlayerTick(event.getEntity());
+		PureDaisyPendantItem.onPlayerTick(event.getEntity());
 	}
 
 	private static void onSoundAtPosition(PlayLevelSoundEvent.AtPosition event) {
