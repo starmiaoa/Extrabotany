@@ -4,9 +4,7 @@
       "conditions": {
         "items": [
           {
-            "items": [
-              "#extrabotany:orichalcos_ingots"
-            ]
+            "tag": "extrabotany:orichalcos_ingots"
           }
         ]
       },

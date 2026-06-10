@@ -10,7 +10,11 @@ if (System.getenv().RELEASE_MODE != "1") {
 }
 
 repositories {
-    mavenLocal()
+    mavenLocal {
+        content {
+            includeGroup "io.github.lounode.eventwrapper"
+        }
+    }
     maven {
         name = "Jared" // Patchouli and JEI
         url = "https://maven.blamejared.com/"

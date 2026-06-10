@@ -34,22 +34,21 @@ public class RodOfDiscordItem extends Item {
 		if (!(hit instanceof BlockHitResult blockHit) || blockHit.getType() == HitResult.Type.MISS) {
 			return InteractionResultHolder.pass(stack);
 		}
-		if (!ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_USE, true)) {
-			return InteractionResultHolder.fail(stack);
-		}
-
 		if (!level.isClientSide()) {
+			if (!ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_USE, true)) {
+				return InteractionResultHolder.fail(stack);
+			}
 			Vec3 end = blockHit.getLocation();
 			player.teleportTo(end.x(), end.y() + 1D, end.z());
 			level.playSound(null, player.getX(), player.getY(), player.getZ(),
 					SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1F, 3F);
+			player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, NAUSEA_TICKS));
+			if (stack.getDamageValue() > 0) {
+				player.setHealth(Math.max(1F, player.getHealth() - player.getMaxHealth() / 6F));
+			}
+			stack.setDamageValue(COOLDOWN_DAMAGE);
 		}
-		player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, NAUSEA_TICKS));
-		if (stack.getDamageValue() > 0) {
-			player.setHealth(Math.max(1F, player.getHealth() - player.getMaxHealth() / 6F));
-		}
-		stack.setDamageValue(COOLDOWN_DAMAGE);
-		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+		return InteractionResultHolder.sidedSuccess(stack, true);
 	}
 
 	@Override

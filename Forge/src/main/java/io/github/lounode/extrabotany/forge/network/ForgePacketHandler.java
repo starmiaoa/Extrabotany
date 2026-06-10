@@ -14,6 +14,8 @@ import io.github.lounode.extrabotany.network.clientbound.GaiaBossEventPacket;
 import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlyingBoatInputPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlamescionShiftPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlamescionUltPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketFlamescion;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketJingwei;
@@ -49,6 +51,10 @@ public class ForgePacketHandler {
 				makeServerBoundHandler(LeftClickPacketOldRelicSword::handle));
 		CHANNEL.registerMessage(i++, LeftClickPacketFlamescion.class, LeftClickPacketFlamescion::encode, LeftClickPacketFlamescion::decode,
 				makeServerBoundHandler(LeftClickPacketFlamescion::handle));
+		CHANNEL.registerMessage(i++, FlamescionShiftPacket.class, FlamescionShiftPacket::encode, FlamescionShiftPacket::decode,
+				makeServerBoundHandler(FlamescionShiftPacket::handle));
+		CHANNEL.registerMessage(i++, FlamescionUltPacket.class, FlamescionUltPacket::encode, FlamescionUltPacket::decode,
+				makeServerBoundHandler(FlamescionUltPacket::handle));
 		CHANNEL.registerMessage(i++, UfoInputPacket.class, UfoInputPacket::encode, UfoInputPacket::decode,
 				makeServerBoundHandler(UfoInputPacket::handle));
 		CHANNEL.registerMessage(i++, MotorInputPacket.class, MotorInputPacket::encode, MotorInputPacket::decode,

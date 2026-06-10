@@ -35,7 +35,7 @@ public record MotorInputPacket(boolean forward, boolean back, boolean left, bool
 
 	public static void handle(MotorInputPacket packet, MinecraftServer server, ServerPlayer player) {
 		server.execute(() -> {
-			if (player.getVehicle() instanceof MotorEntity motor) {
+			if (player.getVehicle() instanceof MotorEntity motor && motor.getControllingPassenger() == player) {
 				motor.updateInput(packet.forward(), packet.back(), packet.left(), packet.right(), packet.jump(), packet.cyclonePressed());
 			}
 		});

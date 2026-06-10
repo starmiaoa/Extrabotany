@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.common.helper.ItemNBTHelper;
 
+import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.eventwrapper.event.entity.living.LivingAttackEventWrapper;
 import io.github.lounode.eventwrapper.event.entity.player.AttackEntityEventWrapper;
 import io.github.lounode.eventwrapper.event.entity.player.PlayerInteractEventWrapper;
@@ -67,6 +68,9 @@ public class FlamescionWeaponItem extends SwordItem {
 	public static void onLivingAttack(LivingAttackEventWrapper event) {
 		Entity source = event.getSource().getEntity();
 		if (!(source instanceof Player player) || !isFlamescionMode(player)) {
+			return;
+		}
+		if (player.level().isClientSide()) {
 			return;
 		}
 		FlamescionSlashEntity slash = new FlamescionSlashEntity(player.level(), player);
@@ -165,18 +169,53 @@ public class FlamescionWeaponItem extends SwordItem {
 
 	public static void castUltimate(Player player) {
 		ItemStack stack = player.getMainHandItem();
-		if (!stack.is(ExtraBotanyItems.flamescionWeapon) || !isFlamescionMode(player) || getEnergy(stack) < MAX_ENERGY) {
+		if (player.level().isClientSide || !stack.is(ExtraBotanyItems.flamescionWeapon) || !isFlamescionMode(player)) {
 			return;
 		}
+		Vec3 spawnPoint = player.position().add(player.getLookAngle().normalize().scale(5D));
 		FlamescionUltEntity ult = new FlamescionUltEntity(player.level(), player);
-		ult.setPos(player.getX(), player.getY(), player.getZ());
+		ult.setPos(spawnPoint.x, player.getY() + 0.25D, spawnPoint.z);
 		player.level().addFreshEntity(ult);
-		setEnergy(stack, 0);
+		setEnergy(stack, MAX_ENERGY);
 		setOverloaded(stack, true);
-		player.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.FLAMESCION, 120));
+		player.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.TIMELOCK, 40));
 	}
 
-	private static boolean isFlamescionMode(Player player) {
+	public static void castShiftDash(Player player) {
+		ItemStack stack = player.getMainHandItem();
+		if (player.level().isClientSide || !stack.is(ExtraBotanyItems.flamescionWeapon) || !isFlamescionMode(player)
+				|| player.getCooldowns().isOnCooldown(stack.getItem())) {
+			return;
+		}
+
+		Vec3 look = player.getLookAngle().normalize();
+		Vec3 start = player.position();
+		Vec3 dash = look.scale(4D);
+		Vec3 end = start.add(dash);
+		player.teleportTo(end.x, end.y, end.z);
+
+		boolean hit = false;
+		Vec3 rayStart = start.subtract(dash);
+		Vec3 rayEnd = end.add(dash);
+		for (LivingEntity living : player.level().getEntitiesOfClass(LivingEntity.class, player.getBoundingBox().inflate(8D))) {
+			if (living == player) {
+				continue;
+			}
+			if (living.getBoundingBox().inflate(4D).clip(rayStart, rayEnd).isPresent()) {
+				living.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.TIMELOCK, 40));
+				living.invulnerableTime = 0;
+				living.hurt(ExtraBotanyDamageTypes.Sources.flamescionFlameDamage(player.level().registryAccess()), 6F);
+				hit = true;
+			}
+		}
+		if (hit) {
+			player.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.INCANDESCENCE, 80));
+			player.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.FLAMESCION, 200));
+		}
+		player.getCooldowns().addCooldown(stack.getItem(), 20);
+	}
+
+	public static boolean isFlamescionMode(Player player) {
 		return !player.onGround()
 				&& player.getMainHandItem().is(ExtraBotanyItems.flamescionWeapon)
 				&& player.hasEffect(ExtraBotanyMobEffects.INCANDESCENCE)

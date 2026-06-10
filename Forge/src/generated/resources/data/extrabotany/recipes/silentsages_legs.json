@@ -1,0 +1,21 @@
+{
+  "type": "botania:mana_upgrade",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "extrabotany:miku_legs"
+    },
+    "O": {
+      "tag": "extrabotany:orichalcos_ingots"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "OAO",
+    "OOO"
+  ],
+  "result": {
+    "item": "extrabotany:silentsages_legs"
+  },
+  "show_notification": true
+}

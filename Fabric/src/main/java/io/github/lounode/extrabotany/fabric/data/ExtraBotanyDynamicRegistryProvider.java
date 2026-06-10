@@ -21,6 +21,7 @@ public class ExtraBotanyDynamicRegistryProvider extends FabricDynamicRegistryPro
 		entries.add(JINGWEI_PUNCH_DAMAGE, JINGWEI);
 		entries.add(REVERSE_HEAL_DAMAGE, REVERSE_HEAL);
 		entries.add(BACKFIRE_DAMAGE, BACKFIRE);
+		entries.add(FLAMESCION_FLAME_DAMAGE, FLAMESCION_FLAME);
 	}
 
 	@Override

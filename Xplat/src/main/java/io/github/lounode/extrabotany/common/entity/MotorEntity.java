@@ -283,7 +283,7 @@ public class MotorEntity extends Entity {
 
 	private ItemStack getItemStack() {
 		ItemStack stack = new ItemStack(ExtraBotanyItems.motor);
-		getOwner().ifPresent(owner -> stack.getOrCreateTag().putUUID("soulbindUUID", owner));
+		getOwner().ifPresent(owner -> stack.getOrCreateTag().putString("soulbindUUID", owner.toString()));
 		return stack;
 	}
 

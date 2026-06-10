@@ -243,8 +243,8 @@ public final class ExtraBotanyItems {
 	public static final Item lensSuperconductor = make(prefix(LibItemNames.LENS_SUPERCONDUCTOR), new LensItem(stackTo16(), new SuperconductorLens(), LensItem.PROP_TOUCH | LensItem.PROP_INTERACTION));
 	public static final Item dasRheingold = make(prefix(LibItemNames.DAS_RHEINGOLD), new DasRheingoldItem(defaultBuilder()));
 	public static final Item gildedPotato = make(prefix(LibItemNames.GILDED_POTATO), new GildedPotatoItem(defaultBuilder()));
-	public static final Item gildedPotatoMashed = make(prefix(LibItemNames.GILDED_POTATO_MASHED), new Item(defaultBuilder()));
-	public static final Item gemOfConquest = make(prefix(LibItemNames.GEM_OF_CONQUEST), new SimpleBaubleItem(unstackable().rarity(Rarity.EPIC)));
+	public static final Item gildedPotatoMashed = make(prefix(LibItemNames.GILDED_POTATO_MASHED), new GildedMashedPotatoItem(defaultBuilder().food(GildedMashedPotatoItem.FOOD)));
+	public static final Item gemOfConquest = make(prefix(LibItemNames.GEM_OF_CONQUEST), new GemOfConquestItem(unstackable().rarity(Rarity.EPIC)));
 	public static final Item universalPetal = make(prefix(LibItemNames.UNIVERSAL_PETAL), new Item(defaultBuilder()));
 	public static final Item elementRune = make(prefix(LibItemNames.ELEMENT_RUNE), new Item(defaultBuilder()));
 	public static final Item sinRune = make(prefix(LibItemNames.SIN_RUNE), new Item(defaultBuilder()));
@@ -396,7 +396,7 @@ public final class ExtraBotanyItems {
 
 	public static final Item[] ALL_SLOT = {
 			featherOfJingwei, natureOrb, motorAccessory, cosmicCarKeyAccessory,
-			peaceAmulet, aeroStone, aquaStone, earthStone, ignisStone, theCommunity, powerGlove, frostStar, deathRing, potatoChips, moonPendant, bottledFlame, silentEternity
+			peaceAmulet, aeroStone, aquaStone, earthStone, ignisStone, theCommunity, powerGlove, frostStar, deathRing, potatoChips, moonPendant, bottledFlame, silentEternity, gemOfConquest
 	};
 
 	private static <T extends Item> T make(ResourceLocation id, T item) {

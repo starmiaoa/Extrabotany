@@ -1,0 +1,21 @@
+{
+  "type": "botania:mana_upgrade",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "extrabotany:miku_chest"
+    },
+    "O": {
+      "tag": "extrabotany:orichalcos_ingots"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "OAO",
+    "OOO"
+  ],
+  "result": {
+    "item": "extrabotany:silentsages_chest"
+  },
+  "show_notification": true
+}

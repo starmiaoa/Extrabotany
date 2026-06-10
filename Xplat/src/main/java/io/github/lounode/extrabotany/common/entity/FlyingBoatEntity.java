@@ -28,18 +28,27 @@ import io.github.lounode.extrabotany.common.item.equipment.tool.FlyingBoatItem;
 import org.jetbrains.annotations.Nullable;
 
 public class FlyingBoatEntity extends Entity {
+	private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(FlyingBoatEntity.class, EntityDataSerializers.INT);
+	private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(FlyingBoatEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(FlyingBoatEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Integer> VARIANT = SynchedEntityData.defineId(FlyingBoatEntity.class, EntityDataSerializers.INT);
-	private static final EntityDataAccessor<Float> PADDLE_POSITION = SynchedEntityData.defineId(FlyingBoatEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Boolean> LEFT_PADDLE = SynchedEntityData.defineId(FlyingBoatEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Boolean> RIGHT_PADDLE = SynchedEntityData.defineId(FlyingBoatEntity.class, EntityDataSerializers.BOOLEAN);
 
+	private static final String TAG_TIME_SINCE_HIT = "TimeSinceHit";
+	private static final String TAG_FORWARD_DIRECTION = "ForwardDirection";
 	private static final String TAG_DAMAGE_TAKEN = "DamageTaken";
 	private static final String TAG_VARIANT = "Variant";
+
+	private final float[] paddlePositions = new float[2];
+	private float deltaRotation;
 
 	private boolean forwardInputDown;
 	private boolean backInputDown;
 	private boolean leftInputDown;
 	private boolean rightInputDown;
 	private boolean upInputDown;
+	private boolean downInputDown;
 
 	public FlyingBoatEntity(EntityType<? extends FlyingBoatEntity> entityType, Level level) {
 		super(entityType, level);
@@ -57,28 +66,43 @@ public class FlyingBoatEntity extends Entity {
 
 	@Override
 	protected void defineSynchedData() {
+		this.entityData.define(TIME_SINCE_HIT, 0);
+		this.entityData.define(FORWARD_DIRECTION, 1);
 		this.entityData.define(DAMAGE_TAKEN, 0F);
 		this.entityData.define(VARIANT, FlyingBoatItem.Variant.MANASTEEL.ordinal());
-		this.entityData.define(PADDLE_POSITION, 0F);
+		this.entityData.define(LEFT_PADDLE, false);
+		this.entityData.define(RIGHT_PADDLE, false);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
+		tickHurtState();
 		if (!this.level().isClientSide()) {
 			if (getControllingPassenger() instanceof Player player) {
 				tickControlled(player);
 			} else {
+				setPaddleState(false, false);
 				setDeltaMovement(getDeltaMovement().multiply(0.88D, 1D, 0.88D));
+				if (this.level().getBlockState(blockPosition().below()).isAir()) {
+					setDeltaMovement(getDeltaMovement().add(0D, -0.15D, 0D));
+				}
 			}
 		}
 
-		if (getDeltaMovement().horizontalDistanceSqr() > 0.0001D) {
-			setPaddlePosition(getPaddlePosition() + 0.3926991F);
-		}
+		tickPaddles();
 		move(MoverType.SELF, getDeltaMovement());
-		setDeltaMovement(getDeltaMovement().multiply(0.9D, 0.98D, 0.9D));
+		setDeltaMovement(getDeltaMovement().multiply(0.9D, 1D, 0.9D));
 		this.fallDistance = 0F;
+	}
+
+	private void tickHurtState() {
+		if (getTimeSinceHit() > 0) {
+			setTimeSinceHit(getTimeSinceHit() - 1);
+		}
+		if (getDamageTaken() > 0F) {
+			setDamageTaken(getDamageTaken() - 1F);
+		}
 	}
 
 	private void tickControlled(Player player) {
@@ -89,36 +113,39 @@ public class FlyingBoatEntity extends Entity {
 		}
 
 		FlyingBoatItem.Variant variant = getVariant();
-		setYRot(player.getYRot());
-		float deltaRotation = 0F;
 		if (leftInputDown) {
-			deltaRotation -= 2F;
+			this.deltaRotation -= 1F;
 		}
 		if (rightInputDown) {
-			deltaRotation += 2F;
+			this.deltaRotation += 1F;
 		}
-		setYRot(getYRot() + deltaRotation);
+		this.deltaRotation *= 0.9F;
+		setYRot(getYRot() + this.deltaRotation);
 
-		Vec3 motion = getDeltaMovement().multiply(0.6D, 0D, 0.6D);
+		double speed = 0D;
+		if ((leftInputDown != rightInputDown) && !forwardInputDown && !backInputDown) {
+			speed += 0.005D;
+		}
 		if (forwardInputDown) {
-			motion = motion.add(forwardVector(0.05D * 1.25D * variant.forwardMultiplier()));
+			speed += 0.05D * 1.25D * variant.forwardMultiplier();
 		}
 		if (backInputDown) {
-			motion = motion.add(forwardVector(-0.005D * 1.45D * variant.backMultiplier()));
-		}
-		if ((leftInputDown != rightInputDown) && !forwardInputDown && !backInputDown) {
-			motion = motion.add(forwardVector(0.005D));
+			speed -= 0.005D * 1.45D * variant.backMultiplier();
 		}
 
+		Vec3 motion = getDeltaMovement().multiply(0.9D, 1D, 0.9D).add(forwardVector(speed));
 		int height = getHeightAboveGround();
 		if (upInputDown && height <= variant.maxHeight()) {
 			motion = new Vec3(motion.x, 0.35D, motion.z);
+		} else if (downInputDown) {
+			motion = new Vec3(motion.x, -0.35D, motion.z);
 		} else if (this.level().getBlockState(blockPosition().below()).isAir()) {
 			motion = new Vec3(motion.x, -0.15D, motion.z);
 		} else {
 			motion = new Vec3(motion.x, 0D, motion.z);
 		}
 		setDeltaMovement(motion);
+		setPaddleState((rightInputDown && !leftInputDown) || forwardInputDown, (leftInputDown && !rightInputDown) || forwardInputDown);
 	}
 
 	private Vec3 forwardVector(double speed) {
@@ -138,12 +165,39 @@ public class FlyingBoatEntity extends Entity {
 		return max;
 	}
 
-	public void updateInput(boolean forward, boolean back, boolean left, boolean right, boolean up) {
+	public void updateInput(boolean forward, boolean back, boolean left, boolean right, boolean up, boolean down) {
 		this.forwardInputDown = forward;
 		this.backInputDown = back;
 		this.leftInputDown = left;
 		this.rightInputDown = right;
 		this.upInputDown = up;
+		this.downInputDown = down;
+	}
+
+	private void tickPaddles() {
+		for (int i = 0; i < this.paddlePositions.length; i++) {
+			if (getPaddleState(i)) {
+				this.paddlePositions[i] += 0.3926991F;
+			} else {
+				this.paddlePositions[i] = 0F;
+			}
+		}
+	}
+
+	private void setPaddleState(boolean left, boolean right) {
+		this.entityData.set(LEFT_PADDLE, left);
+		this.entityData.set(RIGHT_PADDLE, right);
+	}
+
+	private boolean getPaddleState(int side) {
+		return side == 0 ? this.entityData.get(LEFT_PADDLE) : this.entityData.get(RIGHT_PADDLE);
+	}
+
+	public float getRowingTime(int side, float partialTick) {
+		if (!getPaddleState(side)) {
+			return 0F;
+		}
+		return Mth.lerp(partialTick, this.paddlePositions[side] - 0.3926991F, this.paddlePositions[side]);
 	}
 
 	@Override
@@ -169,6 +223,8 @@ public class FlyingBoatEntity extends Entity {
 			}
 			float damage = getDamageTaken() + amount * 10F;
 			setDamageTaken(damage);
+			setForwardDirection(-getForwardDirection());
+			setTimeSinceHit(10);
 			boolean creative = attacker instanceof Player player && player.getAbilities().instabuild;
 			if (creative || damage > 40F) {
 				if (!creative && this.level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
@@ -188,10 +244,22 @@ public class FlyingBoatEntity extends Entity {
 	protected void positionRider(Entity passenger, MoveFunction callback) {
 		if (this.hasPassenger(passenger)) {
 			int index = this.getPassengers().indexOf(passenger);
-			double offset = index == 0 ? 0.25D : -0.55D;
+			double offset = index == 0 ? 0.2D : -0.6D;
 			Vec3 seat = new Vec3(offset, 0D, 0D).yRot(-getYRot() * Mth.DEG_TO_RAD - Mth.HALF_PI);
-			callback.accept(passenger, this.getX() + seat.x, this.getY() + 0.15D, this.getZ() + seat.z);
+			callback.accept(passenger, this.getX() + seat.x, this.getY() - 0.025D, this.getZ() + seat.z);
+			passenger.setYRot(passenger.getYRot() + this.deltaRotation);
+			passenger.setYHeadRot(passenger.getYHeadRot() + this.deltaRotation);
+			clampPassengerYaw(passenger);
 		}
+	}
+
+	private void clampPassengerYaw(Entity passenger) {
+		passenger.setYBodyRot(this.getYRot());
+		float yaw = Mth.wrapDegrees(passenger.getYRot() - this.getYRot());
+		float clampedYaw = Mth.clamp(yaw, -105F, 105F);
+		passenger.yRotO += clampedYaw - yaw;
+		passenger.setYRot(passenger.getYRot() + clampedYaw - yaw);
+		passenger.setYHeadRot(passenger.getYRot());
 	}
 
 	@Nullable
@@ -218,12 +286,16 @@ public class FlyingBoatEntity extends Entity {
 
 	@Override
 	protected void addAdditionalSaveData(CompoundTag tag) {
+		tag.putInt(TAG_TIME_SINCE_HIT, getTimeSinceHit());
+		tag.putInt(TAG_FORWARD_DIRECTION, getForwardDirection());
 		tag.putFloat(TAG_DAMAGE_TAKEN, getDamageTaken());
 		tag.putString(TAG_VARIANT, getVariant().getSerializedName());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag) {
+		setTimeSinceHit(tag.getInt(TAG_TIME_SINCE_HIT));
+		setForwardDirection(tag.getInt(TAG_FORWARD_DIRECTION));
 		setDamageTaken(tag.getFloat(TAG_DAMAGE_TAKEN));
 		setVariant(FlyingBoatItem.Variant.byName(tag.getString(TAG_VARIANT)));
 	}
@@ -236,15 +308,23 @@ public class FlyingBoatEntity extends Entity {
 		this.entityData.set(VARIANT, variant.ordinal());
 	}
 
-	public float getPaddlePosition() {
-		return this.entityData.get(PADDLE_POSITION);
+	public int getTimeSinceHit() {
+		return this.entityData.get(TIME_SINCE_HIT);
 	}
 
-	private void setPaddlePosition(float position) {
-		this.entityData.set(PADDLE_POSITION, position);
+	private void setTimeSinceHit(int timeSinceHit) {
+		this.entityData.set(TIME_SINCE_HIT, timeSinceHit);
 	}
 
-	private float getDamageTaken() {
+	public int getForwardDirection() {
+		return this.entityData.get(FORWARD_DIRECTION);
+	}
+
+	private void setForwardDirection(int forwardDirection) {
+		this.entityData.set(FORWARD_DIRECTION, forwardDirection);
+	}
+
+	public float getDamageTaken() {
 		return this.entityData.get(DAMAGE_TAKEN);
 	}
 

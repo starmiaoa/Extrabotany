@@ -14,14 +14,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
-import io.github.lounode.extrabotany.api.item.CoreOfTheVoidVariant;
+import io.github.lounode.extrabotany.client.core.ClientCoreOfTheVoidVariant;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
 import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
-public class Herrscher implements CoreOfTheVoidVariant {
+public class Herrscher implements ClientCoreOfTheVoidVariant {
 	private static final String ID = "herrscher";
 	private static final ResourceLocation LEFT_WING_MODEL = prefix("wing/herrscher_left");
 	private static final ResourceLocation RIGHT_WING_MODEL = prefix("wing/herrscher_right");

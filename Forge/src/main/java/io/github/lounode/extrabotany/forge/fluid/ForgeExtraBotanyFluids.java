@@ -26,58 +26,30 @@ import java.util.function.Supplier;
 import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
 public final class ForgeExtraBotanyFluids {
-	public static final FluidType FLUIDED_MANA_TYPE = new ManaFluidType(FluidType.Properties.create()
-			.lightLevel(12)
-			.temperature(100)
-			.viscosity(1200));
-
-	private static final ForgeFlowingFluid.Properties FLUIDED_MANA_PROPERTIES = new ForgeFlowingFluid.Properties(
-			() -> FLUIDED_MANA_TYPE,
-			ForgeExtraBotanyFluids::sourceFluid,
-			ForgeExtraBotanyFluids::flowingFluid)
-					.bucket(ForgeExtraBotanyFluids::bucket)
-					.block(ForgeExtraBotanyFluids::fluidBlock)
-					.slopeFindDistance(4)
-					.levelDecreasePerBlock(1)
-					.explosionResistance(100.0F)
-					.tickRate(5);
-
-	public static final FlowingFluid FLUIDED_MANA = new ForgeFlowingFluid.Source(FLUIDED_MANA_PROPERTIES);
-	public static final FlowingFluid FLOWING_FLUIDED_MANA = new ForgeFlowingFluid.Flowing(FLUIDED_MANA_PROPERTIES);
-	public static final ManaLiquidBlock FLUIDED_MANA_BLOCK = new ManaLiquidBlock(
-			() -> FLUIDED_MANA,
-			BlockBehaviour.Properties.of()
-					.mapColor(MapColor.COLOR_PURPLE)
-					.replaceable()
-					.noCollission()
-					.strength(100.0F)
-					.lightLevel(state -> 12)
-					.noLootTable()
-					.liquid());
-	public static final Item FLUIDED_MANA_BUCKET = new BucketItem(
-			FLUIDED_MANA,
-			new Item.Properties()
-					.craftRemainder(Items.BUCKET)
-					.stacksTo(1));
+	private static FluidType fluidedManaType;
+	private static FlowingFluid fluidedMana;
+	private static FlowingFluid flowingFluidedMana;
+	private static ManaLiquidBlock fluidedManaBlock;
+	private static Item fluidedManaBucket;
 
 	private ForgeExtraBotanyFluids() {}
 
 	public static void registerFluidTypes(BiConsumer<FluidType, ResourceLocation> consumer) {
-		consumer.accept(FLUIDED_MANA_TYPE, ExtraBotanyFluids.FLUIDED_MANA_ID);
+		consumer.accept(fluidedManaType(), ExtraBotanyFluids.FLUIDED_MANA_ID);
 	}
 
 	public static void registerFluids(BiConsumer<Fluid, ResourceLocation> consumer) {
-		consumer.accept(FLUIDED_MANA, ExtraBotanyFluids.FLUIDED_MANA_ID);
-		consumer.accept(FLOWING_FLUIDED_MANA, ExtraBotanyFluids.FLOWING_FLUIDED_MANA_ID);
-		ExtraBotanyFluids.setFluidedMana(FLUIDED_MANA);
+		consumer.accept(sourceFluid(), ExtraBotanyFluids.FLUIDED_MANA_ID);
+		consumer.accept(flowingFluid(), ExtraBotanyFluids.FLOWING_FLUIDED_MANA_ID);
+		ExtraBotanyFluids.setFluidedMana(sourceFluid());
 	}
 
 	public static void registerBlocks(BiConsumer<Block, ResourceLocation> consumer) {
-		consumer.accept(FLUIDED_MANA_BLOCK, ExtraBotanyFluids.FLUIDED_MANA_ID);
+		consumer.accept(fluidBlock(), ExtraBotanyFluids.FLUIDED_MANA_ID);
 	}
 
 	public static void registerItems(BiConsumer<Item, ResourceLocation> consumer) {
-		consumer.accept(FLUIDED_MANA_BUCKET, ExtraBotanyFluids.FLUIDED_MANA_BUCKET_ID);
+		consumer.accept(bucket(), ExtraBotanyFluids.FLUIDED_MANA_BUCKET_ID);
 	}
 
 	public static ResourceKey<Registry<FluidType>> fluidTypeRegistryKey() {
@@ -92,20 +64,68 @@ public final class ForgeExtraBotanyFluids {
 		return prefix("block/fluid/fluidedmana_flow");
 	}
 
+	private static FluidType fluidedManaType() {
+		if (fluidedManaType == null) {
+			fluidedManaType = new ManaFluidType(FluidType.Properties.create()
+					.lightLevel(12)
+					.temperature(100)
+					.viscosity(1200));
+		}
+		return fluidedManaType;
+	}
+
 	private static FlowingFluid sourceFluid() {
-		return FLUIDED_MANA;
+		if (fluidedMana == null) {
+			fluidedMana = new ForgeFlowingFluid.Source(fluidedManaProperties());
+		}
+		return fluidedMana;
 	}
 
 	private static FlowingFluid flowingFluid() {
-		return FLOWING_FLUIDED_MANA;
+		if (flowingFluidedMana == null) {
+			flowingFluidedMana = new ForgeFlowingFluid.Flowing(fluidedManaProperties());
+		}
+		return flowingFluidedMana;
 	}
 
 	private static Item bucket() {
-		return FLUIDED_MANA_BUCKET;
+		if (fluidedManaBucket == null) {
+			fluidedManaBucket = new BucketItem(
+					sourceFluid(),
+					new Item.Properties()
+							.craftRemainder(Items.BUCKET)
+							.stacksTo(1));
+		}
+		return fluidedManaBucket;
 	}
 
 	private static LiquidBlock fluidBlock() {
-		return FLUIDED_MANA_BLOCK;
+		if (fluidedManaBlock == null) {
+			fluidedManaBlock = new ManaLiquidBlock(
+					ForgeExtraBotanyFluids::sourceFluid,
+					BlockBehaviour.Properties.of()
+							.mapColor(MapColor.COLOR_PURPLE)
+							.replaceable()
+							.noCollission()
+							.strength(100.0F)
+							.lightLevel(state -> 12)
+							.noLootTable()
+							.liquid());
+		}
+		return fluidedManaBlock;
+	}
+
+	private static ForgeFlowingFluid.Properties fluidedManaProperties() {
+		return new ForgeFlowingFluid.Properties(
+				ForgeExtraBotanyFluids::fluidedManaType,
+				ForgeExtraBotanyFluids::sourceFluid,
+				ForgeExtraBotanyFluids::flowingFluid)
+						.bucket(ForgeExtraBotanyFluids::bucket)
+						.block(ForgeExtraBotanyFluids::fluidBlock)
+						.slopeFindDistance(4)
+						.levelDecreasePerBlock(1)
+						.explosionResistance(100.0F)
+						.tickRate(5);
 	}
 
 	public static class ManaLiquidBlock extends LiquidBlock {

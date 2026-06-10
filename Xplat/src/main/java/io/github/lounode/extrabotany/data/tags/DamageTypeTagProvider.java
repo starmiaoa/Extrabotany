@@ -42,6 +42,10 @@ public class DamageTypeTagProvider extends TagsProvider<DamageType> {
 				BYPASSES_ARMOR, BYPASSES_SHIELD, BYPASSES_RESISTANCE, BYPASSES_EFFECTS, BYPASSES_ENCHANTMENTS,
 				NO_IMPACT, WITCH_RESISTANT_TO
 		));
+		map.put(FLAMESCION_FLAME_DAMAGE, List.of(
+				BYPASSES_ARMOR, BYPASSES_SHIELD, BYPASSES_RESISTANCE, BYPASSES_EFFECTS, BYPASSES_ENCHANTMENTS,
+				IS_FIRE
+		));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -50,7 +54,7 @@ public class DamageTypeTagProvider extends TagsProvider<DamageType> {
 		for (var entry : map.entrySet()) {
 			ResourceKey<DamageType> damageType = entry.getKey();
 			for (TagKey<DamageType> tag : entry.getValue()) {
-				this.tag(tag).add(damageType);
+				this.tag(tag).addOptional(damageType.location());
 			}
 		}
 		this.tag(IS_FALL);

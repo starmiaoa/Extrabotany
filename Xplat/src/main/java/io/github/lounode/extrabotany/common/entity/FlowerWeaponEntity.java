@@ -68,6 +68,7 @@ public class FlowerWeaponEntity extends ThrowableItemProjectile {
 
 	@Override
 	protected void defineSynchedData() {
+		super.defineSynchedData();
 		this.entityData.define(CHARGING, false);
 		this.entityData.define(VARIETY, 0);
 		this.entityData.define(CHARGE_TICKS, 0);

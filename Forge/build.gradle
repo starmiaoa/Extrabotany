@@ -12,7 +12,11 @@ if (System.getenv().RELEASE_MODE != "1") {
 }
 
 repositories {
-    mavenLocal()
+    mavenLocal {
+        content {
+            includeGroup "io.github.lounode.eventwrapper"
+        }
+    }
     maven {
         name = "Jared"
         url = "https://maven.blamejared.com/"
@@ -128,7 +132,6 @@ legacyForge {
             systemProperty('forge.logging.console.level', 'debug')
             systemProperty('metrics_debug', 'true')
             programArgument('--nogui')
-            jvmArgument("-XX:+AllowEnhancedClassRedefinition")
         }
 
         data {

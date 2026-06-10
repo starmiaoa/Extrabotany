@@ -59,6 +59,7 @@ public class JudahOathEntity extends ThrowableItemProjectile {
 
 	@Override
 	protected void defineSynchedData() {
+		super.defineSynchedData();
 		this.entityData.define(VARIANT, JudahOathItem.Variant.JUDAH.id());
 	}
 

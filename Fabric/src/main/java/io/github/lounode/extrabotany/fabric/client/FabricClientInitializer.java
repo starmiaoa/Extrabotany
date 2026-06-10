@@ -3,6 +3,7 @@ package io.github.lounode.extrabotany.fabric.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
@@ -18,6 +19,10 @@ import vazkii.patchouli.api.PatchouliAPI;
 
 import io.github.lounode.extrabotany.api.client.IArmor;
 import io.github.lounode.extrabotany.client.ExtraBotanyItemProperties;
+import io.github.lounode.extrabotany.client.FlyingBoatInputHandler;
+import io.github.lounode.extrabotany.client.MotorInputHandler;
+import io.github.lounode.extrabotany.client.MountAccessoryInputHandler;
+import io.github.lounode.extrabotany.client.UfoInputHandler;
 import io.github.lounode.extrabotany.client.core.ExtraBotanyModels;
 import io.github.lounode.extrabotany.client.gui.HUD;
 import io.github.lounode.extrabotany.client.model.ArmorModels;
@@ -54,6 +59,10 @@ public class FabricClientInitializer implements ClientModInitializer {
 
 		//Events
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::loadComplete);
+		ClientTickEvents.END_CLIENT_TICK.register(MountAccessoryInputHandler::tick);
+		ClientTickEvents.END_CLIENT_TICK.register(UfoInputHandler::tick);
+		ClientTickEvents.END_CLIENT_TICK.register(MotorInputHandler::tick);
+		ClientTickEvents.END_CLIENT_TICK.register(FlyingBoatInputHandler::tick);
 		HudRenderCallback.EVENT.register((gui, partialTick) -> this.hud.onDrawScreenPost(gui, partialTick));
 		ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> HUD.onDisconnected());
 

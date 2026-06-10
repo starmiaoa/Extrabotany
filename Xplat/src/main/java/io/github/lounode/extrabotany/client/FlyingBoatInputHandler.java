@@ -13,6 +13,7 @@ public final class FlyingBoatInputHandler {
 	private static boolean lastLeft;
 	private static boolean lastRight;
 	private static boolean lastUp;
+	private static boolean lastDown;
 
 	private FlyingBoatInputHandler() {}
 
@@ -27,14 +28,16 @@ public final class FlyingBoatInputHandler {
 		boolean left = options.keyLeft.isDown();
 		boolean right = options.keyRight.isDown();
 		boolean up = options.keyJump.isDown();
+		boolean down = options.keyShift.isDown();
 
-		if (forward != lastForward || back != lastBack || left != lastLeft || right != lastRight || up != lastUp) {
-			ExClientXplatAbstractions.INSTANCE.sendToServer(new FlyingBoatInputPacket(forward, back, left, right, up));
+		if (forward != lastForward || back != lastBack || left != lastLeft || right != lastRight || up != lastUp || down != lastDown) {
+			ExClientXplatAbstractions.INSTANCE.sendToServer(new FlyingBoatInputPacket(forward, back, left, right, up, down));
 			lastForward = forward;
 			lastBack = back;
 			lastLeft = left;
 			lastRight = right;
 			lastUp = up;
+			lastDown = down;
 		}
 	}
 
@@ -44,5 +47,6 @@ public final class FlyingBoatInputHandler {
 		lastLeft = false;
 		lastRight = false;
 		lastUp = false;
+		lastDown = false;
 	}
 }

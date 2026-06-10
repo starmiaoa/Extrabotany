@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 import io.github.lounode.extrabotany.client.model.ExtrabotanyModelLayers;
 import io.github.lounode.extrabotany.client.model.FlyingBoatModel;
@@ -35,9 +36,17 @@ public class FlyingBoatRenderer extends EntityRenderer<FlyingBoatEntity> {
 		poseStack.pushPose();
 		poseStack.translate(0.0D, 0.55D, 0.0D);
 		poseStack.mulPose(Axis.YP.rotationDegrees(180F - entityYaw));
+		float timeSinceHit = (float) entity.getTimeSinceHit() - partialTick;
+		float damageTaken = entity.getDamageTaken() - partialTick;
+		if (damageTaken < 0F) {
+			damageTaken = 0F;
+		}
+		if (timeSinceHit > 0F) {
+			poseStack.mulPose(Axis.XP.rotationDegrees(Mth.sin(timeSinceHit) * timeSinceHit * damageTaken / 10F * (float) entity.getForwardDirection()));
+		}
 		poseStack.scale(-1.0F, -1.0F, 1.0F);
 		VertexConsumer vertex = buffer.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-		this.model.setupAnim(entity, 0F, 0F, entity.tickCount + partialTick, 0F, 0F);
+		this.model.setupAnim(entity, partialTick, 0F, entity.tickCount + partialTick, 0F, 0F);
 		this.model.renderToBuffer(poseStack, vertex, packedLight, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 		poseStack.popPose();
 		super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);

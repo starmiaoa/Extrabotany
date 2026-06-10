@@ -95,5 +95,6 @@ public class FabricDatagenInitializer implements DataGeneratorEntrypoint {
 		context.register(JINGWEI_PUNCH_DAMAGE, JINGWEI);
 		context.register(REVERSE_HEAL_DAMAGE, REVERSE_HEAL);
 		context.register(BACKFIRE_DAMAGE, BACKFIRE);
+		context.register(FLAMESCION_FLAME_DAMAGE, FLAMESCION_FLAME);
 	}
 }

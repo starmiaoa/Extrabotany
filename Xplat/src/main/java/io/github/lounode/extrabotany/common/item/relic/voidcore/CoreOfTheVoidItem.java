@@ -44,12 +44,10 @@ import io.github.lounode.eventwrapper.eventbus.api.EventWrapper;
 import io.github.lounode.eventwrapper.eventbus.api.SubscribeEventWrapper;
 import io.github.lounode.extrabotany.api.ExtraBotanyAPI;
 import io.github.lounode.extrabotany.api.item.CoreOfTheVoidVariant;
+import io.github.lounode.extrabotany.client.core.ClientCoreOfTheVoidVariant;
+import io.github.lounode.extrabotany.client.core.CoreOfTheVoidClientVariants;
 import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Flandre;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Herrscher;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Jim;
-import io.github.lounode.extrabotany.common.item.relic.voidcore.variants.Steampunk;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.common.util.SoundEventUtil;
 
@@ -71,11 +69,18 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 
 	public CoreOfTheVoidItem(Properties properties) {
 		super(properties);
-		ExtraBotanyAPI.instance().registerCOVVariant(new Herrscher());
-		ExtraBotanyAPI.instance().registerCOVVariant(new Flandre());
-		ExtraBotanyAPI.instance().registerCOVVariant(new Jim());
-		ExtraBotanyAPI.instance().registerCOVVariant(new Steampunk());
-		Proxy.INSTANCE.runOnClient(() -> () -> AccessoryRenderRegistry.register(this, new Renderer()));
+		registerVariant("herrscher");
+		registerVariant("flandre");
+		registerVariant("jim");
+		registerVariant("steampunk");
+		Proxy.INSTANCE.runOnClient(() -> () -> {
+			CoreOfTheVoidClientVariants.register();
+			AccessoryRenderRegistry.register(this, new Renderer());
+		});
+	}
+
+	private static void registerVariant(String id) {
+		ExtraBotanyAPI.instance().registerCOVVariant(() -> id);
 	}
 
 	@Override
@@ -236,7 +241,9 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 			}
 
 			CoreOfTheVoidVariant variant = ExtraBotanyAPI.instance().getCOVVariants().get(variantID);
-			variant.render(bipedModel, stack, living, ms, buffers, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+			if (variant instanceof ClientCoreOfTheVoidVariant clientVariant) {
+				clientVariant.render(bipedModel, stack, living, ms, buffers, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+			}
 		}
 	}
 
@@ -263,6 +270,8 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 				new AttributeModifier(getBaubleUUID(stack), "Core of The Void", 0.1F, AttributeModifier.Operation.ADDITION));
 		attributes.put(Attributes.FLYING_SPEED,
 				new AttributeModifier(getBaubleUUID(stack), "Core of The Void", 0.6F, AttributeModifier.Operation.ADDITION));
+		attributes.put(Attributes.ATTACK_DAMAGE,
+				new AttributeModifier(getBaubleUUID(stack), "Core of The Void", 0.25F, AttributeModifier.Operation.MULTIPLY_BASE));
 
 		return attributes;
 	}

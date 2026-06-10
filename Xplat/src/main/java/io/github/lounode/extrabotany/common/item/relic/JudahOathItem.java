@@ -2,6 +2,8 @@ package io.github.lounode.extrabotany.common.item.relic;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -40,20 +42,27 @@ public class JudahOathItem extends SwordItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!isRightPlayer(player, stack) || !ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_USE, true)) {
+		if (level.isClientSide()) {
+			return InteractionResultHolder.sidedSuccess(stack, true);
+		}
+
+		Relic relic = EXplatAbstractions.INSTANCE.findRelic(stack);
+		if (relic != null) {
+			relic.tickBinding(player);
+		}
+		if (relic == null || !relic.isRightPlayer(player) || !ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_USE, true)) {
 			return InteractionResultHolder.fail(stack);
 		}
 
 		player.getCooldowns().addCooldown(this, 80);
-		if (!level.isClientSide()) {
-			JudahOathEntity judah = new JudahOathEntity(level, player, this.variant);
-			judah.setPos(player.getX(), player.getY() + 1D, player.getZ());
-			judah.setYRot(player.getYRot());
-			judah.shootFromRotation(player, player.getXRot(), player.getYRot(), 0F, 0.5F, 0F);
-			level.addFreshEntity(judah);
-		}
+		level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 0.8F, 0.8F);
+		JudahOathEntity judah = new JudahOathEntity(level, player, this.variant);
+		judah.setPos(player.getX(), player.getY() + 1D, player.getZ());
+		judah.setYRot(player.getYRot());
+		judah.shootFromRotation(player, player.getXRot(), player.getYRot(), 0F, 0.5F, 0F);
+		level.addFreshEntity(judah);
 
-		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+		return InteractionResultHolder.sidedSuccess(stack, false);
 	}
 
 	private boolean isRightPlayer(Player player, ItemStack stack) {

@@ -36,7 +36,7 @@ public record UfoInputPacket(boolean forward, boolean back, boolean left, boolea
 
 	public static void handle(UfoInputPacket packet, MinecraftServer server, ServerPlayer player) {
 		server.execute(() -> {
-			if (player.getVehicle() instanceof UfoEntity ufo) {
+			if (player.getVehicle() instanceof UfoEntity ufo && ufo.getControllingPassenger() == player) {
 				ufo.updateInput(packet.forward(), packet.back(), packet.left(), packet.right(), packet.up(), packet.down(), packet.catchPressed());
 			}
 		});

@@ -167,7 +167,7 @@ public class RunicAltarProvider extends ExtraBotanyRecipeProvider {
 		));
 		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.potatoChips), new ItemStack(ExtraBotanyItems.potatoChips), 50000,
 				Ingredient.of(ExtraBotanyItems.gildedPotato),
-				Ingredient.of(BotaniaItems.tinyPotatoMask),
+				Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation("botania", "cosmetic_tiny_potato_mask"))),
 				Ingredient.of(BotaniaBlocks.tinyPotato),
 				Ingredient.of(BotaniaItems.runeMana),
 				Ingredient.of(Items.TOTEM_OF_UNDYING),

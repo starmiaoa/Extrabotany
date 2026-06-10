@@ -25,7 +25,9 @@ public class ExtraBotanyModels {
 		modelConsumers = new HashMap<>();
 
 		for (var variant : ExtraBotanyAPI.instance().getCOVVariants().values()) {
-			variant.onModelInit(modelConsumers);
+			if (variant instanceof ClientCoreOfTheVoidVariant clientVariant) {
+				clientVariant.onModelInit(modelConsumers);
+			}
 		}
 
 	}

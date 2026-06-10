@@ -57,9 +57,8 @@ public class FlyingBoatModel extends EntityModel<FlyingBoatEntity> {
 
 	@Override
 	public void setupAnim(FlyingBoatEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		float paddle = entity.getPaddlePosition();
-		this.leftPaddle.xRot = (float) Math.sin(paddle) * 0.35F;
-		this.rightPaddle.xRot = (float) Math.sin(paddle + Math.PI) * 0.35F;
+		this.leftPaddle.xRot = (float) Math.sin(entity.getRowingTime(0, limbSwing)) * 0.35F;
+		this.rightPaddle.xRot = (float) Math.sin(entity.getRowingTime(1, limbSwing) + Math.PI) * 0.35F;
 	}
 
 	@Override

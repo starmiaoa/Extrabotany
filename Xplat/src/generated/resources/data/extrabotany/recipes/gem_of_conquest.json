@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "combat",
+  "pattern": [
+    "GSG",
+    "EHE",
+    "GSG"
+  ],
+  "key": {
+    "G": {
+      "item": "botania:gaia_ingot"
+    },
+    "H": {
+      "item": "extrabotany:hero_medal"
+    },
+    "E": {
+      "item": "extrabotany:the_end"
+    },
+    "S": {
+      "item": "extrabotany:sin_rune"
+    }
+  },
+  "result": {
+    "item": "extrabotany:gem_of_conquest"
+  }
+}
