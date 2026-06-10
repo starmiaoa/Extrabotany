@@ -47,7 +47,7 @@ public class NatureOrbItem extends BaubleItem implements CustomCreativeTabConten
 	public static final int HEAL_DELAY = 60;
 	public static final float HEAL_AMOUNT = 1.0F;
 	public static final int REMOVE_HARMFUL_POTION_DELAY = 40;
-	public static final int REMOVE_HARMFUL_POTION_COST = 200;
+	public static final int REMOVE_HARMFUL_POTION_COST = 50;
 
 	private static final String TAG_ENERGY = "NatureEnergy";
 

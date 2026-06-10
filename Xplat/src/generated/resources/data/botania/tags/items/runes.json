@@ -1,4 +1,7 @@
 {
   "replace": false,
-  "values": []
+  "values": [
+    "extrabotany:element_rune",
+    "extrabotany:sin_rune"
+  ]
 }

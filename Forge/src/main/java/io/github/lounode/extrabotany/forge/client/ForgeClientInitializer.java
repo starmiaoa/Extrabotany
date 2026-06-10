@@ -12,6 +12,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -22,12 +23,19 @@ import vazkii.botania.forge.CapabilityUtil;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import io.github.lounode.extrabotany.client.ExtraBotanyItemProperties;
+import io.github.lounode.extrabotany.client.FlyingBoatInputHandler;
+import io.github.lounode.extrabotany.client.MotorInputHandler;
+import io.github.lounode.extrabotany.client.MountAccessoryInputHandler;
+import io.github.lounode.extrabotany.client.UfoInputHandler;
 import io.github.lounode.extrabotany.client.core.ExtraBotanyModels;
 import io.github.lounode.extrabotany.client.gui.HUD;
+import io.github.lounode.extrabotany.client.hud.ManaBufferWandHud;
 import io.github.lounode.extrabotany.client.model.ExtrabotanyLayerDefinitions;
 import io.github.lounode.extrabotany.client.renderer.BlockRenderLayers;
 import io.github.lounode.extrabotany.client.renderer.ColorHandler;
 import io.github.lounode.extrabotany.client.renderer.entity.EntityRenderers;
+import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockEntities;
+import io.github.lounode.extrabotany.common.block.block_entity.ManaBufferBlockEntity;
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.common.lib.LibMisc;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
@@ -85,6 +93,14 @@ public class ForgeClientInitializer {
 		
 		*/
 		bus.addGenericListener(BlockEntity.class, ForgeClientInitializer::attachBeCapabilities);
+		bus.addListener((TickEvent.ClientTickEvent event) -> {
+			if (event.phase == TickEvent.Phase.END) {
+				UfoInputHandler.tick(Minecraft.getInstance());
+				MotorInputHandler.tick(Minecraft.getInstance());
+				FlyingBoatInputHandler.tick(Minecraft.getInstance());
+				MountAccessoryInputHandler.tick(Minecraft.getInstance());
+			}
+		});
 		bus.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> HUD.onDisconnected());
 	}
 
@@ -95,6 +111,8 @@ public class ForgeClientInitializer {
 				ret.put(type, factory);
 			}
 		});
+		ret.put(ExtraBotanyBlockEntities.MANA_BUFFER, be -> new ManaBufferWandHud((ManaBufferBlockEntity) be));
+		ret.put(ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, be -> new ManaBufferWandHud((ManaBufferBlockEntity) be));
 
 		return Collections.unmodifiableMap(ret);
 	});

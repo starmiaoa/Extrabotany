@@ -1,0 +1,29 @@
+{
+  "parent": "extrabotany:main/goodtek",
+  "criteria": {
+    "code_triggered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.extrabotany:project_diva_desu.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "extrabotany:tinkle"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.extrabotany:project_diva_desu"
+    }
+  },
+  "requirements": [
+    [
+      "code_triggered"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

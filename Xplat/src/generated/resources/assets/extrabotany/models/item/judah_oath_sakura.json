@@ -1,0 +1,6 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "extrabotany:item/judah_oath_sakura"
+  }
+}

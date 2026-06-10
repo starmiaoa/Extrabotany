@@ -142,5 +142,30 @@
         "volume": 1.3
       }
     ]
+  },
+  "music.herrscher": {
+    "sounds": [
+      {
+        "name": "extrabotany:music/salvation",
+        "stream": true,
+        "volume": 1.3
+      }
+    ]
+  },
+  "item.spear_of_subspace.use": {
+    "sounds": [
+      {
+        "name": "extrabotany:item/spear_of_subspace/use"
+      }
+    ],
+    "subtitle": "subtitles.extrabotany:item.spear_of_subspace.use"
+  },
+  "item.flamescion_weapon.ult": {
+    "sounds": [
+      {
+        "name": "extrabotany:item/flamescion_weapon/ult"
+      }
+    ],
+    "subtitle": "subtitles.extrabotany:item.flamescion_weapon.ult"
   }
 }

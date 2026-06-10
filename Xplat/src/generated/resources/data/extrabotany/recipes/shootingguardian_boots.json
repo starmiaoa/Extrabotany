@@ -1,0 +1,26 @@
+{
+  "type": "botania:armor_upgrade",
+  "category": "combat",
+  "key": {
+    "A": {
+      "item": "botania:manasteel_boots"
+    },
+    "R": {
+      "tag": "botania:runes/winter"
+    },
+    "S": {
+      "tag": "forge:ingots/aerialite"
+    },
+    "T": {
+      "item": "botania:livingwood_twig"
+    }
+  },
+  "pattern": [
+    "TRT",
+    "SAS",
+    " S "
+  ],
+  "result": {
+    "item": "extrabotany:shootingguardian_boots"
+  }
+}

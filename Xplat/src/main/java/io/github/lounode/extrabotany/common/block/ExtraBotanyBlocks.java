@@ -15,8 +15,15 @@ import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.decor.stairs.BotaniaStairBlock;
 
 import io.github.lounode.extrabotany.common.block.mana.DimensionCatalystBlock;
+import io.github.lounode.extrabotany.common.block.mana.ManaBufferBlock;
 import io.github.lounode.extrabotany.common.block.mana.ManaChargerBlock;
+import io.github.lounode.extrabotany.common.block.mana.ManaGeneratorBlock;
+import io.github.lounode.extrabotany.common.block.mana.ManaLiquefactionBlock;
 import io.github.lounode.extrabotany.common.block.mana.PowerFrameBlock;
+import io.github.lounode.extrabotany.common.block.mana.QuantumManaBufferBlock;
+import io.github.lounode.extrabotany.common.block.old.CocoonOfDesireBlock;
+import io.github.lounode.extrabotany.common.block.old.LivingrockBarrelBlock;
+import io.github.lounode.extrabotany.common.block.old.TrophyBlock;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.lib.LibBlockNames;
 
@@ -63,6 +70,36 @@ public final class ExtraBotanyBlocks {
 	public static final Block manaCharger = new ManaChargerBlock(BlockBehaviour.Properties.copy(BotaniaBlocks.livingwood)
 			.explosionResistance(1.0F)
 			.mapColor(MapColor.TERRACOTTA_WHITE));
+	public static final Block manaBuffer = new ManaBufferBlock(BlockBehaviour.Properties.copy(BotaniaBlocks.livingrock)
+			.strength(5.5F, 10.0F)
+			.requiresCorrectToolForDrops()
+			.mapColor(MapColor.TERRACOTTA_CYAN));
+	public static final Block quantumManaBuffer = new QuantumManaBufferBlock(BlockBehaviour.Properties.copy(BotaniaBlocks.livingrock)
+			.strength(3.0F, 55.0F)
+			.requiresCorrectToolForDrops()
+			.mapColor(MapColor.TERRACOTTA_PURPLE)
+			.noOcclusion());
+	public static final Block manaGenerator = new ManaGeneratorBlock(BlockBehaviour.Properties.copy(BotaniaBlocks.livingrock)
+			.strength(2.0F, 10.0F)
+			.requiresCorrectToolForDrops()
+			.mapColor(MapColor.LAPIS));
+	public static final Block manaLiquefaction = new ManaLiquefactionBlock(BlockBehaviour.Properties.copy(BotaniaBlocks.livingrock)
+			.strength(2.0F, 10.0F)
+			.requiresCorrectToolForDrops()
+			.mapColor(MapColor.COLOR_PURPLE));
+	public static final Block cocoonOfDesire = new CocoonOfDesireBlock(BlockBehaviour.Properties.of()
+			.strength(3.0F, 50.0F)
+			.sound(SoundType.WOOL)
+			.mapColor(MapColor.WOOL)
+			.noOcclusion());
+	public static final Block livingrockBarrel = new LivingrockBarrelBlock(BlockBehaviour.Properties.copy(BotaniaBlocks.livingrock)
+			.strength(1.5F, 10.0F)
+			.sound(SoundType.GLASS)
+			.noOcclusion());
+	public static final Block trophy = new TrophyBlock(BlockBehaviour.Properties.copy(Blocks.ANVIL)
+			.strength(2.0F, 10.0F)
+			.sound(SoundType.STONE)
+			.noOcclusion());
 
 	//Quartz
 	public static final Block gaiaQuartzBlock = new ExtraBotanyBlock(BlockBehaviour.Properties.copy(Blocks.QUARTZ_BLOCK).mapColor(MapColor.COLOR_LIGHT_GREEN));
@@ -110,7 +147,14 @@ public final class ExtraBotanyBlocks {
 		r.accept(calcitePedestal, prefix(LibBlockNames.PEDESTAL_PREFIX + PedestalBlock.Variant.CALCITE.name().toLowerCase(Locale.ROOT)));
 		r.accept(powerFrame, prefix(LibBlockNames.POWER_FRAME));
 		r.accept(manaCharger, prefix(LibBlockNames.MANA_CHARGER));
+		r.accept(manaBuffer, prefix(LibBlockNames.MANA_BUFFER));
+		r.accept(quantumManaBuffer, prefix(LibBlockNames.QUANTUM_MANA_BUFFER));
+		r.accept(manaGenerator, prefix(LibBlockNames.MANA_GENERATOR));
+		r.accept(manaLiquefaction, prefix(LibBlockNames.MANA_LIQUEFACTION));
+		r.accept(cocoonOfDesire, prefix(LibBlockNames.COCOON_OF_DESIRE));
+		r.accept(livingrockBarrel, prefix(LibBlockNames.ELF_JAR));
 		r.accept(dimensionCatalyst, prefix(LibBlockNames.DIMENSION_CATALYST));
+		r.accept(trophy, prefix(LibBlockNames.TROPHY));
 
 		r.accept(gaiaQuartzBlock, prefix(LibBlockNames.GAIA_QUARTZ + "_block"));
 		r.accept(chiseledGaiaQuartzBlock, prefix("chiseled_" + LibBlockNames.GAIA_QUARTZ + "_block"));
@@ -166,6 +210,13 @@ public final class ExtraBotanyBlocks {
 		r.accept(new BlockItem(livingrockPedestal, props), BuiltInRegistries.BLOCK.getKey(livingrockPedestal));
 		r.accept(new BlockItem(calcitePedestal, props), BuiltInRegistries.BLOCK.getKey(calcitePedestal));
 		r.accept(new BlockItem(manaCharger, props), BuiltInRegistries.BLOCK.getKey(manaCharger));
+		r.accept(new BlockItem(manaBuffer, props), BuiltInRegistries.BLOCK.getKey(manaBuffer));
+		r.accept(new BlockItem(quantumManaBuffer, props), BuiltInRegistries.BLOCK.getKey(quantumManaBuffer));
+		r.accept(new BlockItem(manaGenerator, props), BuiltInRegistries.BLOCK.getKey(manaGenerator));
+		r.accept(new BlockItem(manaLiquefaction, props), BuiltInRegistries.BLOCK.getKey(manaLiquefaction));
+		r.accept(new BlockItem(cocoonOfDesire, props), BuiltInRegistries.BLOCK.getKey(cocoonOfDesire));
+		r.accept(new BlockItem(livingrockBarrel, props), BuiltInRegistries.BLOCK.getKey(livingrockBarrel));
+		r.accept(new BlockItem(trophy, props), BuiltInRegistries.BLOCK.getKey(trophy));
 
 	}
 

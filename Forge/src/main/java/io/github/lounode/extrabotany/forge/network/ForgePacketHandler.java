@@ -13,9 +13,15 @@ import io.github.lounode.extrabotany.network.clientbound.ColorfulBossEventPacket
 import io.github.lounode.extrabotany.network.clientbound.GaiaBossEventPacket;
 import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
+import io.github.lounode.extrabotany.network.serverbound.FlyingBoatInputPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
+import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketFlamescion;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketJingwei;
+import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketOldRelicSword;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketVoidArchives;
+import io.github.lounode.extrabotany.network.serverbound.MountAccessoryPacket;
+import io.github.lounode.extrabotany.network.serverbound.MotorInputPacket;
+import io.github.lounode.extrabotany.network.serverbound.UfoInputPacket;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -39,6 +45,18 @@ public class ForgePacketHandler {
 				makeServerBoundHandler(LeftClickPacketJingwei::handle));
 		CHANNEL.registerMessage(i++, LeftClickPacketVoidArchives.class, LeftClickPacketVoidArchives::encode, LeftClickPacketVoidArchives::decode,
 				makeServerBoundHandler(LeftClickPacketVoidArchives::handle));
+		CHANNEL.registerMessage(i++, LeftClickPacketOldRelicSword.class, LeftClickPacketOldRelicSword::encode, LeftClickPacketOldRelicSword::decode,
+				makeServerBoundHandler(LeftClickPacketOldRelicSword::handle));
+		CHANNEL.registerMessage(i++, LeftClickPacketFlamescion.class, LeftClickPacketFlamescion::encode, LeftClickPacketFlamescion::decode,
+				makeServerBoundHandler(LeftClickPacketFlamescion::handle));
+		CHANNEL.registerMessage(i++, UfoInputPacket.class, UfoInputPacket::encode, UfoInputPacket::decode,
+				makeServerBoundHandler(UfoInputPacket::handle));
+		CHANNEL.registerMessage(i++, MotorInputPacket.class, MotorInputPacket::encode, MotorInputPacket::decode,
+				makeServerBoundHandler(MotorInputPacket::handle));
+		CHANNEL.registerMessage(i++, FlyingBoatInputPacket.class, FlyingBoatInputPacket::encode, FlyingBoatInputPacket::decode,
+				makeServerBoundHandler(FlyingBoatInputPacket::handle));
+		CHANNEL.registerMessage(i++, MountAccessoryPacket.class, MountAccessoryPacket::encode, MountAccessoryPacket::decode,
+				makeServerBoundHandler(MountAccessoryPacket::handle));
 		//ClientBound
 		CHANNEL.registerMessage(i++, ManaReaderPacket.class, ManaReaderPacket::encode, ManaReaderPacket::decode,
 				makeClientBoundHandler(ManaReaderPacket.Handler::handle));

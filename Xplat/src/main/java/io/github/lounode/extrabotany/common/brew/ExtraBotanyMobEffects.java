@@ -21,6 +21,10 @@ public class ExtraBotanyMobEffects {
 	public static final MobEffect DISCOUNT = new DiscountMobEffect(MobEffectCategory.NEUTRAL, 0x54eb89);
 	public static final MobEffect WARM = new WarmMobEffect(MobEffectCategory.BENEFICIAL, 16750848);
 	public static final MobEffect THIRROR = new ThirrorMobEffect(MobEffectCategory.BENEFICIAL, 0X4169E1);
+	public static final MobEffect ETERNITY = new EternityMobEffect(MobEffectCategory.BENEFICIAL, 0XDAA520);
+	public static final MobEffect INCANDESCENCE = new IncandescenceMobEffect(MobEffectCategory.BENEFICIAL, 0xFF4500);
+	public static final MobEffect TIMELOCK = new TimeLockMobEffect(MobEffectCategory.HARMFUL, 0x892CDC);
+	public static final MobEffect FLAMESCION = new FlamescionMobEffect(MobEffectCategory.BENEFICIAL, 0xFF4500);
 
 	public static void registerPotions(BiConsumer<MobEffect, ResourceLocation> r) {
 		r.accept(IMMOBILIZE, prefix(LibPotionNames.IMMOBILIZE));
@@ -29,5 +33,9 @@ public class ExtraBotanyMobEffects {
 		r.accept(DISCOUNT, prefix(LibPotionNames.DISCOUNT));
 		r.accept(WARM, prefix(LibPotionNames.WARM));
 		r.accept(THIRROR, prefix(LibPotionNames.THIRROR));
+		r.accept(ETERNITY, prefix(LibPotionNames.ETERNITY));
+		r.accept(INCANDESCENCE, prefix(LibPotionNames.INCANDESCENCE));
+		r.accept(TIMELOCK, prefix(LibPotionNames.TIMELOCK));
+		r.accept(FLAMESCION, prefix(LibPotionNames.FLAMESCION));
 	}
 }

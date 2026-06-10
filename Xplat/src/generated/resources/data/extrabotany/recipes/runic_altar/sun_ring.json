@@ -1,0 +1,39 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "item": "extrabotany:the_end"
+    },
+    {
+      "item": "extrabotany:frost_star"
+    },
+    {
+      "item": "extrabotany:death_ring"
+    },
+    {
+      "item": "botania:aura_ring_greater"
+    },
+    {
+      "item": "botania:mining_ring"
+    },
+    {
+      "item": "botania:pixie_ring"
+    },
+    {
+      "item": "botania:swap_ring"
+    },
+    {
+      "item": "botania:water_ring"
+    },
+    {
+      "item": "extrabotany:dispersive_ring"
+    },
+    {
+      "item": "botania:reach_ring"
+    }
+  ],
+  "mana": 500000,
+  "output": {
+    "item": "extrabotany:sun_ring"
+  }
+}

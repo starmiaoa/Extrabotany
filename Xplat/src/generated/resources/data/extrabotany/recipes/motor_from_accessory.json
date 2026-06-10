@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "extrabotany:motor_accessory"
+    }
+  ],
+  "result": {
+    "item": "extrabotany:motor"
+  },
+  "show_notification": true
+}

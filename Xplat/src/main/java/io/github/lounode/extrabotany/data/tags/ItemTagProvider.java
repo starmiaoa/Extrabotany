@@ -9,6 +9,7 @@ import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -85,10 +86,14 @@ public class ItemTagProvider extends ItemTagsProvider {
 				.forEach(item -> builder.add(ResourceKey.create(Registries.ITEM, item)));
 
 		this.tag(ItemTags.PIGLIN_LOVED).add(gildedPotato, gildedPotatoMashed, dasRheingold);
-		this.tag(ItemTags.MUSIC_DISCS).add(recordGaia3);
+		this.tag(ItemTags.MUSIC_DISCS).add(recordGaia3, recordHerrscherOfTheVoid);
 		this.tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(HAMMERS);
 
-		this.tag(BotaniaTags.Items.RUNES);
+		this.tag(BotaniaTags.Items.PETALS).add(universalPetal);
+		for (DyeColor color : DyeColor.values()) {
+			this.tag(BotaniaTags.Items.getPetalTag(color)).add(universalPetal);
+		}
+		this.tag(BotaniaTags.Items.RUNES).add(elementRune, sinRune);
 		//ManaUsingItem
 		this.tag(BotaniaTags.Items.MANA_USING_ITEMS).add(ExtraBotanyItems.MANA_USING_ITEM);
 		this.tag(BotaniaTags.Items.MANA_USING_ITEMS).add(HAMMERS);

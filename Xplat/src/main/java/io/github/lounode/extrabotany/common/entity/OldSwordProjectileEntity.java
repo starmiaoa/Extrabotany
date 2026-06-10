@@ -1,0 +1,164 @@
+package io.github.lounode.extrabotany.common.entity;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+
+import io.github.lounode.extrabotany.common.handler.DamageHandler;
+
+import java.util.List;
+
+public abstract class OldSwordProjectileEntity extends ThrowableItemProjectile {
+	private static final String TAG_TARGET_X = "TargetX";
+	private static final String TAG_TARGET_Y = "TargetY";
+	private static final String TAG_TARGET_Z = "TargetZ";
+
+	private Vec3 targetPos = Vec3.ZERO;
+
+	protected OldSwordProjectileEntity(EntityType<? extends OldSwordProjectileEntity> entityType, Level level) {
+		super(entityType, level);
+		this.setNoGravity(true);
+	}
+
+	protected OldSwordProjectileEntity(EntityType<? extends OldSwordProjectileEntity> entityType, Level level, LivingEntity owner) {
+		super(entityType, owner, level);
+		this.setNoGravity(true);
+	}
+
+	@Override
+	public void tick() {
+		super.tick();
+		this.setNoGravity(true);
+
+		if (this.level().isClientSide()) {
+			spawnTrailParticles();
+			return;
+		}
+
+		if (this.getOwner() instanceof LivingEntity owner && !owner.isAlive()) {
+			this.discard();
+			return;
+		}
+
+		if (this.tickCount >= getLifetime()) {
+			this.discard();
+			return;
+		}
+
+		if (this.tickCount >= getHitStartTick()) {
+			hitEntities();
+		}
+	}
+
+	protected void shootAt(Vec3 target, double speed) {
+		this.setTargetPos(target);
+		Vec3 delta = target.subtract(this.position()).normalize().scale(speed);
+		this.setDeltaMovement(delta);
+
+		double horizontal = Math.sqrt(delta.x * delta.x + delta.z * delta.z);
+		this.setXRot((float) (Mth.atan2(delta.y, horizontal) * Mth.RAD_TO_DEG));
+		this.setYRot((float) (Mth.atan2(delta.x, delta.z) * Mth.RAD_TO_DEG));
+	}
+
+	protected void hitEntities() {
+		AABB axis = new AABB(this.getX(), this.getY(), this.getZ(), this.xOld, this.yOld, this.zOld).inflate(getHitRadius());
+		List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, axis);
+		List<LivingEntity> filtered = DamageHandler.INSTANCE.getFilteredEntities(targets, this.getOwner());
+
+		for (LivingEntity target : filtered) {
+			if (target.hurtTime > 0 && shouldRespectInvulnerability()) {
+				continue;
+			}
+
+			if (damageTarget(target)) {
+				onDamagedTarget(target);
+				if (discardOnHit()) {
+					this.discard();
+				}
+				break;
+			}
+		}
+	}
+
+	protected boolean damageTarget(LivingEntity target) {
+		return target.hurt(makeDamageSource(), getDamage());
+	}
+
+	protected DamageSource makeDamageSource() {
+		Entity owner = this.getOwner();
+		if (owner instanceof Player player) {
+			return this.damageSources().playerAttack(player);
+		}
+		if (owner instanceof LivingEntity living) {
+			return this.damageSources().mobAttack(living);
+		}
+		return this.damageSources().generic();
+	}
+
+	@Override
+	protected void onHit(HitResult result) {
+		if (!this.level().isClientSide() && result.getType() == HitResult.Type.BLOCK) {
+			this.discard();
+		}
+	}
+
+	protected void setTargetPos(Vec3 targetPos) {
+		this.targetPos = targetPos;
+	}
+
+	protected Vec3 getTargetPos() {
+		return this.targetPos;
+	}
+
+	protected BlockPos getTargetBlockPos() {
+		return BlockPos.containing(this.targetPos);
+	}
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag tag) {
+		super.addAdditionalSaveData(tag);
+		tag.putDouble(TAG_TARGET_X, targetPos.x);
+		tag.putDouble(TAG_TARGET_Y, targetPos.y);
+		tag.putDouble(TAG_TARGET_Z, targetPos.z);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag tag) {
+		super.readAdditionalSaveData(tag);
+		this.targetPos = new Vec3(tag.getDouble(TAG_TARGET_X), tag.getDouble(TAG_TARGET_Y), tag.getDouble(TAG_TARGET_Z));
+	}
+
+	protected int getHitStartTick() {
+		return 0;
+	}
+
+	protected double getHitRadius() {
+		return 2.0D;
+	}
+
+	protected boolean shouldRespectInvulnerability() {
+		return true;
+	}
+
+	protected boolean discardOnHit() {
+		return true;
+	}
+
+	protected void onDamagedTarget(LivingEntity target) {}
+
+	protected void spawnTrailParticles() {}
+
+	protected abstract int getLifetime();
+
+	protected abstract float getDamage();
+}

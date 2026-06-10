@@ -15,6 +15,7 @@ import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketJingwei;
+import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketOldRelicSword;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketVoidArchives;
 
 import java.util.function.Consumer;
@@ -27,6 +28,7 @@ public class FabricPacketHandler {
 		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketExcalibur.ID, makeServerBoundHandler(LeftClickPacketExcalibur::decode, LeftClickPacketExcalibur::handle));
 		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketJingwei.ID, makeServerBoundHandler(LeftClickPacketJingwei::decode, LeftClickPacketJingwei::handle));
 		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketVoidArchives.ID, makeServerBoundHandler(LeftClickPacketVoidArchives::decode, LeftClickPacketVoidArchives::handle));
+		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketOldRelicSword.ID, makeServerBoundHandler(LeftClickPacketOldRelicSword::decode, LeftClickPacketOldRelicSword::handle));
 		registerOperation();
 	}
 

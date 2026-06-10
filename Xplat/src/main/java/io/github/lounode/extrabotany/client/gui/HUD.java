@@ -25,6 +25,7 @@ import vazkii.botania.xplat.XplatAbstractions;
 import io.github.lounode.extrabotany.common.item.relic.CameraItem;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Camera;
+import io.github.lounode.extrabotany.common.entity.MotorEntity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -33,6 +34,7 @@ import java.util.List;
 public final class HUD {
 	public static HUD INSTANCE;
 	private static final ResourceLocation manaBar = ResourceLocation.tryParse("botania:textures/gui/mana_hud.png");
+	private static final ResourceLocation motorHud = ResourceLocation.tryBuild("extrabotany", "textures/gui/motorhud.png");
 
 	private final Minecraft minecraft;
 	private final ColorfulBossBarOverlay bossOverlay;
@@ -72,7 +74,26 @@ public final class HUD {
 		renderManaBar(gui, partialTicks);
 		profiler.pop();
 
+		profiler.push("motorHud");
+		renderMotorHud(gui);
 		profiler.pop();
+
+		profiler.pop();
+	}
+
+	private void renderMotorHud(GuiGraphics gui) {
+		if (!(minecraft.player.getVehicle() instanceof MotorEntity motor)) {
+			return;
+		}
+		int x = minecraft.getWindow().getGuiScaledWidth() / 2 - 32;
+		int y = minecraft.getWindow().getGuiScaledHeight() - 68;
+		int width = (int) (64D * motor.getTectonicEnergy() / 800D);
+		RenderSystem.enableBlend();
+		gui.blit(motorHud, x, y, 0, 0, 64, 6, 64, 12);
+		if (width > 0) {
+			gui.blit(motorHud, x, y, 0, 6, width, 6, 64, 12);
+		}
+		RenderSystem.disableBlend();
 	}
 
 	private void renderManaBar(GuiGraphics gui, float partialTicks) {

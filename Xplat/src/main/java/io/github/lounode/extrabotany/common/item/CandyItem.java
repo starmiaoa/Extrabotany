@@ -1,0 +1,49 @@
+package io.github.lounode.extrabotany.common.item;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
+public class CandyItem extends Item {
+	private final MobEffect effect;
+
+	public CandyItem(Properties properties, MobEffect effect) {
+		super(properties.food(new FoodProperties.Builder()
+				.nutrition(2)
+				.saturationMod(0.15F)
+				.alwaysEat()
+				.build()));
+		this.effect = effect;
+	}
+
+	@Override
+	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
+		ItemStack result = super.finishUsingItem(stack, level, entityLiving);
+		if (!level.isClientSide() && entityLiving instanceof Player player) {
+			if (player.getHealth() < player.getMaxHealth()) {
+				player.heal(4.0F);
+			}
+			player.addEffect(new MobEffectInstance(effect, 200, 1));
+		}
+		return result;
+	}
+
+	@Override
+	public int getUseDuration(ItemStack stack) {
+		return 14;
+	}
+
+	@Override
+	public Component getName(ItemStack stack) {
+		if (SeasonalItemHelper.isChristmas()) {
+			return Component.translatable(getDescriptionId(stack) + ".christmas");
+		}
+		return super.getName(stack);
+	}
+}

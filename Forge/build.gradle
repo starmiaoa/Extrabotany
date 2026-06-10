@@ -12,6 +12,7 @@ if (System.getenv().RELEASE_MODE != "1") {
 }
 
 repositories {
+    mavenLocal()
     maven {
         name = "Jared"
         url = "https://maven.blamejared.com/"
@@ -49,10 +50,16 @@ repositories {
     maven {
         name = "lounode"
         url = "https://maven.lounode.top/snapshots"
+        content {
+            includeGroup "io.github.lounode.eventwrapper"
+        }
     }
     maven {
         name = "lounode"
         url = "https://maven.lounode.top/releases"
+        content {
+            includeGroup "io.github.lounode.eventwrapper"
+        }
     }
     maven { // Mantle
         name = 'DVS1 Maven FS'

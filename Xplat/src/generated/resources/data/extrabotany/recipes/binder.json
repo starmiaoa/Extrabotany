@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "X": {
+      "tag": "botania:mana_dusts"
+    },
+    "Y": {
+      "tag": "botania:mana_diamond_gems"
+    },
+    "Z": {
+      "item": "botania:livingwood_twig"
+    }
+  },
+  "pattern": [
+    " XY",
+    " ZX",
+    "Z  "
+  ],
+  "result": {
+    "item": "extrabotany:binder"
+  },
+  "show_notification": true
+}

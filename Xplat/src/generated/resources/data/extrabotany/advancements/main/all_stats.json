@@ -1,0 +1,29 @@
+{
+  "parent": "extrabotany:main/deep_dark_fantasy",
+  "criteria": {
+    "code_triggered": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.extrabotany:all_stats.desc"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "extrabotany:trophy"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.extrabotany:all_stats"
+    }
+  },
+  "requirements": [
+    [
+      "code_triggered"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

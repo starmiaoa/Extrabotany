@@ -46,6 +46,22 @@ public class ExtraBotanyConfig {
 		boolean enableTelemetry();
 		String telemetryUUID();
 		String fakePlayerId();
+		boolean enableCandyBagMobSpawn();
+		double candyBagMobSpawnChance();
+		boolean enableManaGenerator();
+		int manaGeneratorMaxEnergy();
+		int manaGeneratorConvertMana();
+		int manaGeneratorTransferSpeed();
+		boolean enableManaLiquefaction();
+		int manaLiquefactionMaxMana();
+		int manaLiquefactionStorageDrain();
+		int manaLiquefactionStorageDrainContainer();
+		int manaLiquefactionStoragePump();
+		int manaLiquefactionStoragePumpContainer();
+		int manaLiquefactionManaReceive();
+		int manaLiquefactionEnergyLoss();
+		int manaLiquefactionManaGive();
+		int manaLiquefactionEnergyGain();
 
 		//Flowers
 		//Generating
@@ -135,6 +151,13 @@ public class ExtraBotanyConfig {
 		//Enchanter
 		int enchanterTransformCost();
 		int enchanterConsumeSpeed();
+		int enchanterTransformRange();
+
+		//StardustLotus
+		int stardustLotusMaxMana();
+		int stardustLotusBaseCost();
+		int stardustLotusCostPerBlock();
+		int stardustLotusConsumeSpeed();
 
 	}
 }

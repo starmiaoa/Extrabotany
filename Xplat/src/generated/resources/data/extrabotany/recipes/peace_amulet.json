@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "tools",
+  "key": {
+    "R": {
+      "item": "botania:livingrock"
+    },
+    "W": {
+      "item": "botania:livingwood"
+    }
+  },
+  "pattern": [
+    " W ",
+    "WRW",
+    " W "
+  ],
+  "result": {
+    "item": "extrabotany:peace_amulet"
+  }
+}

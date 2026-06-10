@@ -1,16 +1,22 @@
 package io.github.lounode.extrabotany.xplat;
 
+import com.google.common.collect.Multimap;
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +26,8 @@ import vazkii.botania.xplat.XplatAbstractions;
 
 import io.github.lounode.extrabotany.api.item.NatureEnergyItem;
 import io.github.lounode.extrabotany.network.ExtrabotanyPacket;
+
+import java.util.UUID;
 
 public interface EXplatAbstractions extends XplatAbstractions {
 	EXplatAbstractions INSTANCE = ServiceUtil.findService(EXplatAbstractions.class, null);
@@ -62,6 +70,24 @@ public interface EXplatAbstractions extends XplatAbstractions {
 	}
 
 	default float getEnchantPowerBonus(ServerLevel level, BlockPos pos) {
+		return 0;
+	}
+
+	default void addSunRingReachModifiers(Multimap<Attribute, AttributeModifier> attributes, UUID modifierId) {}
+
+	default boolean interactWithLivingrockBarrel(Level level, BlockPos pos, Player player, InteractionHand hand, Direction side) {
+		return false;
+	}
+
+	default int extractEnergy(Level level, BlockPos pos, @Nullable Direction side, int maxExtract, boolean simulate) {
+		return 0;
+	}
+
+	default int drainFluid(Level level, BlockPos pos, @Nullable Direction side, Fluid fluid, int amount, boolean simulate) {
+		return 0;
+	}
+
+	default int fillFluid(Level level, BlockPos pos, @Nullable Direction side, Fluid fluid, int amount, boolean simulate) {
 		return 0;
 	}
 

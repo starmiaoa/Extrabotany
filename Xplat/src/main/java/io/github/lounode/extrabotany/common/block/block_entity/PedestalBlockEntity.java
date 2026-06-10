@@ -48,6 +48,7 @@ import io.github.lounode.extrabotany.api.gaia.BlockTagPredicate;
 import io.github.lounode.extrabotany.api.recipe.PedestalRecipe;
 import io.github.lounode.extrabotany.common.block.PedestalBlock;
 import io.github.lounode.extrabotany.common.crafting.ExtraBotanyRecipeTypes;
+import io.github.lounode.extrabotany.common.item.equipment.tool.KingGardenItem;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
@@ -179,6 +180,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		List<Function<Void, Map.Entry<InteractionResult, Boolean>>> handlers = Arrays.asList(
 				(Void v) -> handleExtractFinishItem(state, world, pos, player, hand, hit),
 				(Void v) -> handleSmashNew(state, world, pos, player, hand, hit),
+				(Void v) -> handleKingGardenConfigure(state, world, pos, player, hand, hit),
 				(Void v) -> handleReversePlaceItem(state, world, pos, player, hand, hit),
 				(Void v) -> handlePlaceItemNew(state, world, pos, player, hand, hit)
 		);
@@ -279,6 +281,27 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		}
 
 		return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME, swingOffHand);
+	}
+
+	public Map.Entry<InteractionResult, Boolean> handleKingGardenConfigure(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		if (isEmpty() || !(getItem().getItem() instanceof KingGardenItem)) {
+			return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME, false);
+		}
+		ItemStack flower = player.getMainHandItem();
+		boolean swingOffHand = false;
+		if (KingGardenItem.typeForFlower(flower) < 0) {
+			flower = player.getOffhandItem();
+			swingOffHand = true;
+		}
+		if (KingGardenItem.typeForFlower(flower) < 0 || !KingGardenItem.addFlower(getItem(), flower)) {
+			return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME, false);
+		}
+		if (!player.getAbilities().instabuild) {
+			flower.shrink(1);
+		}
+		playSound();
+		this.markUpdated();
+		return new AbstractMap.SimpleEntry<>(InteractionResult.CONSUME_PARTIAL, swingOffHand);
 	}
 
 	public Map.Entry<InteractionResult, Boolean> handleReversePlaceItem(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {

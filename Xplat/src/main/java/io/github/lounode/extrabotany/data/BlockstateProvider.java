@@ -52,6 +52,31 @@ public class BlockstateProvider extends vazkii.botania.data.BlockstateProvider {
 		//ManaCharger
 		manualModel(remainingBlocks, ExtraBotanyBlocks.manaCharger);
 		manualModel(remainingBlocks, ExtraBotanyBlocks.powerFrame);
+		manualModel(remainingBlocks, ExtraBotanyBlocks.livingrockBarrel);
+		manualModel(remainingBlocks, ExtraBotanyBlocks.trophy);
+		singleVariantBlockState(ExtraBotanyBlocks.manaBuffer,
+				ModelTemplates.CUBE_BOTTOM_TOP.create(ExtraBotanyBlocks.manaBuffer,
+						new TextureMapping()
+								.put(TextureSlot.SIDE, prefix("block/manabarrel_side"))
+								.put(TextureSlot.BOTTOM, prefix("block/manabarrel_bottom"))
+								.put(TextureSlot.TOP, prefix("block/manabarrel_top"))
+								.put(TextureSlot.PARTICLE, prefix("block/manabarrel_side")),
+						this.modelOutput));
+		remainingBlocks.remove(ExtraBotanyBlocks.manaBuffer);
+		singleVariantBlockState(ExtraBotanyBlocks.quantumManaBuffer,
+				ModelTemplates.CUBE_BOTTOM_TOP.create(ExtraBotanyBlocks.quantumManaBuffer,
+						new TextureMapping()
+								.put(TextureSlot.SIDE, prefix("block/quantummanabuffer_side"))
+								.put(TextureSlot.BOTTOM, prefix("block/quantummanabuffer_down"))
+								.put(TextureSlot.TOP, prefix("block/quantummanabuffer_up"))
+								.put(TextureSlot.PARTICLE, prefix("block/quantummanabuffer_side")),
+						this.modelOutput));
+		remainingBlocks.remove(ExtraBotanyBlocks.quantumManaBuffer);
+		singleVariantBlockState(ExtraBotanyBlocks.manaGenerator,
+				ModelTemplates.CUBE_ALL.create(ExtraBotanyBlocks.manaGenerator,
+						TextureMapping.cube(prefix("block/managenerator")),
+						this.modelOutput));
+		remainingBlocks.remove(ExtraBotanyBlocks.manaGenerator);
 
 		//Pedestal
 		var pedestalTemplate = new ModelTemplate(Optional.of(prefix("block/shapes/pedestal")), Optional.empty(),

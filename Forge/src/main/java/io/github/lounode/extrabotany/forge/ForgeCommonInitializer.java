@@ -9,6 +9,9 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -17,11 +20,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
+import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -35,6 +44,7 @@ import org.slf4j.Logger;
 import vazkii.botania.api.BotaniaForgeCapabilities;
 import vazkii.botania.api.BotaniaRegistries;
 import vazkii.botania.api.item.Relic;
+import vazkii.botania.api.mana.ManaDiscountEvent;
 import vazkii.botania.api.mana.ManaItem;
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.item.CustomCreativeTabContents;
@@ -48,16 +58,27 @@ import io.github.lounode.extrabotany.api.item.NatureEnergyItem;
 import io.github.lounode.extrabotany.common.advancements.ExtrabotanyCriteriaTriggers;
 import io.github.lounode.extrabotany.common.block.ExtraBotanyBlocks;
 import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockEntities;
+import io.github.lounode.extrabotany.common.block.block_entity.LivingrockBarrelBlockEntity;
+import io.github.lounode.extrabotany.common.block.block_entity.ManaBufferBlockEntity;
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyBrews;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
+import io.github.lounode.extrabotany.common.brew.effect.EternityMobEffect;
 import io.github.lounode.extrabotany.common.crafting.ExtraBotanyRecipeTypes;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyEntityType;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyMemoryType;
+import io.github.lounode.extrabotany.common.handler.OldExbotanyStatRewardHandler;
 import io.github.lounode.extrabotany.common.impl.WindImpl;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.brew.InfiniteWineItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.AquaStoneItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.FeatherOfJingweiItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.MoonPendantItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.NatureOrbItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.PureDaisyPendantItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.SilentEternityItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.SunRingItem;
+import io.github.lounode.extrabotany.common.item.equipment.tool.FlamescionWeaponItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.RheinHammerItem;
 import io.github.lounode.extrabotany.common.item.relic.*;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
@@ -65,7 +86,10 @@ import io.github.lounode.extrabotany.common.item.relic.voidcore.CoreOfTheVoidIte
 import io.github.lounode.extrabotany.common.lib.LibMisc;
 import io.github.lounode.extrabotany.common.loot.RewardBagManager;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
+import io.github.lounode.extrabotany.forge.fluid.ForgeExtraBotanyFluids;
 import io.github.lounode.extrabotany.forge.network.ForgePacketHandler;
+import io.github.lounode.extrabotany.forge.xplat.LivingrockBarrelFluidProvider;
+import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -113,6 +137,10 @@ public class ForgeCommonInitializer {
 	private void registryInit(IEventBus modEventBus) {
 		bind(modEventBus, Registries.SOUND_EVENT, ExtraBotanySounds::init);
 		//Block&ItemBlock&Items
+		bind(modEventBus, ForgeExtraBotanyFluids.fluidTypeRegistryKey(), ForgeExtraBotanyFluids::registerFluidTypes);
+		bind(modEventBus, Registries.FLUID, ForgeExtraBotanyFluids::registerFluids);
+		bind(modEventBus, Registries.BLOCK, ForgeExtraBotanyFluids::registerBlocks);
+		bindForItems(modEventBus, ForgeExtraBotanyFluids::registerItems);
 		bind(modEventBus, Registries.BLOCK, ExtraBotanyBlocks::registerBlocks);
 		bindForItems(modEventBus, ExtraBotanyBlocks::registerItemBlocks);
 		bind(modEventBus, Registries.BLOCK_ENTITY_TYPE, ExtraBotanyBlockEntities::registerTiles);
@@ -174,14 +202,103 @@ public class ForgeCommonInitializer {
 		IEventBus bus = MinecraftForge.EVENT_BUS;
 		bus.addGenericListener(ItemStack.class, this::attachItemCaps);
 		bus.addGenericListener(Level.class, this::attachLevelCaps);
+		bus.addGenericListener(BlockEntity.class, this::attachBlockEntityCaps);
 
 		bus.addListener((TickEvent.LevelTickEvent event) -> WindImpl.EventHandler.onLevelTick(event.level));
+		bus.addListener(this::onFinalizeSpawn);
+		bus.addListener(this::onManaDiscount);
+		bus.addListener(this::onLivingAttack);
+		bus.addListener(this::onLivingHeal);
+		bus.addListener(this::onPlayerTick);
+		bus.addListener(this::onLeftClickBlock);
+		bus.addListener(this::onAdvancementEarned);
 
 		RewardBagManager.registerListener();
 	}
 
+	private void onLivingAttack(LivingAttackEvent event) {
+		if (MoonPendantItem.shouldCancelFireDamage(event.getSource(), event.getEntity())
+				|| EternityMobEffect.shouldCancelDamage(event.getEntity())) {
+			event.setCanceled(true);
+		}
+	}
+
+	private void onLivingHeal(LivingHealEvent event) {
+		if (SilentEternityItem.shouldCancelHealing(event.getEntity())) {
+			event.setAmount(0);
+		}
+	}
+
+	private void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		if (event.phase == TickEvent.Phase.END) {
+			EternityMobEffect.onPlayerTick(event.player);
+			FlamescionWeaponItem.onPlayerTick(event.player);
+			PureDaisyPendantItem.onPlayerTick(event.player);
+		}
+	}
+
+	private void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+		FeatherOfJingweiItem.leftClickBlock(event.getEntity());
+	}
+
+	private void onAdvancementEarned(AdvancementEvent.AdvancementEarnEvent event) {
+		if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+			OldExbotanyStatRewardHandler.onAdvancementEarned(serverPlayer, event.getAdvancement().getId());
+		}
+	}
+
+	private void onManaDiscount(ManaDiscountEvent event) {
+		if (AquaStoneItem.hasDiscount(event.getEntityPlayer())) {
+			event.setDiscount(event.getDiscount() + AquaStoneItem.MANA_DISCOUNT);
+		}
+	}
+
+	private void onFinalizeSpawn(MobSpawnEvent.FinalizeSpawn event) {
+		var config = ExtraBotanyConfig.common();
+		if (config == null || !config.enableCandyBagMobSpawn()) {
+			return;
+		}
+
+		var mob = event.getEntity();
+		if (!(mob instanceof Zombie || mob instanceof AbstractSkeleton)) {
+			return;
+		}
+		if (!mob.getItemBySlot(EquipmentSlot.OFFHAND).isEmpty()) {
+			return;
+		}
+		if (mob.getRandom().nextDouble() >= config.candyBagMobSpawnChance()) {
+			return;
+		}
+
+		mob.setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ExtraBotanyItems.candyBag));
+		mob.setDropChance(EquipmentSlot.OFFHAND, 1.0F);
+	}
+
 	private void attachLevelCaps(AttachCapabilitiesEvent<Level> event) {
 
+	}
+
+	private void attachBlockEntityCaps(AttachCapabilitiesEvent<BlockEntity> event) {
+		if (event.getObject() instanceof ManaBufferBlockEntity buffer) {
+			event.addCapability(prefix("mana_receiver"),
+					CapabilityUtil.makeProvider(BotaniaForgeCapabilities.MANA_RECEIVER, buffer));
+			event.addCapability(prefix("spark_attachable"),
+					CapabilityUtil.makeProvider(BotaniaForgeCapabilities.SPARK_ATTACHABLE, buffer));
+			event.addCapability(prefix("wandable"),
+					CapabilityUtil.makeProvider(BotaniaForgeCapabilities.WANDABLE, buffer));
+		} else if (event.getObject() instanceof io.github.lounode.extrabotany.common.block.block_entity.ManaGeneratorBlockEntity generator) {
+			event.addCapability(prefix("wandable"),
+					CapabilityUtil.makeProvider(BotaniaForgeCapabilities.WANDABLE, generator));
+		} else if (event.getObject() instanceof io.github.lounode.extrabotany.common.block.block_entity.ManaLiquefactionBlockEntity liquefaction) {
+			event.addCapability(prefix("mana_receiver"),
+					CapabilityUtil.makeProvider(BotaniaForgeCapabilities.MANA_RECEIVER, liquefaction));
+			event.addCapability(prefix("spark_attachable"),
+					CapabilityUtil.makeProvider(BotaniaForgeCapabilities.SPARK_ATTACHABLE, liquefaction));
+			event.addCapability(prefix("wandable"),
+					CapabilityUtil.makeProvider(BotaniaForgeCapabilities.WANDABLE, liquefaction));
+		} else if (event.getObject() instanceof LivingrockBarrelBlockEntity barrel) {
+			event.addCapability(prefix("elfjar_fluid"), new LivingrockBarrelFluidProvider(barrel));
+		}
 	}
 
 	private void attachItemCaps(AttachCapabilitiesEvent<ItemStack> e) {
@@ -216,19 +333,32 @@ public class ForgeCommonInitializer {
 	));
 
 	private static final Supplier<Map<Item, Function<ItemStack, ManaItem>>> MANA_ITEM = Suppliers.memoize(() -> Map.of(
-			ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem.ExtendManaItemImpl::new
+			ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem.ExtendManaItemImpl::new,
+			ExtraBotanyItems.silentEternity, SilentEternityItem.SilentEternityManaItem::new
 	));
-	private static final Supplier<Map<Item, Function<ItemStack, Relic>>> RELIC = Suppliers.memoize(() -> Map.of(
-			ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem::makeRelic,
-			ExtraBotanyItems.camera, CameraItem::makeRelic,
-			ExtraBotanyItems.failnaught, FailnaughtItem::makeRelic,
-			ExtraBotanyItems.excalibur, ExcaliburItem::makeRelic,
-			ExtraBotanyItems.coreOfTheVoid, CoreOfTheVoidItem::makeRelic,
-			ExtraBotanyItems.pandorasBox, PandorasBoxItem::makeRelic,
-			ExtraBotanyItems.infiniteWine, InfiniteWineItem::makeRelic,
-			ExtraBotanyItems.voidArchives, VoidArchivesItem::makeRelic,
-			ExtraBotanyItems.rheinHammer, RheinHammerItem::makeRelic,
-			ExtraBotanyItems.achillesShield, AchillesShieldItem::makeRelic
+	private static final Supplier<Map<Item, Function<ItemStack, Relic>>> RELIC = Suppliers.memoize(() -> Map.ofEntries(
+			Map.entry(ExtraBotanyItems.manaRingMaster, MasterBandOfManaItem::makeRelic),
+			Map.entry(ExtraBotanyItems.camera, CameraItem::makeRelic),
+			Map.entry(ExtraBotanyItems.failnaught, FailnaughtItem::makeRelic),
+			Map.entry(ExtraBotanyItems.excalibur, ExcaliburItem::makeRelic),
+			Map.entry(ExtraBotanyItems.trueTerrablade, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.trueShadowKatana, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.influxWaver, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.starWrath, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.firstFractal, OldExbotanyRelicSwordItem::makeRelic),
+			Map.entry(ExtraBotanyItems.spearOfSubspace, SpearOfSubspaceItem::makeRelic),
+			Map.entry(ExtraBotanyItems.judahOath, JudahOathItem::makeRelic),
+			Map.entry(ExtraBotanyItems.judahOathKira, JudahOathItem::makeRelic),
+			Map.entry(ExtraBotanyItems.judahOathSakura, JudahOathItem::makeRelic),
+			Map.entry(ExtraBotanyItems.coreOfTheVoid, CoreOfTheVoidItem::makeRelic),
+			Map.entry(ExtraBotanyItems.pandorasBox, PandorasBoxItem::makeRelic),
+			Map.entry(ExtraBotanyItems.infiniteWine, InfiniteWineItem::makeRelic),
+			Map.entry(ExtraBotanyItems.voidArchives, VoidArchivesItem::makeRelic),
+			Map.entry(ExtraBotanyItems.rheinHammer, RheinHammerItem::makeRelic),
+			Map.entry(ExtraBotanyItems.achillesShield, AchillesShieldItem::makeRelic),
+			Map.entry(ExtraBotanyItems.sunRing, SunRingItem::makeRelic),
+			Map.entry(ExtraBotanyItems.moonPendant, MoonPendantItem::makeRelic),
+			Map.entry(ExtraBotanyItems.silentEternity, SilentEternityItem::makeRelic)
 	));
 
 	private static <T> void bind(IEventBus modEventBus, ResourceKey<Registry<T>> registry, Consumer<BiConsumer<T, ResourceLocation>> source) {

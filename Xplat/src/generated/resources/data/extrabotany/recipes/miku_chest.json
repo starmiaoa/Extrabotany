@@ -1,0 +1,20 @@
+{
+  "type": "botania:armor_upgrade",
+  "category": "combat",
+  "key": {
+    "A": {
+      "item": "botania:manasteel_chestplate"
+    },
+    "W": {
+      "item": "botania:manaweave_cloth"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WAW",
+    "WWW"
+  ],
+  "result": {
+    "item": "extrabotany:miku_chest"
+  }
+}

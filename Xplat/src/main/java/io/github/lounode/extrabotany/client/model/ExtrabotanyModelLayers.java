@@ -13,6 +13,9 @@ public class ExtrabotanyModelLayers {
 	public static final ModelLayerLocation SHADOW_WARRIOR_ARMOR_LEGGINGS = make("shadow_warrior_leggings");
 	public static final ModelLayerLocation GOBLIN_SLAYER_ARMOR_NORMAL = make("goblin_slayer_armor_normal");
 	public static final ModelLayerLocation GOBLIN_SLAYER_ARMOR_LEGGINGS = make("goblin_slayer_armor_leggings");
+	public static final ModelLayerLocation UFO = make("ufo");
+	public static final ModelLayerLocation MOTOR = make("motor");
+	public static final ModelLayerLocation FLYING_BOAT = make("flying_boat");
 
 	private static ModelLayerLocation make(String name) {
 		return make(name, "main");

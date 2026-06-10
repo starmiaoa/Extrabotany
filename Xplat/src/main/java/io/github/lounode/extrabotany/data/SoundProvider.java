@@ -33,6 +33,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		take(soundEvents, FEATHER_OF_JINGWEI_SHOOT);
 		take(soundEvents, PLAYER_BACKFIRE);
 		take(soundEvents, MUSIC_GAIA3);
+		take(soundEvents, MUSIC_HERRSCHER);
 		take(soundEvents, REWARD_BAG_OPEN);
 		take(soundEvents, PANDORAS_BOX_OPEN);
 
@@ -86,6 +87,14 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		this.add(MUSIC_GAIA3, SoundDefinitionsProvider.definition()
 				.with(
 						SoundDefinitionsProvider.sound(relocateOggPath(MUSIC_GAIA3.getLocation()))
+								.stream()
+								.volume(1.3F)
+				)
+		);
+
+		this.add(MUSIC_HERRSCHER, SoundDefinitionsProvider.definition()
+				.with(
+						SoundDefinitionsProvider.sound(ResourceLocation.tryBuild(LibMisc.MOD_ID, "music/salvation"))
 								.stream()
 								.volume(1.3F)
 				)

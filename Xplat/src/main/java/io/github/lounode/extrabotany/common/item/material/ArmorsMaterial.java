@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.item.material;
 
 import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ArmorItem;
@@ -44,7 +45,28 @@ public enum ArmorsMaterial implements ArmorMaterial, StringRepresentable {
 		map.put(ArmorItem.Type.CHESTPLATE, 6);
 		map.put(ArmorItem.Type.HELMET, 3);
 	}), 28, ExtraBotanySounds.ARMOR_EQUIP_WARRIOR, 1.5F, 0.0F,
-			() -> Ingredient.of(ExtraBotanyItems.shadowium));
+			() -> Ingredient.of(ExtraBotanyItems.shadowium)),
+	MIKU("miku", 5, Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
+		map.put(ArmorItem.Type.BOOTS, 1);
+		map.put(ArmorItem.Type.LEGGINGS, 5);
+		map.put(ArmorItem.Type.CHESTPLATE, 4);
+		map.put(ArmorItem.Type.HELMET, 2);
+	}), 22, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F,
+			() -> Ingredient.of(ExtraBotanyItems.manaDrink)),
+	SHOOTING_GUARDIAN("shootingguardian", 34, Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
+		map.put(ArmorItem.Type.BOOTS, 4);
+		map.put(ArmorItem.Type.LEGGINGS, 8);
+		map.put(ArmorItem.Type.CHESTPLATE, 7);
+		map.put(ArmorItem.Type.HELMET, 3);
+	}), 34, SoundEvents.ARMOR_EQUIP_IRON, 2.0F, 0.0F,
+			() -> Ingredient.of(ExtraBotanyItems.orichalcos)),
+	SILENT_SAGES("silentsages", 50, Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {
+		map.put(ArmorItem.Type.BOOTS, 5);
+		map.put(ArmorItem.Type.LEGGINGS, 9);
+		map.put(ArmorItem.Type.CHESTPLATE, 8);
+		map.put(ArmorItem.Type.HELMET, 4);
+	}), 40, SoundEvents.ARMOR_EQUIP_IRON, 3.0F, 0.0F,
+			() -> Ingredient.of(ExtraBotanyItems.orichalcos));
 
 	public static final StringRepresentable.EnumCodec<ArmorsMaterial> CODEC = StringRepresentable.fromEnum(ArmorsMaterial::values);
 	private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), (map) -> {

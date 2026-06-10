@@ -31,4 +31,5 @@ public class LibAdvancementNames {
 	public static final String MUROMI_SAN = "muromi_san";
 	public static final String ITS_ONLY_THE_FAIRY_TALE = "its_only_the_fairy_tale";
 	public static final String PROJECT_DIVA_DESU = "project_diva_desu";
+	public static final String ALL_STATS = "all_stats";
 }

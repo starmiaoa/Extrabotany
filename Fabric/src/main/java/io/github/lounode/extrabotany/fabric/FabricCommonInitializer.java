@@ -158,6 +158,11 @@ public class FabricCommonInitializer implements ModInitializer {
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> CameraItem.makeRelic(st), ExtraBotanyItems.camera);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> FailnaughtItem.makeRelic(st), ExtraBotanyItems.failnaught);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> ExcaliburItem.makeRelic(st), ExtraBotanyItems.excalibur);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.trueTerrablade);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.trueShadowKatana);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.influxWaver);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.starWrath);
+		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> OldExbotanyRelicSwordItem.makeRelic(st), ExtraBotanyItems.firstFractal);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> CoreOfTheVoidItem.makeRelic(st), ExtraBotanyItems.coreOfTheVoid);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> PandorasBoxItem.makeRelic(st), ExtraBotanyItems.pandorasBox);
 		BotaniaFabricCapabilities.RELIC.registerForItems((st, c) -> InfiniteWineItem.makeRelic(st), ExtraBotanyItems.infiniteWine);

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "decorations",
+  "group": "botania:floating_flower",
+  "ingredients": [
+    {
+      "tag": "botania:floating_flowers"
+    },
+    {
+      "item": "extrabotany:stardustlotus"
+    }
+  ],
+  "result": {
+    "item": "extrabotany:floating_stardustlotus"
+  }
+}

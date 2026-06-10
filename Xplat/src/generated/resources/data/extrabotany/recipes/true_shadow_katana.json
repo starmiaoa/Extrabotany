@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "0": {
+      "tag": "c:ingots/terrasteel"
+    },
+    "1": {
+      "item": "botania:life_essence"
+    },
+    "2": {
+      "item": "extrabotany:the_origin"
+    },
+    "3": {
+      "item": "extrabotany:shadow_katana"
+    }
+  },
+  "pattern": [
+    "  0",
+    "12 ",
+    "31 "
+  ],
+  "result": {
+    "count": 1,
+    "item": "extrabotany:true_shadow_katana"
+  }
+}

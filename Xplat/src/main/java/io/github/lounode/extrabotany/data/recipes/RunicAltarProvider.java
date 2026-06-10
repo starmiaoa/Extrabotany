@@ -15,6 +15,7 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
+import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.helper.ItemNBTHelper;
 import vazkii.botania.common.item.BotaniaItems;
@@ -87,6 +88,93 @@ public class RunicAltarProvider extends ExtraBotanyRecipeProvider {
 				Ingredient.of(ExtraBotanyItems.theChaos),
 				Ingredient.of(ExtraBotanyItems.theOrigin),
 				Ingredient.of(ExtraBotanyItems.theEnd)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.aeroStone), new ItemStack(ExtraBotanyItems.aeroStone), 2000,
+				Ingredient.of(BotaniaItems.runeAir),
+				Ingredient.of(BotaniaItems.runeAir),
+				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(Items.LAPIS_LAZULI),
+				Ingredient.of(Items.QUARTZ)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.aquaStone), new ItemStack(ExtraBotanyItems.aquaStone), 2000,
+				Ingredient.of(BotaniaItems.runeWater),
+				Ingredient.of(BotaniaItems.runeWater),
+				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(Items.LAPIS_LAZULI),
+				Ingredient.of(Items.QUARTZ)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.earthStone), new ItemStack(ExtraBotanyItems.earthStone), 2000,
+				Ingredient.of(BotaniaItems.runeEarth),
+				Ingredient.of(BotaniaItems.runeEarth),
+				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(Items.LAPIS_LAZULI),
+				Ingredient.of(Items.QUARTZ)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.ignisStone), new ItemStack(ExtraBotanyItems.ignisStone), 2000,
+				Ingredient.of(BotaniaItems.runeFire),
+				Ingredient.of(BotaniaItems.runeFire),
+				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(Items.LAPIS_LAZULI),
+				Ingredient.of(Items.QUARTZ)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.powerGlove), new ItemStack(ExtraBotanyItems.powerGlove), 2000,
+				Ingredient.of(BotaniaItems.runeWrath),
+				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(BotaniaItems.manaweaveCloth),
+				Ingredient.of(BotaniaItems.manaweaveCloth),
+				Ingredient.of(BotaniaItems.manaweaveCloth)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.deathRing), new ItemStack(ExtraBotanyItems.deathRing), 2000,
+				Ingredient.of(BotaniaItems.runeEnvy),
+				Ingredient.of(BotaniaItems.manaSteel),
+				Ingredient.of(BotaniaItems.manaSteel),
+				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(Items.WITHER_SKELETON_SKULL)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.frostStar), new ItemStack(ExtraBotanyItems.frostStar), 2000,
+				Ingredient.of(BotaniaItems.runeMana),
+				Ingredient.of(BotaniaItems.manaSteel),
+				Ingredient.of(BotaniaItems.manaSteel),
+				Ingredient.of(Items.ICE),
+				Ingredient.of(Items.ICE)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.theCommunity), new ItemStack(ExtraBotanyItems.theCommunity), 10000,
+				Ingredient.of(ExtraBotanyItems.theChaos),
+				Ingredient.of(ExtraBotanyItems.aeroStone),
+				Ingredient.of(ExtraBotanyItems.aquaStone),
+				Ingredient.of(ExtraBotanyItems.earthStone),
+				Ingredient.of(ExtraBotanyItems.ignisStone)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.sunRing), new ItemStack(ExtraBotanyItems.sunRing), 500000,
+				Ingredient.of(ExtraBotanyItems.theEnd),
+				Ingredient.of(ExtraBotanyItems.frostStar),
+				Ingredient.of(ExtraBotanyItems.deathRing),
+				Ingredient.of(BotaniaItems.auraRingGreater),
+				Ingredient.of(BotaniaItems.miningRing),
+				Ingredient.of(BotaniaItems.pixieRing),
+				Ingredient.of(BotaniaItems.swapRing),
+				Ingredient.of(BotaniaItems.waterRing),
+				Ingredient.of(ExtraBotanyItems.dispersiveRing),
+				Ingredient.of(BotaniaItems.reachRing)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.moonPendant), new ItemStack(ExtraBotanyItems.moonPendant), 500000,
+				Ingredient.of(ExtraBotanyItems.theOrigin),
+				Ingredient.of(BotaniaItems.knockbackBelt),
+				Ingredient.of(BotaniaItems.superCloudPendant),
+				Ingredient.of(BotaniaItems.superLavaPendant),
+				Ingredient.of(BotaniaItems.icePendant),
+				Ingredient.of(BotaniaItems.itemFinder)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.potatoChips), new ItemStack(ExtraBotanyItems.potatoChips), 50000,
+				Ingredient.of(ExtraBotanyItems.gildedPotato),
+				Ingredient.of(BotaniaItems.tinyPotatoMask),
+				Ingredient.of(BotaniaBlocks.tinyPotato),
+				Ingredient.of(BotaniaItems.runeMana),
+				Ingredient.of(Items.TOTEM_OF_UNDYING),
+				Ingredient.of(Items.TOTEM_OF_UNDYING),
+				Ingredient.of(Items.TOTEM_OF_UNDYING),
+				Ingredient.of(Items.CAMPFIRE),
+				Ingredient.of(Items.BLAST_FURNACE)
 		));
 
 	}

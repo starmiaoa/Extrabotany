@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "extrabotany:manabuffer"
+    },
+    "O": {
+      "tag": "forge:ingots/orichalcos"
+    }
+  },
+  "pattern": [
+    "MMM",
+    "MOM",
+    "MMM"
+  ],
+  "result": {
+    "item": "extrabotany:quantummanabuffer"
+  }
+}

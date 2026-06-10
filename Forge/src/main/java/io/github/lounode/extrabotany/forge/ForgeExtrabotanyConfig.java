@@ -58,6 +58,22 @@ public class ForgeExtrabotanyConfig {
 		public final ForgeConfigSpec.BooleanValue enableTelemetry;
 		public final ForgeConfigSpec.ConfigValue<String> telemetryUUID;
 		public final ForgeConfigSpec.ConfigValue<String> fakePlayerId;
+		public final ForgeConfigSpec.BooleanValue enableCandyBagMobSpawn;
+		public final ForgeConfigSpec.DoubleValue candyBagMobSpawnChance;
+		public final ForgeConfigSpec.BooleanValue enableManaGenerator;
+		public final ForgeConfigSpec.IntValue manaGeneratorMaxEnergy;
+		public final ForgeConfigSpec.IntValue manaGeneratorConvertMana;
+		public final ForgeConfigSpec.IntValue manaGeneratorTransferSpeed;
+		public final ForgeConfigSpec.BooleanValue enableManaLiquefaction;
+		public final ForgeConfigSpec.IntValue manaLiquefactionMaxMana;
+		public final ForgeConfigSpec.IntValue manaLiquefactionStorageDrain;
+		public final ForgeConfigSpec.IntValue manaLiquefactionStorageDrainContainer;
+		public final ForgeConfigSpec.IntValue manaLiquefactionStoragePump;
+		public final ForgeConfigSpec.IntValue manaLiquefactionStoragePumpContainer;
+		public final ForgeConfigSpec.IntValue manaLiquefactionManaReceive;
+		public final ForgeConfigSpec.IntValue manaLiquefactionEnergyLoss;
+		public final ForgeConfigSpec.IntValue manaLiquefactionManaGive;
+		public final ForgeConfigSpec.IntValue manaLiquefactionEnergyGain;
 		public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> woodieniaRange;
 		public final ForgeConfigSpec.IntValue woodieniaCooldown;
 		public final ForgeConfigSpec.IntValue woodieniaMaxMana;
@@ -105,6 +121,11 @@ public class ForgeExtrabotanyConfig {
 		public final ForgeConfigSpec.IntValue manalinkTransferSpeed;
 		public final ForgeConfigSpec.IntValue enchanterTransformCost;
 		public final ForgeConfigSpec.IntValue enchanterConsumeSpeed;
+		public final ForgeConfigSpec.IntValue enchanterTransformRange;
+		public final ForgeConfigSpec.IntValue stardustLotusMaxMana;
+		public final ForgeConfigSpec.IntValue stardustLotusBaseCost;
+		public final ForgeConfigSpec.IntValue stardustLotusCostPerBlock;
+		public final ForgeConfigSpec.IntValue stardustLotusConsumeSpeed;
 		public final ForgeConfigSpec.ConfigValue<List<? extends String>> gaiaSpawnUnCheckList;
 
 		public Common(ForgeConfigSpec.Builder builder) {
@@ -160,6 +181,96 @@ public class ForgeExtrabotanyConfig {
 							Fake Player ID (for permission configuration)""")
 					.define("fakePlayerId", "[Extrabotany]");
 			builder.pop();//End fakePlayer
+
+			builder.push("rewardBag");
+			enableCandyBagMobSpawn = builder
+					.comment("""
+							设为 true 时，僵尸和骷髅生成时有概率在副手携带万圣糖惊魂夜。
+							Set true to allow zombies and skeletons to spawn with Halloween Candy Night in their offhand.""")
+					.define("enableCandyBagMobSpawn", true);
+			candyBagMobSpawnChance = builder
+					.comment("""
+							僵尸和骷髅生成时副手携带万圣糖惊魂夜的概率。旧版默认值为 2%。
+							Chance for zombies and skeletons to spawn with Halloween Candy Night in their offhand. The legacy default is 2%.""")
+					.defineInRange("candyBagMobSpawnChance", 0.02D, 0.0D, 1.0D);
+			builder.pop();//End rewardBag
+
+			builder.push("machine");
+			builder.push("manaGenerator");
+			enableManaGenerator = builder
+					.comment("""
+							设为 true 启用 FE 转换器。
+							Set true to enable the Flux Manafield.""")
+					.define("enableManaGenerator", true);
+			manaGeneratorMaxEnergy = builder
+					.comment("""
+							FE 转换器最大 FE 存储量。旧版默认值为 40000。
+							Maximum FE stored by the Flux Manafield. Legacy default: 40000.""")
+					.defineInRange("maxEnergy", 40_000, 1, Integer.MAX_VALUE);
+			manaGeneratorConvertMana = builder
+					.comment("""
+							每 1000 FE 转换为多少魔力。旧版默认值为 99。
+							Mana generated per 1000 FE. Legacy default: 99.""")
+					.defineInRange("manaPer1000FE", 99, 1, Integer.MAX_VALUE);
+			manaGeneratorTransferSpeed = builder
+					.comment("""
+							每 tick 输出到相邻魔力发射器的最大魔力量。旧版默认值为 200。
+							Maximum mana sent to adjacent spreaders each tick. Legacy default: 200.""")
+					.defineInRange("transferSpeed", 200, 1, Integer.MAX_VALUE);
+			builder.pop();//End manaGenerator
+			builder.push("manaLiquefaction");
+			enableManaLiquefaction = builder
+					.comment("""
+							设为 true 启用液态魔力转化器。
+							Set true to enable the Mana Liquefaction Device.""")
+					.define("enableManaLiquefaction", true);
+			manaLiquefactionMaxMana = builder
+					.comment("""
+							液态魔力转化器最大魔力存储。旧版默认值为 1000000。
+							Maximum mana stored by the Mana Liquefaction Device. Legacy default: 1000000.""")
+					.defineInRange("maxMana", 1_000_000, 1, Integer.MAX_VALUE);
+			manaLiquefactionStorageDrain = builder
+					.comment("""
+							无红石时每次从液态魔力容器抽取成功增加的内部液体能量。旧版默认值为 1。
+							Fluid energy gained per successful drain without redstone. Legacy default: 1.""")
+					.defineInRange("storageDrain", 1, 1, Integer.MAX_VALUE);
+			manaLiquefactionStorageDrainContainer = builder
+					.comment("""
+							无红石时每次从相邻容器抽取的液态魔力量。旧版默认值为 1。
+							Fluided Mana drained from adjacent containers each attempt without redstone. Legacy default: 1.""")
+					.defineInRange("storageDrainContainer", 1, 1, Integer.MAX_VALUE);
+			manaLiquefactionStoragePump = builder
+					.comment("""
+							有红石时每次向容器泵出液态魔力消耗的内部液体能量。旧版默认值为 25。
+							Fluid energy consumed per pump with redstone. Legacy default: 25.""")
+					.defineInRange("storagePump", 25, 1, Integer.MAX_VALUE);
+			manaLiquefactionStoragePumpContainer = builder
+					.comment("""
+							有红石时每次向相邻容器填充的液态魔力量。旧版默认值为 25。
+							Fluided Mana filled into adjacent containers each attempt with redstone. Legacy default: 25.""")
+					.defineInRange("storagePumpContainer", 25, 1, Integer.MAX_VALUE);
+			manaLiquefactionManaReceive = builder
+					.comment("""
+							无红石时每次由内部液体能量转化出的魔力。旧版默认值为 2000。
+							Mana produced from internal fluid energy without redstone. Legacy default: 2000.""")
+					.defineInRange("manaReceive", 2_000, 1, Integer.MAX_VALUE);
+			manaLiquefactionEnergyLoss = builder
+					.comment("""
+							无红石时每次生成魔力消耗的内部液体能量。旧版默认值为 2。
+							Fluid energy consumed per mana generation without redstone. Legacy default: 2.""")
+					.defineInRange("energyLoss", 2, 1, Integer.MAX_VALUE);
+			manaLiquefactionManaGive = builder
+					.comment("""
+							有红石时每次转化为内部液体能量消耗的魔力。旧版默认值为 2000。
+							Mana consumed per fluid energy generation with redstone. Legacy default: 2000.""")
+					.defineInRange("manaGive", 2_000, 1, Integer.MAX_VALUE);
+			manaLiquefactionEnergyGain = builder
+					.comment("""
+							有红石时每次消耗魔力获得的内部液体能量。旧版默认值为 2。
+							Fluid energy gained per mana conversion with redstone. Legacy default: 2.""")
+					.defineInRange("energyGain", 2, 1, Integer.MAX_VALUE);
+			builder.pop();//End manaLiquefaction
+			builder.pop();//End machine
 
 			builder.push("flower");
 			builder.comment("""
@@ -497,7 +608,38 @@ public class ForgeExtrabotanyConfig {
 							魔力消耗速度
 							Mana consume speed""")
 					.defineInRange("consumeSpeed", EnchanterBlockEntity.CONSUME_SPEED, 0, Integer.MAX_VALUE);
+			enchanterTransformRange = builder
+					.comment("""
+							转化草方块的扫描范围。旧版默认值为 4。
+							Range to scan for grass blocks. Legacy default: 4.""")
+					.defineInRange("transformRange", EnchanterBlockEntity.RANGE, 1, Integer.MAX_VALUE);
 			builder.pop(); // End enchanter
+
+			builder.comment("""
+					星尘莲
+					Stardust Lotus""");
+			builder.push("stardustLotus");
+			stardustLotusMaxMana = builder
+					.comment("""
+							最大魔力值。旧版默认值为 100000。
+							Maximum mana. Legacy default: 100000.""")
+					.defineInRange("maxMana", StardustLotusBlockEntity.MAX_MANA, 0, Integer.MAX_VALUE);
+			stardustLotusBaseCost = builder
+					.comment("""
+							传送基础魔力消耗。旧版默认值为 20000。
+							Base mana cost for teleportation. Legacy default: 20000.""")
+					.defineInRange("baseCost", StardustLotusBlockEntity.BASE_COST, 0, Integer.MAX_VALUE);
+			stardustLotusCostPerBlock = builder
+					.comment("""
+							每格距离追加的魔力消耗。旧版默认值为 150。
+							Additional mana cost per block of distance. Legacy default: 150.""")
+					.defineInRange("costPerBlock", StardustLotusBlockEntity.COST_PER_BLOCK, 0, Integer.MAX_VALUE);
+			stardustLotusConsumeSpeed = builder
+					.comment("""
+							传送充能时每 tick 消耗魔力。旧版默认值为 800。
+							Mana consumed per tick while charging teleportation. Legacy default: 800.""")
+					.defineInRange("consumeSpeed", StardustLotusBlockEntity.CONSUME_SPEED, 0, Integer.MAX_VALUE);
+			builder.pop(); // End stardustLotus
 
 			builder.pop();//End flower
 			builder.pop();//End server
@@ -521,6 +663,86 @@ public class ForgeExtrabotanyConfig {
 		@Override
 		public String telemetryUUID() {
 			return telemetryUUID.get();
+		}
+
+		@Override
+		public boolean enableCandyBagMobSpawn() {
+			return enableCandyBagMobSpawn.get();
+		}
+
+		@Override
+		public double candyBagMobSpawnChance() {
+			return candyBagMobSpawnChance.get();
+		}
+
+		@Override
+		public boolean enableManaGenerator() {
+			return enableManaGenerator.get();
+		}
+
+		@Override
+		public int manaGeneratorMaxEnergy() {
+			return manaGeneratorMaxEnergy.get();
+		}
+
+		@Override
+		public int manaGeneratorConvertMana() {
+			return manaGeneratorConvertMana.get();
+		}
+
+		@Override
+		public int manaGeneratorTransferSpeed() {
+			return manaGeneratorTransferSpeed.get();
+		}
+
+		@Override
+		public boolean enableManaLiquefaction() {
+			return enableManaLiquefaction.get();
+		}
+
+		@Override
+		public int manaLiquefactionMaxMana() {
+			return manaLiquefactionMaxMana.get();
+		}
+
+		@Override
+		public int manaLiquefactionStorageDrain() {
+			return manaLiquefactionStorageDrain.get();
+		}
+
+		@Override
+		public int manaLiquefactionStorageDrainContainer() {
+			return manaLiquefactionStorageDrainContainer.get();
+		}
+
+		@Override
+		public int manaLiquefactionStoragePump() {
+			return manaLiquefactionStoragePump.get();
+		}
+
+		@Override
+		public int manaLiquefactionStoragePumpContainer() {
+			return manaLiquefactionStoragePumpContainer.get();
+		}
+
+		@Override
+		public int manaLiquefactionManaReceive() {
+			return manaLiquefactionManaReceive.get();
+		}
+
+		@Override
+		public int manaLiquefactionEnergyLoss() {
+			return manaLiquefactionEnergyLoss.get();
+		}
+
+		@Override
+		public int manaLiquefactionManaGive() {
+			return manaLiquefactionManaGive.get();
+		}
+
+		@Override
+		public int manaLiquefactionEnergyGain() {
+			return manaLiquefactionEnergyGain.get();
 		}
 
 		@Override
@@ -758,6 +980,31 @@ public class ForgeExtrabotanyConfig {
 		@Override
 		public int enchanterConsumeSpeed() {
 			return enchanterConsumeSpeed.get();
+		}
+
+		@Override
+		public int enchanterTransformRange() {
+			return enchanterTransformRange.get();
+		}
+
+		@Override
+		public int stardustLotusMaxMana() {
+			return stardustLotusMaxMana.get();
+		}
+
+		@Override
+		public int stardustLotusBaseCost() {
+			return stardustLotusBaseCost.get();
+		}
+
+		@Override
+		public int stardustLotusCostPerBlock() {
+			return stardustLotusCostPerBlock.get();
+		}
+
+		@Override
+		public int stardustLotusConsumeSpeed() {
+			return stardustLotusConsumeSpeed.get();
 		}
 
 		@Override
