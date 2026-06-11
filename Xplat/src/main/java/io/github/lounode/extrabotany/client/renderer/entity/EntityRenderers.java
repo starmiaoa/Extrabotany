@@ -18,6 +18,8 @@ import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockE
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyEntityType;
 
+import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
+
 public final class EntityRenderers {
 	public interface EntityRendererConsumer {
 		<E extends Entity> void accept(EntityType<? extends E> entityType,
@@ -48,9 +50,9 @@ public final class EntityRenderers {
 		consumer.accept(ExtraBotanyEntityType.FLAMESCION_SWORD, NoopRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.FLAMESCION_VOID, NoopRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.FLAMESCION_ULT, NoopRenderer::new);
-		consumer.accept(ExtraBotanyEntityType.TRUE_TERRABLADE_PROJECTILE, ThrownItemRenderer::new);
-		consumer.accept(ExtraBotanyEntityType.TRUE_SHADOW_KATANA_PROJECTILE, ThrownItemRenderer::new);
-		consumer.accept(ExtraBotanyEntityType.INFLUX_WAVER_PROJECTILE, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.TRUE_TERRABLADE_PROJECTILE, ctx -> new OldSwordProjectileRenderer<>(ctx, prefix("textures/item/true_terrablade.png")));
+		consumer.accept(ExtraBotanyEntityType.TRUE_SHADOW_KATANA_PROJECTILE, ctx -> new OldSwordProjectileRenderer<>(ctx, prefix("textures/item/true_shadow_katana.png")));
+		consumer.accept(ExtraBotanyEntityType.INFLUX_WAVER_PROJECTILE, ctx -> new OldSwordProjectileRenderer<>(ctx, prefix("textures/item/influx_waver_projectile.png")));
 		consumer.accept(ExtraBotanyEntityType.PHANTOM_SWORD, PhantomSwordRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.STAR_WRATH_FALLING_STAR, ThrownItemRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SUBSPACE, NoopRenderer::new);

@@ -109,7 +109,7 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 
 	protected Vec3 resolveTargetPos(LivingEntity user, Entity target, double range) {
 		if (target != null) {
-			return target.position().add(0, target.getBbHeight() * 0.5D, 0);
+			return target.position().add(0, 1, 0);
 		}
 
 		Vec3 eye = user.getEyePosition();

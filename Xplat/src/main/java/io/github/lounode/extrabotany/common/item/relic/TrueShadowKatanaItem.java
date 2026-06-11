@@ -18,7 +18,7 @@ public class TrueShadowKatanaItem extends OldExbotanyRelicSwordItem {
 	@Override
 	protected void useSword(Player player, Entity target) {
 		LivingEntity found = findNearbyTarget(player, target, 8D);
-		Vec3 targetPos = found == null ? resolveTargetPos(player, target, 64D) : found.position().add(0, found.getBbHeight() * 0.5D, 0);
+		Vec3 targetPos = found == null ? resolveTargetPos(player, target, 64D) : found.position().add(0, 1, 0);
 		Vec3 look = player.getLookAngle().multiply(1, 0, 1);
 		if (look.lengthSqr() < 1.0E-4D) {
 			look = Vec3.directionFromRotation(0, player.getYRot());

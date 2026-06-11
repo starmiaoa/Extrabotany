@@ -1,7 +1,7 @@
 package io.github.lounode.extrabotany.common.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
+import vazkii.botania.client.fx.WispParticleData;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -100,6 +100,11 @@ public class InfluxWaverProjectileEntity extends OldSwordProjectileEntity {
 	}
 
 	@Override
+	protected boolean discardOnHit() {
+		return false;
+	}
+
+	@Override
 	protected Item getDefaultItem() {
 		return ExtraBotanyItems.influxWaver;
 	}
@@ -117,9 +122,8 @@ public class InfluxWaverProjectileEntity extends OldSwordProjectileEntity {
 	@Override
 	protected void spawnTrailParticles() {
 		if (this.tickCount % 2 == 0) {
-			this.level().addParticle(ParticleTypes.ENCHANT,
-					this.getX(), this.getY(), this.getZ(),
-					0.1D, 0.1D, 0.85D);
+			this.level().addParticle(WispParticleData.wisp(0.3F, 0.1F, 0.1F, 0.85F, 1F),
+					this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
 		}
 	}
 
