@@ -27,6 +27,7 @@ import vazkii.botania.xplat.XplatAbstractions;
 import io.github.lounode.extrabotany.api.item.NatureEnergyItem;
 import io.github.lounode.extrabotany.network.ExtrabotanyPacket;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface EXplatAbstractions extends XplatAbstractions {
@@ -74,6 +75,12 @@ public interface EXplatAbstractions extends XplatAbstractions {
 	}
 
 	default void addSunRingReachModifiers(Multimap<Attribute, AttributeModifier> attributes, UUID modifierId) {}
+
+	default void addEntityReachModifier(Multimap<Attribute, AttributeModifier> attributes, UUID modifierId, String name, double amount) {}
+
+	default List<ItemStack> getEquippedCurios(Player player) {
+		return List.of();
+	}
 
 	default boolean interactWithLivingrockBarrel(Level level, BlockPos pos, Player player, InteractionHand hand, Direction side) {
 		return false;

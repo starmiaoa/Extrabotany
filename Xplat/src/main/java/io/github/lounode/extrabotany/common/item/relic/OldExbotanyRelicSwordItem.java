@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.item.relic;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -63,6 +64,15 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 		}
 	}
 
+	@SubscribeEventWrapper
+	public static void leftClickBlock(PlayerInteractEventWrapper.LeftClickBlock event) {
+		Player player = event.getEntity();
+		if (!player.level().isClientSide && event.getHand() == net.minecraft.world.InteractionHand.MAIN_HAND
+				&& player.getMainHandItem().getItem() instanceof OldExbotanyRelicSwordItem sword) {
+			sword.tryUse(player, null, player.getAttackStrengthScale(0F));
+		}
+	}
+
 	public static void tryUseFromPacket(ServerPlayer player, float attackStrength) {
 		if (player.getMainHandItem().getItem() instanceof OldExbotanyRelicSwordItem sword) {
 			sword.tryUse(player, null, attackStrength);
@@ -80,11 +90,21 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 				return;
 			}
 		}
+		ResourceLocation required = getRequiredAdvancement();
+		if (required != null && player instanceof ServerPlayer serverPlayer && !hasAdvancement(serverPlayer, required)) {
+			player.displayClientMessage(Component.translatable("extrabotany.message.advancement_required").withStyle(ChatFormatting.RED), true);
+			return;
+		}
 		if (this.manaPerUse > 0 && !ManaItemHandler.instance().requestManaExactForTool(stack, player, this.manaPerUse, true)) {
 			return;
 		}
 
 		useSword(player, target);
+	}
+
+	private static boolean hasAdvancement(ServerPlayer player, ResourceLocation id) {
+		var advancement = player.server.getAdvancements().getAdvancement(id);
+		return advancement != null && player.getAdvancements().getOrStartProgress(advancement).isDone();
 	}
 
 	protected Vec3 resolveTargetPos(LivingEntity user, Entity target, double range) {
@@ -137,6 +157,10 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 	}
 
 	protected abstract void useSword(Player player, Entity target);
+
+	protected ResourceLocation getRequiredAdvancement() {
+		return null;
+	}
 
 	private static final class DamageHandlerLike {
 		private static boolean canDamage(LivingEntity target, Entity source) {

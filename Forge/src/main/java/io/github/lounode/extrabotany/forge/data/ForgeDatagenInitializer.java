@@ -25,5 +25,6 @@ public class ForgeDatagenInitializer {
 		generator.addProvider(evt.includeServer(), new XplatFlamescionDamageTypeProvider());
 		generator.addProvider(evt.includeServer(), new XplatGemRecipeProvider());
 		generator.addProvider(evt.includeServer(), new Batch11RecipeProvider(output));
+		generator.addProvider(evt.includeServer(), new Batch14BackportDataProvider(output));
 	}
 }

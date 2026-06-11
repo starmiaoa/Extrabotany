@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import io.github.lounode.extrabotany.common.entity.gaia.Gaia;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class GaiaDisarm<E extends Gaia> extends Behavior<E> {
 			final ItemStack stack = player.getInventory().getItem(i);
 			if (!checkFeasibility(stack)) {
 				ItemStack copy = stack.copy();
-				player.drop(copy, false, true);
+				HerrscherCombatHelper.dropWithPickupDelay(player, copy, 90);
 				player.getInventory().setItem(i, ItemStack.EMPTY);
 			}
 		}

@@ -25,6 +25,7 @@ public final class LibItemNames {
 	public static final String SPIRIT_FUEL = "spirit_fuel";
 	public static final String SPIRIT_FRAGMENT = "spirit_fragment";
 	public static final String CHALLENGE_TICKET = "challenge_ticket";
+	public static final String VOID_CALLER = "voidcaller";
 	public static final String ORICHALCOS_NUGGET = "orichalcos_nugget";
 	public static final String PHOTONIUM_NUGGET = "photonium_nugget";
 	public static final String SHADOWIUM_NUGGET = "shadowium_nugget";
@@ -60,9 +61,6 @@ public final class LibItemNames {
 	public static final String FLAMESCION_WEAPON = "flamescion_weapon";
 	public static final String COSMIC_CAR_KEY = "cosmic_car_key";
 	public static final String MOTOR = "motor";
-	public static final String FLYING_BOAT = "flying_boat";
-	public static final String ELEMENTIUM_FLYING_BOAT = "elementium_flying_boat";
-	public static final String TERRASTEEL_FLYING_BOAT = "terrasteel_flying_boat";
 	public static final String MOTOR_ACCESSORY = "motor_accessory";
 	public static final String COSMIC_CAR_KEY_ACCESSORY = "cosmic_car_key_accessory";
 	public static final String SILENT_ETERNITY = "silent_eternity";
@@ -76,6 +74,7 @@ public final class LibItemNames {
 	public static final String JUDAH_OATH_KIRA = "judah_oath_kira";
 	public static final String JUDAH_OATH_SAKURA = "judah_oath_sakura";
 	public static final String CORE_OF_THE_VOID = "core_of_the_void";
+	public static final String EMPTY_CORE_OF_THE_VOID = "empty_core_of_the_void";
 	public static final String VOID_ARCHIVES = "void_archives";
 	public static final String MANASTEEL_SHIELD = "manasteel_shield";
 	public static final String EINS_REWARD_BAG = "eins_reward_bag";
@@ -139,6 +138,10 @@ public final class LibItemNames {
 	public static final String FOX_EAR = "fox_ear";
 	public static final String FOX_MASK = "fox_mask";
 	public static final String PYLON = "pylon";
+	public static final String GOGGLE_JUNGLE = "goggle_jungle";
+	public static final String GOGGLE_OCEAN = "goggle_ocean";
+	public static final String GOGGLE_SNOWFIELD = "goggle_snowfield";
+	public static final String GOGGLE_STANDARD = "goggle_standard";
 	public static final String BLACK_GLASSES = "black_glasses";
 	public static final String THUG_LIFE = "thug_life";
 	public static final String RED_SCARF = "red_scarf";

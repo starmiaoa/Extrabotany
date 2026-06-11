@@ -45,7 +45,6 @@ import io.github.lounode.extrabotany.common.item.equipment.tool.BottledPixieItem
 import io.github.lounode.extrabotany.common.item.equipment.tool.BottledStarItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.CosmicCarKeyItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.FlamescionWeaponItem;
-import io.github.lounode.extrabotany.common.item.equipment.tool.FlyingBoatItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.KingGardenItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.MotorItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.PhotonShotgunItem;
@@ -58,6 +57,7 @@ import io.github.lounode.extrabotany.common.item.lens.*;
 import io.github.lounode.extrabotany.common.item.material.ChallangeTicketItem;
 import io.github.lounode.extrabotany.common.item.material.GildedPotatoItem;
 import io.github.lounode.extrabotany.common.item.material.HammerTiers;
+import io.github.lounode.extrabotany.common.item.material.VoidCallerItem;
 import io.github.lounode.extrabotany.common.item.relic.*;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
 import io.github.lounode.extrabotany.common.item.relic.voidcore.CoreOfTheVoidItem;
@@ -95,9 +95,6 @@ public final class ExtraBotanyItems {
 	public static final Item flamescionWeapon = make(prefix(LibItemNames.FLAMESCION_WEAPON), new FlamescionWeaponItem(Tiers.NETHERITE, unstackable().rarity(Rarity.EPIC).fireResistant()));
 	public static final Item cosmicCarKey = make(prefix(LibItemNames.COSMIC_CAR_KEY), new CosmicCarKeyItem(unstackable().rarity(Rarity.EPIC)));
 	public static final Item motor = make(prefix(LibItemNames.MOTOR), new MotorItem(unstackable().rarity(Rarity.EPIC)));
-	public static final Item flyingBoat = make(prefix(LibItemNames.FLYING_BOAT), new FlyingBoatItem(FlyingBoatItem.Variant.MANASTEEL, unstackable().rarity(Rarity.UNCOMMON)));
-	public static final Item elementiumFlyingBoat = make(prefix(LibItemNames.ELEMENTIUM_FLYING_BOAT), new FlyingBoatItem(FlyingBoatItem.Variant.ELEMENTIUM, unstackable().rarity(Rarity.UNCOMMON)));
-	public static final Item terrasteelFlyingBoat = make(prefix(LibItemNames.TERRASTEEL_FLYING_BOAT), new FlyingBoatItem(FlyingBoatItem.Variant.TERRASTEEL, unstackable().rarity(Rarity.RARE).fireResistant()));
 	public static final Item motorAccessory = make(prefix(LibItemNames.MOTOR_ACCESSORY), new MountAccessoryItem(MountAccessoryItem.Variant.MOTOR, unstackable().rarity(Rarity.EPIC)));
 	public static final Item cosmicCarKeyAccessory = make(prefix(LibItemNames.COSMIC_CAR_KEY_ACCESSORY), new MountAccessoryItem(MountAccessoryItem.Variant.COSMIC_CAR_KEY, unstackable().rarity(Rarity.EPIC)));
 	public static final Item silentEternity = make(prefix(LibItemNames.SILENT_ETERNITY), new SilentEternityItem(unstackable().rarity(Rarity.EPIC).fireResistant()));
@@ -260,6 +257,8 @@ public final class ExtraBotanyItems {
 	));
 	public static final Item heroMedal = make(prefix(LibItemNames.HERO_MEDAL), new Item(defaultBuilder().rarity(Rarity.UNCOMMON)));//OT
 	public static final Item challengeTicket = make(prefix(LibItemNames.CHALLENGE_TICKET), new ChallangeTicketItem(defaultBuilder()));
+	public static final Item voidCaller = make(prefix(LibItemNames.VOID_CALLER), new VoidCallerItem(defaultBuilder().rarity(Rarity.EPIC)));
+	public static final Item emptyCoreOfTheVoid = make(prefix(LibItemNames.EMPTY_CORE_OF_THE_VOID), new Item(unstackable().rarity(Rarity.EPIC)));
 	public static final Item nightmareFuel = make(prefix(LibItemNames.NIGHTMARE_FUEL), new NightmareFuelItem(defaultBuilder()
 			.food(new FoodProperties.Builder().nutrition(0).saturationMod(0.3F).alwaysEat()
 					.effect(new MobEffectInstance(MobEffects.HARM, 1, 1), 1.0F)
@@ -364,7 +363,6 @@ public final class ExtraBotanyItems {
 			camera, failnaught, excalibur, trueTerrablade, trueShadowKatana, influxWaver, starWrath, firstFractal, spearOfSubspace,
 			judahOath, judahOathKira, judahOathSakura,
 			featherOfJingwei, magicFinger, rodOfDiscord, bottledStar, bottledPixie, photonShotgun, silverBullet, kingGarden, flamescionWeapon, cosmicCarKey, motor,
-			flyingBoat, elementiumFlyingBoat, terrasteelFlyingBoat,
 			silentEternity, coreOfTheVoid, voidArchives,
 			dispersiveRing, curseRing, pureDaisyPendant, frostStar, deathRing, potatoChips, sunRing, moonPendant,
 			starryIdolHeadgear, starryIdolSuit, starryIdolSkirt, starryIdolBoots,
@@ -381,9 +379,11 @@ public final class ExtraBotanyItems {
 			judahOath, judahOathKira, judahOathSakura, silentEternity
 	};
 	//Bauble
+	// Slot assignments follow the 1.16 branch curios tags, completed with 1.12.2 BaubleTypes
+	// (silent_eternity TRINKET -> curio, bottled_flame CHARM -> charm).
 	public static final Item[] RINGS = {
 			manaRingMaster, frostRing, dispersiveRing, curseRing,
-			spiderRing, jackieChanRing, parkourRing, sunRing
+			spiderRing, jackieChanRing, parkourRing, sunRing, deathRing, frostStar
 	};
 
 	public static final Item[] BODY = {
@@ -391,13 +391,28 @@ public final class ExtraBotanyItems {
 	};
 
 	public static final Item[] HEAD = {
-			foxEar, foxMask, pylon, blackGlasses, thugLife, superCrown, mask
+			foxEar, foxMask, pylon, blackGlasses, thugLife, superCrown, mask, potatoChips
 	};
 
-	public static final Item[] ALL_SLOT = {
-			featherOfJingwei, natureOrb, motorAccessory, cosmicCarKeyAccessory,
-			peaceAmulet, aeroStone, aquaStone, earthStone, ignisStone, theCommunity, powerGlove, frostStar, deathRing, potatoChips, moonPendant, bottledFlame, silentEternity, gemOfConquest
+	public static final Item[] NECKLACES = {
+			pureDaisyPendant, moonPendant
 	};
+
+	public static final Item[] CHARMS = {
+			gemOfConquest, bottledFlame
+	};
+
+	public static final Item[] CURIOS = {
+			featherOfJingwei, natureOrb, peaceAmulet, aeroStone, aquaStone,
+			earthStone, ignisStone, theCommunity, powerGlove, silentEternity
+	};
+
+	public static final Item[] MOUNTS = {
+			motorAccessory, cosmicCarKeyAccessory
+	};
+
+	public static final Item[] ALL_SLOT = java.util.stream.Stream.of(RINGS, BODY, HEAD, NECKLACES, CHARMS, CURIOS, MOUNTS)
+			.flatMap(java.util.Arrays::stream).toArray(Item[]::new);
 
 	private static <T extends Item> T make(ResourceLocation id, T item) {
 		var old = ALL.put(id, item);

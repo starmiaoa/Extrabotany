@@ -32,4 +32,7 @@ public class LibAdvancementNames {
 	public static final String ITS_ONLY_THE_FAIRY_TALE = "its_only_the_fairy_tale";
 	public static final String PROJECT_DIVA_DESU = "project_diva_desu";
 	public static final String ALL_STATS = "all_stats";
+	public static final String HERRSCHER_DEFEAT = "herrscher_defeat";
+	public static final String ENDGAME_GOAL = "endgame_goal";
+	public static final String LANDMINE_ACTIVE = "landmine_active";
 }

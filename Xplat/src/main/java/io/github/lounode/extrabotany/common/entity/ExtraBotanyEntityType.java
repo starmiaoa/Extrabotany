@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 
 import io.github.lounode.extrabotany.common.entity.gaia.Gaia;
 import io.github.lounode.extrabotany.common.entity.gaia.GaiaIII;
+import io.github.lounode.extrabotany.common.entity.gaia.VoidHerrscher;
 import io.github.lounode.extrabotany.common.lib.LibEntityNames;
 
 import java.util.function.BiConsumer;
@@ -43,6 +44,14 @@ public class ExtraBotanyEntityType {
 			.clientTrackingRange(10)
 			.updateInterval(10)
 			.build(LibEntityNames.GAIA_III.toString());
+
+	public static final EntityType<VoidHerrscher> VOID_HERRSCHER = EntityType.Builder.<VoidHerrscher>of(
+			VoidHerrscher::new, MobCategory.MONSTER)
+			.sized(0.6F, 1.8F)
+			.fireImmune()
+			.clientTrackingRange(10)
+			.updateInterval(10)
+			.build(LibEntityNames.VOID_HERRSCHER.toString());
 
 	public static final EntityType<SkullMissileEntity> SKULL_MISSILE = EntityType.Builder.<SkullMissileEntity>of(
 			SkullMissileEntity::new, MobCategory.MISC)
@@ -81,7 +90,7 @@ public class ExtraBotanyEntityType {
 
 	public static final EntityType<ButterflyProjectileEntity> BUTTERFLY_PROJECTILE = EntityType.Builder.<ButterflyProjectileEntity>of(
 			ButterflyProjectileEntity::new, MobCategory.MISC)
-			.sized(0.35F, 0.35F)
+			.sized(0.25F, 0.25F)
 			.clientTrackingRange(4)
 			.updateInterval(2)
 			.build(LibEntityNames.BUTTERFLY_PROJECTILE.toString());
@@ -180,17 +189,37 @@ public class ExtraBotanyEntityType {
 	public static final EntityType<SubspaceEntity> SUBSPACE = EntityType.Builder.<SubspaceEntity>of(
 			SubspaceEntity::new, MobCategory.MISC)
 			.sized(0.1F, 0.1F)
-			.noSummon()
 			.clientTrackingRange(8)
 			.updateInterval(2)
 			.build(LibEntityNames.SUBSPACE.toString());
 
 	public static final EntityType<SubspaceSpearEntity> SUBSPACE_SPEAR = EntityType.Builder.<SubspaceSpearEntity>of(
 			SubspaceSpearEntity::new, MobCategory.MISC)
-			.sized(0.4F, 0.4F)
-			.clientTrackingRange(4)
+			.sized(0.35F, 0.35F)
+			.clientTrackingRange(8)
 			.updateInterval(2)
 			.build(LibEntityNames.SUBSPACE_SPEAR.toString());
+
+	public static final EntityType<SubspaceLanceEntity> SUBSPACE_LANCE = EntityType.Builder.<SubspaceLanceEntity>of(
+			SubspaceLanceEntity::new, MobCategory.MISC)
+			.sized(0.5F, 2.0F)
+			.clientTrackingRange(8)
+			.updateInterval(2)
+			.build(LibEntityNames.SUBSPACE_LANCE.toString());
+
+	public static final EntityType<SwordDomainEntity> SWORD_DOMAIN = EntityType.Builder.<SwordDomainEntity>of(
+			SwordDomainEntity::new, MobCategory.MISC)
+			.sized(0.5F, 2.0F)
+			.clientTrackingRange(8)
+			.updateInterval(2)
+			.build(LibEntityNames.SWORD_DOMAIN.toString());
+
+	public static final EntityType<HerrscherVoidFieldEntity> VOID_FIELD = EntityType.Builder.<HerrscherVoidFieldEntity>of(
+			HerrscherVoidFieldEntity::new, MobCategory.MISC)
+			.sized(3F, 2F)
+			.clientTrackingRange(8)
+			.updateInterval(2)
+			.build(LibEntityNames.VOID_FIELD.toString());
 
 	public static final EntityType<JudahOathEntity> JUDAH_OATH = EntityType.Builder.<JudahOathEntity>of(
 			JudahOathEntity::new, MobCategory.MISC)
@@ -227,18 +256,13 @@ public class ExtraBotanyEntityType {
 			.updateInterval(2)
 			.build(LibEntityNames.MOTOR.toString());
 
-	public static final EntityType<FlyingBoatEntity> FLYING_BOAT = EntityType.Builder.<FlyingBoatEntity>of(
-			FlyingBoatEntity::new, MobCategory.MISC)
-			.sized(1.375F, 0.5625F)
-			.clientTrackingRange(10)
-			.updateInterval(2)
-			.build(LibEntityNames.FLYING_BOAT.toString());
 
 	public static void registerEntities(BiConsumer<EntityType<?>, ResourceLocation> r) {
 		r.accept(AURA_FIRE, LibEntityNames.AURA_FIRE);
 		r.accept(MAGIC_LANDMINE, LibEntityNames.MAGIC_LANDMINE);
 		r.accept(GAIA_LEGACY, LibEntityNames.GAIA_LEGACY);
 		r.accept(GAIA_III, LibEntityNames.GAIA_III);
+		r.accept(VOID_HERRSCHER, LibEntityNames.VOID_HERRSCHER);
 		r.accept(SKULL_MISSILE, LibEntityNames.SKULL_MISSILE);
 		r.accept(SKULL_LANDMINE_BLUE, LibEntityNames.SKULL_LANDMINE_BLUE);
 		r.accept(SKULL_LANDMINE_RED, LibEntityNames.SKULL_LANDMINE_RED);
@@ -260,17 +284,20 @@ public class ExtraBotanyEntityType {
 		r.accept(STAR_WRATH_FALLING_STAR, LibEntityNames.STAR_WRATH_FALLING_STAR);
 		r.accept(SUBSPACE, LibEntityNames.SUBSPACE);
 		r.accept(SUBSPACE_SPEAR, LibEntityNames.SUBSPACE_SPEAR);
+		r.accept(SUBSPACE_LANCE, LibEntityNames.SUBSPACE_LANCE);
+		r.accept(SWORD_DOMAIN, LibEntityNames.SWORD_DOMAIN);
+		r.accept(VOID_FIELD, LibEntityNames.VOID_FIELD);
 		r.accept(JUDAH_OATH, LibEntityNames.JUDAH_OATH);
 		r.accept(JUDAH_SPEAR, LibEntityNames.JUDAH_SPEAR);
 		r.accept(JUDAH_SWORD, LibEntityNames.JUDAH_SWORD);
 		r.accept(UFO, LibEntityNames.UFO);
 		r.accept(MOTOR, LibEntityNames.MOTOR);
-		r.accept(FLYING_BOAT, LibEntityNames.FLYING_BOAT);
 	}
 
 	public static void registerAttributes(BiConsumer<EntityType<? extends LivingEntity>, AttributeSupplier.Builder> consumer) {
 		consumer.accept(GAIA_LEGACY, Gaia.createGaiaAttributes());
 		consumer.accept(GAIA_III, GaiaIII.createGaiaAttributes());
+		consumer.accept(VOID_HERRSCHER, VoidHerrscher.createAttributes());
 
 	}
 }

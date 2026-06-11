@@ -13,7 +13,6 @@ import io.github.lounode.extrabotany.network.clientbound.ColorfulBossEventPacket
 import io.github.lounode.extrabotany.network.clientbound.GaiaBossEventPacket;
 import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
-import io.github.lounode.extrabotany.network.serverbound.FlyingBoatInputPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionShiftPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionUltPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
@@ -59,8 +58,6 @@ public class ForgePacketHandler {
 				makeServerBoundHandler(UfoInputPacket::handle));
 		CHANNEL.registerMessage(i++, MotorInputPacket.class, MotorInputPacket::encode, MotorInputPacket::decode,
 				makeServerBoundHandler(MotorInputPacket::handle));
-		CHANNEL.registerMessage(i++, FlyingBoatInputPacket.class, FlyingBoatInputPacket::encode, FlyingBoatInputPacket::decode,
-				makeServerBoundHandler(FlyingBoatInputPacket::handle));
 		CHANNEL.registerMessage(i++, MountAccessoryPacket.class, MountAccessoryPacket::encode, MountAccessoryPacket::decode,
 				makeServerBoundHandler(MountAccessoryPacket::handle));
 		//ClientBound

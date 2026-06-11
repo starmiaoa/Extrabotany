@@ -44,17 +44,12 @@ public class EntityLootProvider extends EntityLootSubProviderFix {
 				)
 				.withPool(LootPool.lootPool()
 						.when(() -> RealPlayerCondition.INSTANCE)
-						.setRolls(ConstantValue.exactly(1))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.limitedEditionSupplyBag)
-								.apply(net.minecraft.world.level.storage.loot.functions.SetItemCountFunction.setCount(ConstantValue.exactly(3))))
-				)
-				.withPool(LootPool.lootPool()
-						.when(() -> RealPlayerCondition.INSTANCE)
 						.when(LootItemRandomChanceCondition.randomChance(0.2F))
 						.setRolls(ConstantValue.exactly(1))
 						.add(LootItem.lootTableItem(ExtraBotanyItems.recordGaia3))
 						.add(LootItem.lootTableItem(ExtraBotanyItems.recordHerrscherOfTheVoid))
 				)
 		);
+		this.add(ExtraBotanyEntityType.VOID_HERRSCHER, LootTable.lootTable());
 	}
 }

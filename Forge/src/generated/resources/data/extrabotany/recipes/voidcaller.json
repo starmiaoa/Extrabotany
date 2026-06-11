@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "botania:life_essence"
+    },
+    "H": {
+      "item": "extrabotany:hero_medal"
+    },
+    "P": {
+      "tag": "extrabotany:photonium_ingots"
+    },
+    "S": {
+      "tag": "extrabotany:shadowium_ingots"
+    }
+  },
+  "pattern": [
+    "ASA",
+    "PHP",
+    "ASA"
+  ],
+  "result": {
+    "count": 3,
+    "item": "extrabotany:voidcaller"
+  },
+  "show_notification": true
+}

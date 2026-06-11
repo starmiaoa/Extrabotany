@@ -1,8 +1,13 @@
 package io.github.lounode.extrabotany.common.entity;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
@@ -23,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.common.helper.VecHelper;
 
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,8 +42,14 @@ public class SkullMissileEntity extends ThrowableProjectile {
 
 	//private static final String TAG_SKIN = "Skin";
 	private static final String TAG_FIRE = "Fire";
+	private static final String TAG_EFFECT = "Effect";
+	private static final String TAG_DAMAGE = "Damage";
+	private static final String TAG_TRUE_DAMAGE = "TrueDamage";
 	private static final String TAG_TICKS_EXISTED = "ticksExisted";
 	private static final String TAG_TARGET = "Target";
+	private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(SkullMissileEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> TRUE_DAMAGE = SynchedEntityData.defineId(SkullMissileEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Boolean> EFFECT = SynchedEntityData.defineId(SkullMissileEntity.class, EntityDataSerializers.BOOLEAN);
 
 	//private static final EntityDataAccessor<Optional<UUID>> SKIN = SynchedEntityData.defineId(SkullMissileEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 	private boolean fire;
@@ -155,8 +168,17 @@ public class SkullMissileEntity extends ThrowableProjectile {
 
 		getTarget().ifPresent(target -> {
 			if (hit.getEntity() == target) {
-				//TODO ConfigAble damage
-				target.hurt(getDamageSource(), 12);
+				target.hurt(getDamageSource(), getDamage());
+				target.hurt(damageSources().generic(), 0.5F);
+				if (target instanceof LivingEntity living) {
+					HerrscherCombatHelper.dealTrueMagicDamage(living, getOwner(), getTrueDamage());
+					if (isFire()) {
+						living.setSecondsOnFire(5);
+					}
+					if (hasEffect()) {
+						living.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 1));
+					}
+				}
 				discard();
 			}
 		});
@@ -223,6 +245,9 @@ public class SkullMissileEntity extends ThrowableProjectile {
 	@Override
 	protected void defineSynchedData() {
 		//this.entityData.define(SKIN, Optional.of(DEFAULT_SKIN));
+		this.entityData.define(DAMAGE, 12F);
+		this.entityData.define(TRUE_DAMAGE, 0F);
+		this.entityData.define(EFFECT, false);
 	}
 
 	@Override
@@ -230,6 +255,9 @@ public class SkullMissileEntity extends ThrowableProjectile {
 		super.addAdditionalSaveData(cmp);
 		//cmp.putUUID(TAG_SKIN, this.getSkin());
 		cmp.putBoolean(TAG_FIRE, this.isFire());
+		cmp.putBoolean(TAG_EFFECT, this.hasEffect());
+		cmp.putFloat(TAG_DAMAGE, this.getDamage());
+		cmp.putFloat(TAG_TRUE_DAMAGE, this.getTrueDamage());
 		cmp.putInt(TAG_TICKS_EXISTED, this.getTicksExisted());
 
 		getTarget().ifPresent(target -> {
@@ -247,6 +275,9 @@ public class SkullMissileEntity extends ThrowableProjectile {
 		*/
 
 		this.setFire(cmp.getBoolean(TAG_FIRE));
+		this.setEffect(cmp.getBoolean(TAG_EFFECT));
+		this.setDamage(cmp.contains(TAG_DAMAGE) ? cmp.getFloat(TAG_DAMAGE) : 12F);
+		this.setTrueDamage(cmp.getFloat(TAG_TRUE_DAMAGE));
 		this.setTicksExisted(cmp.getInt(TAG_TICKS_EXISTED));
 
 		if (cmp.hasUUID(TAG_TARGET)) {
@@ -261,6 +292,30 @@ public class SkullMissileEntity extends ThrowableProjectile {
 
 	public boolean isFire() {
 		return fire;
+	}
+
+	public void setEffect(boolean effect) {
+		this.entityData.set(EFFECT, effect);
+	}
+
+	public boolean hasEffect() {
+		return this.entityData.get(EFFECT);
+	}
+
+	public void setDamage(float damage) {
+		this.entityData.set(DAMAGE, Math.max(0F, damage));
+	}
+
+	public float getDamage() {
+		return this.entityData.get(DAMAGE);
+	}
+
+	public void setTrueDamage(float damage) {
+		this.entityData.set(TRUE_DAMAGE, Math.max(0F, damage));
+	}
+
+	public float getTrueDamage() {
+		return this.entityData.get(TRUE_DAMAGE);
 	}
 	/*
 	public UUID getSkin() {

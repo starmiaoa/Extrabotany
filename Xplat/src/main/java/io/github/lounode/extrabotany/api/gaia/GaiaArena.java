@@ -47,6 +47,7 @@ import io.github.lounode.extrabotany.common.entity.MagicLandMineEntity;
 import io.github.lounode.extrabotany.common.entity.gaia.Gaia;
 import io.github.lounode.extrabotany.common.lib.RegistryHelper;
 import io.github.lounode.extrabotany.common.telemetry.ExtraBotanyTelemetry;
+import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
 import java.util.ArrayList;
@@ -228,7 +229,7 @@ public class GaiaArena {
 		}
 
 		// Stop all the pixies leftover from the fight
-		for (PixieEntity pixie : level.getEntitiesOfClass(PixieEntity.class, getArenaBB(), p -> p.isAlive() && p.getPixieType() == 1)) {
+		for (PixieEntity pixie : level.getEntitiesOfClass(PixieEntity.class, getArenaBB(), p -> p.isAlive())) {
 			pixie.spawnAnim();
 			pixie.discard();
 		}
@@ -250,6 +251,11 @@ public class GaiaArena {
 
 			player.setDeltaMovement(motion.x, 0.2, motion.z);
 			player.hurtMarked = true;
+			if (player.getVehicle() != null) {
+				player.getVehicle().setDeltaMovement(motion.x, 0.2, motion.z);
+				player.getVehicle().hurtMarked = true;
+			}
+			player.addEffect(new net.minecraft.world.effect.MobEffectInstance(MobEffects.UNLUCK, 400, 4));
 		}
 	}
 
@@ -476,6 +482,40 @@ public class GaiaArena {
 			}
 		}
 		return true;
+	}
+
+	public boolean checkGuardianInventoryStrict(Level level) {
+		for (Player player : getPlayersAround(level)) {
+			if (!checkGuardianInventoryPass(player)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean checkGuardianInventoryPass(Player player) {
+		if (player.isCreative()) {
+			return true;
+		}
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			if (!checkGuardianAllowed(player.getInventory().getItem(i))) {
+				return false;
+			}
+		}
+		for (ItemStack stack : EXplatAbstractions.INSTANCE.getEquippedCurios(player)) {
+			if (!checkGuardianAllowed(stack)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean checkGuardianAllowed(ItemStack stack) {
+		if (stack.isEmpty()) {
+			return true;
+		}
+		String namespace = RegistryHelper.getRegistryName(stack.getItem()).getNamespace();
+		return namespace.equals("minecraft") || namespace.equals("botania") || namespace.equals("extrabotany");
 	}
 
 	public static boolean checkInventoryPass(Player player) {

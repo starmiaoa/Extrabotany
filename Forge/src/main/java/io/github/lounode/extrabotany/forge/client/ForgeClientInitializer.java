@@ -23,7 +23,6 @@ import vazkii.botania.forge.CapabilityUtil;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import io.github.lounode.extrabotany.client.ExtraBotanyItemProperties;
-import io.github.lounode.extrabotany.client.FlyingBoatInputHandler;
 import io.github.lounode.extrabotany.client.MotorInputHandler;
 import io.github.lounode.extrabotany.client.MountAccessoryInputHandler;
 import io.github.lounode.extrabotany.client.UfoInputHandler;
@@ -97,7 +96,6 @@ public class ForgeClientInitializer {
 			if (event.phase == TickEvent.Phase.END) {
 				UfoInputHandler.tick(Minecraft.getInstance());
 				MotorInputHandler.tick(Minecraft.getInstance());
-				FlyingBoatInputHandler.tick(Minecraft.getInstance());
 				MountAccessoryInputHandler.tick(Minecraft.getInstance());
 			}
 		});

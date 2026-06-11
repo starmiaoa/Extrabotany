@@ -131,6 +131,16 @@ public class CraftingRecipeProvider extends vazkii.botania.data.recipes.Crafting
 				.pattern("ASA")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.gaiaIngot))
 				.save(consumer);
+		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExtraBotanyItems.voidCaller, 3)
+				.define('S', ExtraBotanyTags.Items.INGOTS_SHADOWIUM)
+				.define('P', ExtraBotanyTags.Items.INGOTS_PHOTONIUM)
+				.define('H', ExtraBotanyItems.heroMedal)
+				.define('A', BotaniaItems.lifeEssence)
+				.pattern("ASA")
+				.pattern("PHP")
+				.pattern("ASA")
+				.unlockedBy("has_item", conditionsFromItem(ExtraBotanyItems.heroMedal))
+				.save(consumer);
 		ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ExtraBotanyItems.dasRheingold)
 				.define('S', BotaniaItems.manaweaveCloth)
 				.define('P', Items.GOLD_INGOT)
@@ -197,6 +207,15 @@ public class CraftingRecipeProvider extends vazkii.botania.data.recipes.Crafting
 				.pattern("OCO")
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.manaRingGreater))
 				.save(WrapperResult.ofType(ManaUpgradeRecipe.SERIALIZER, consumer));
+		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ExtraBotanyItems.coreOfTheVoid)
+				.define('Q', BotaniaBlocks.sunnyQuartz)
+				.define('O', ExtraBotanyTags.Items.INGOTS_ORICHALCOS)
+				.define('T', ExtraBotanyItems.emptyCoreOfTheVoid)
+				.pattern("QOQ")
+				.pattern("QTQ")
+				.pattern("QQQ")
+				.unlockedBy("has_item", conditionsFromItem(ExtraBotanyItems.emptyCoreOfTheVoid))
+				.save(consumer);
 		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ExtraBotanyItems.camera)
 				.define('B', ExtraBotanyTags.Items.INGOTS_SHADOWIUM)
 				.define('G', BotaniaItems.gaiaIngot)

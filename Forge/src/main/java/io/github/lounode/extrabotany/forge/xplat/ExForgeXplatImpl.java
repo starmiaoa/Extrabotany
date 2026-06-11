@@ -26,6 +26,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import vazkii.botania.forge.xplat.ForgeXplatImpl;
 
@@ -39,6 +40,8 @@ import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import javax.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ExForgeXplatImpl extends ForgeXplatImpl implements EXplatAbstractions {
@@ -91,6 +94,24 @@ public class ExForgeXplatImpl extends ForgeXplatImpl implements EXplatAbstractio
 				new AttributeModifier(modifierId, "Sun Ring block reach", 3.5D, AttributeModifier.Operation.ADDITION));
 		attributes.put(ForgeMod.ENTITY_REACH.get(),
 				new AttributeModifier(modifierId, "Sun Ring entity reach", 3.5D, AttributeModifier.Operation.ADDITION));
+	}
+
+	@Override
+	public void addEntityReachModifier(Multimap<Attribute, AttributeModifier> attributes, UUID modifierId, String name, double amount) {
+		attributes.put(ForgeMod.ENTITY_REACH.get(),
+				new AttributeModifier(modifierId, name, amount, AttributeModifier.Operation.ADDITION));
+	}
+
+	@Override
+	public List<ItemStack> getEquippedCurios(Player player) {
+		List<ItemStack> stacks = new ArrayList<>();
+		CuriosApi.getCuriosInventory(player).ifPresent(inventory -> inventory.getCurios().forEach((slot, handler) -> {
+			var stackHandler = handler.getStacks();
+			for (int i = 0; i < stackHandler.getSlots(); i++) {
+				stacks.add(stackHandler.getStackInSlot(i));
+			}
+		}));
+		return stacks;
 	}
 
 	@Override

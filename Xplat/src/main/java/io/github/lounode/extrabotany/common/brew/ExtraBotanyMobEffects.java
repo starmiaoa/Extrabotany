@@ -25,6 +25,7 @@ public class ExtraBotanyMobEffects {
 	public static final MobEffect INCANDESCENCE = new IncandescenceMobEffect(MobEffectCategory.BENEFICIAL, 0xFF4500);
 	public static final MobEffect TIMELOCK = new TimeLockMobEffect(MobEffectCategory.HARMFUL, 0x892CDC);
 	public static final MobEffect FLAMESCION = new FlamescionMobEffect(MobEffectCategory.BENEFICIAL, 0xFF4500);
+	public static final MobEffect WITCH_CURSE = new WitchCurseMobEffect(MobEffectCategory.HARMFUL, 0x4B0082);
 
 	public static void registerPotions(BiConsumer<MobEffect, ResourceLocation> r) {
 		r.accept(IMMOBILIZE, prefix(LibPotionNames.IMMOBILIZE));
@@ -37,5 +38,6 @@ public class ExtraBotanyMobEffects {
 		r.accept(INCANDESCENCE, prefix(LibPotionNames.INCANDESCENCE));
 		r.accept(TIMELOCK, prefix(LibPotionNames.TIMELOCK));
 		r.accept(FLAMESCION, prefix(LibPotionNames.FLAMESCION));
+		r.accept(WITCH_CURSE, prefix(LibPotionNames.WITCH_CURSE));
 	}
 }

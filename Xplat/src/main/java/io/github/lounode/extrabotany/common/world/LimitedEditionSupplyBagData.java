@@ -34,7 +34,13 @@ public class LimitedEditionSupplyBagData extends SavedData {
 	}
 
 	public ItemStack draw(UUID playerId, RandomSource random) {
-		int[] pool = pools.computeIfAbsent(playerId, id -> shuffledPool(random));
+		int[] poolBefore = pools.get(playerId);
+		if (poolBefore == null) {
+			pools.put(playerId, shuffledPool(random));
+			setDirty();
+			return new ItemStack(ExtraBotanyItems.emptyCoreOfTheVoid);
+		}
+		int[] pool = poolBefore;
 		int start = random.nextInt(pool.length);
 
 		for (int i = 0; i < pool.length; i++) {
@@ -47,7 +53,12 @@ public class LimitedEditionSupplyBagData extends SavedData {
 			}
 		}
 
-		return new ItemStack(Items.EMERALD, 2);
+		pool = shuffledPool(random);
+		pools.put(playerId, pool);
+		int entry = pool[0];
+		pool[0] = EMPTY;
+		setDirty();
+		return stackFor(entry);
 	}
 
 	@Override
@@ -91,7 +102,7 @@ public class LimitedEditionSupplyBagData extends SavedData {
 	private static int[] createTemplate() {
 		int[] pool = new int[100];
 		int index = 0;
-		index = fill(pool, index, 1, 0);
+		index = fill(pool, index, 1, 8);
 		index = fill(pool, index, 4, 1);
 		index = fill(pool, index, 10, 2);
 		index = fill(pool, index, 10, 3);
@@ -119,6 +130,7 @@ public class LimitedEditionSupplyBagData extends SavedData {
 			case 5 -> new ItemStack(ExtraBotanyItems.zweiRewardBag, 6);
 			case 6 -> new ItemStack(ExtraBotanyItems.nineAndThreeQuartersRewardBag, 3);
 			case 7 -> new ItemStack(Items.DIAMOND, 4);
+			case 8 -> new ItemStack(ExtraBotanyItems.emptyCoreOfTheVoid);
 			default -> ItemStack.EMPTY;
 		};
 	}
