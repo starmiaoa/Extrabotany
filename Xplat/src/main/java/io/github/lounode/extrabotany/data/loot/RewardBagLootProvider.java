@@ -23,7 +23,8 @@ public class RewardBagLootProvider extends RewardBagLootSubProvider {
 		this.add("nine_and_three_quarters", harryPotterTable());
 		this.add("pandoras_box", pandoraTable());
 		this.add("candy", candyTable());
-		this.add("limited_edition_supply_bag", limitedEditionSupplyBagTable());
+		// limited_edition_supply_bag draws from LimitedEditionSupplyBagData (per-player
+		// no-replacement pool), not from a loot table.
 	}
 
 	@Override
@@ -44,25 +45,6 @@ public class RewardBagLootProvider extends RewardBagLootSubProvider {
 						.add(LootItem.lootTableItem(ExtraBotanyItems.candyDrei)
 								.setWeight(1)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))));
-	}
-
-	public static LootTable.Builder limitedEditionSupplyBagTable() {
-		return LootTable.lootTable()
-				.withPool(LootPool.lootPool()
-						.setRolls(ConstantValue.exactly(1))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.silentEternity).setWeight(1))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.lensSuperconductor).setWeight(4))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.heroMedal).setWeight(10))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.vierRewardBag).setWeight(10)
-								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.dreiRewardBag).setWeight(20)
-								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.zweiRewardBag).setWeight(30)
-								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(6))))
-						.add(LootItem.lootTableItem(ExtraBotanyItems.nineAndThreeQuartersRewardBag).setWeight(10)
-								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(3))))
-						.add(LootItem.lootTableItem(Items.DIAMOND).setWeight(15)
-								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4)))));
 	}
 
 	public static LootTable.Builder pandoraTable() {

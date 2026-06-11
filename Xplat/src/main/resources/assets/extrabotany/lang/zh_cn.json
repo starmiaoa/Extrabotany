@@ -886,7 +886,7 @@
   "extrabotany.entry.voidcaller": "来自虚空的呼唤",
   "extrabotany.page.voidcaller0": "信标、四枚盖亚水晶与干净的物品栏缺一不可。潜行右击信标,虚空才会回应你的呼唤。",
   "extrabotany.entry.empty_core_of_the_void": "空的律者核心",
-  "extrabotany.page.empty_core_of_the_void0": "虚空归于寂静后留下的空壳。它本身只是材料,却能锚定真正的虚空核心。",
+  "extrabotany.page.empty_core_of_the_void0": "虚空归于寂静后留下的空壳。它本身只是材料,却能锚定真正的虚空核心。$(br2)击败$(thing)空之律者$()掉落的$(item)限量补给袋$()中能够开出它。",
   "extrabotany.page.herrscher1": "空之律者会使用免伤层、旋转盾、亚空之矛、骷髅地雷、追踪导弹与天堂裁决。红色地雷通过正常伤害管线造成致命魔法伤害。",
   "extrabotany.page.herrscher2": "召唤这位守护者时,场内玩家只能携带 Minecraft、植物魔法与额外植物学的物品。",
   "extrabotany.message.advancement_required": "你必须先击败空之律者才能使用这件遗物。",
