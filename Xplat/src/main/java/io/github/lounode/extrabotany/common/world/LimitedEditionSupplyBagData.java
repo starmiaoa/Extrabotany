@@ -20,9 +20,12 @@ import java.util.UUID;
 
 public class LimitedEditionSupplyBagData extends SavedData {
 	private static final String DATA_NAME = LibMisc.MOD_ID + "_limited_edition_supply_bag";
+	private static final String TAG_VERSION = "Version";
 	private static final String TAG_POOLS = "Pools";
 	private static final String TAG_UUID = "UUID";
 	private static final String TAG_POOL = "Pool";
+	// Bumped when TEMPLATE contents change; stale pools predate the empty core entry and are discarded on load.
+	private static final int VERSION = 2;
 	private static final int EMPTY = -1;
 	private static final int[] TEMPLATE = createTemplate();
 
@@ -70,12 +73,16 @@ public class LimitedEditionSupplyBagData extends SavedData {
 			poolTag.put(TAG_POOL, new IntArrayTag(entry.getValue()));
 			list.add(poolTag);
 		}
+		tag.putInt(TAG_VERSION, VERSION);
 		tag.put(TAG_POOLS, list);
 		return tag;
 	}
 
 	private static LimitedEditionSupplyBagData load(CompoundTag tag) {
 		LimitedEditionSupplyBagData data = new LimitedEditionSupplyBagData();
+		if (tag.getInt(TAG_VERSION) != VERSION) {
+			return data;
+		}
 		ListTag list = tag.getList(TAG_POOLS, Tag.TAG_COMPOUND);
 		for (Tag value : list) {
 			if (value instanceof CompoundTag poolTag && poolTag.hasUUID(TAG_UUID)) {
