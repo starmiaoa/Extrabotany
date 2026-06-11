@@ -20,7 +20,7 @@ import vazkii.botania.api.item.Relic;
 import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.item.relic.RelicImpl;
 
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerEventWrapper;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import io.github.lounode.extrabotany.api.item.IAerialite;
 import io.github.lounode.extrabotany.api.item.IOrichalcos;
 import io.github.lounode.extrabotany.api.item.IPhotonium;
@@ -91,9 +91,9 @@ public class RheinHammerItem extends TerrasteelHammerItem implements IShadowium,
 		return true;
 	}
 
-	public static void onDig(PlayerEventWrapper.BreakSpeed wrapper) {
-		ItemStack _left = wrapper.getEntity().getItemInHand(InteractionHand.OFF_HAND);
-		ItemStack _right = wrapper.getEntity().getItemInHand(InteractionHand.MAIN_HAND);
+	public static void onDig(PlayerEvent.BreakSpeed event) {
+		ItemStack _left = event.getEntity().getItemInHand(InteractionHand.OFF_HAND);
+		ItemStack _right = event.getEntity().getItemInHand(InteractionHand.MAIN_HAND);
 		ItemStack stack = ItemStack.EMPTY;
 
 		if (_left.is(ExtraBotanyItems.rheinHammer)) {
@@ -107,8 +107,8 @@ public class RheinHammerItem extends TerrasteelHammerItem implements IShadowium,
 		}
 
 		if (stack.is(ExtraBotanyItems.rheinHammer) && !RheinHammerItem.isEnabled(stack)) {
-			wrapper.setNewSpeed(0);
-			wrapper.setCanceled(true);
+			event.setNewSpeed(0);
+			event.setCanceled(true);
 		}
 	}
 

@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHurtEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 
 public class ShadowWarriorHelmetItem extends ShadowWarriorArmorItem {
@@ -21,7 +21,7 @@ public class ShadowWarriorHelmetItem extends ShadowWarriorArmorItem {
 	}
 
 	public static class EventHandler {
-			public static void onPlayerAttacked(LivingHurtEventWrapper event) {
+			public static void onPlayerAttacked(LivingIncomingDamageEvent event) {
 			Entity target = event.getEntity();
 			if (!(target instanceof Player player)) {
 				return;

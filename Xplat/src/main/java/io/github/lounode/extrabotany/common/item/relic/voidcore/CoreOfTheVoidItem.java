@@ -40,8 +40,9 @@ import vazkii.botania.common.item.relic.RelicImpl;
 import vazkii.botania.common.proxy.Proxy;
 
 import io.github.lounode.extrabotany.client.core.CoreOfTheVoidClientVariants;
-import io.github.lounode.extrabotany.common.event.entity.living.*;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import io.github.lounode.extrabotany.api.ExtraBotanyAPI;
 import io.github.lounode.extrabotany.api.item.ClientCoreOfTheVoidVariant;
 import io.github.lounode.extrabotany.api.item.CoreOfTheVoidVariant;
@@ -144,7 +145,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 		tryRemoveHarmfulPotion(stack, entity);
 	}
 
-	public static void playerLoggedOut(PlayerEventWrapper.PlayerLoggedOutEvent event) {
+	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
 		String username = event.getEntity().getGameProfile().getName();
 		playersWithFlight.remove(username + ":false");
 		playersWithFlight.remove(username + ":true");
@@ -272,7 +273,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	}
 
 	//Projectile immunity
-	public static void onLivingAttack(LivingAttackEventWrapper event) {
+	public static void onLivingAttack(LivingIncomingDamageEvent event) {
 		LivingEntity owner = event.getEntity();
 		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);
 
@@ -293,7 +294,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 		}
 	}
 
-	public static void onLivingHurt(LivingHurtEventWrapper event) {
+	public static void onLivingHurt(LivingIncomingDamageEvent event) {
 		LivingEntity owner = event.getEntity();
 		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);
 
@@ -314,7 +315,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 		}
 	}
 
-	public static void onLivingDamage(LivingDamageEventWrapper event) {
+	public static void onLivingDamage(LivingIncomingDamageEvent event) {
 		LivingEntity owner = event.getEntity();
 		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);
 
@@ -349,7 +350,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	}
 
 	//TODO 立即生效药水效果截断
-	public static void onEffectAdd(MobEffectEventWrapper.Applicable event) {
+	public static void onEffectAdd(MobEffectEvent.Applicable event) {
 		LivingEntity owner = event.getEntity();
 		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);
 
@@ -362,7 +363,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 					relic.isRightPlayer(player) &&
 					ManaItemHandler.instance().requestManaExact(armor, player, getCureCost(), true)) {
 
-				event.setResult(MobEffectEventWrapper.Applicable.Result.DO_NOT_APPLY);
+				event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
 			}
 		}
 	}

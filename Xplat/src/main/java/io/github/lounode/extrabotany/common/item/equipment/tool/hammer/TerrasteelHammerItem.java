@@ -62,7 +62,7 @@ public class TerrasteelHammerItem extends ManasteelHammerItem implements Sequent
 		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
 	}
 
-	//TODO BlockEventWrapper
+	//TODO Block event hook
 	@SoftImplement("IForgeItem")
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
 		BlockHitResult raycast = ToolCommons.raytraceFromEntity(player, 10, false);

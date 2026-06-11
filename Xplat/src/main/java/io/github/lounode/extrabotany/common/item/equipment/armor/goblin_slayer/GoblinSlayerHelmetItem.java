@@ -5,7 +5,7 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHurtEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 
@@ -19,7 +19,7 @@ public class GoblinSlayerHelmetItem extends GoblinSlayerArmorItem {
 
 	public static class EventHandler {
 
-			public static void onPlayerAttack(LivingHurtEventWrapper event) {
+			public static void onPlayerAttack(LivingIncomingDamageEvent event) {
 			if (!(event.getSource().getEntity() instanceof Player player)) {
 				return;
 			}

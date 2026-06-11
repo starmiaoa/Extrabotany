@@ -25,9 +25,9 @@ import io.github.lounode.extrabotany.common.entity.FlamescionSwordEntity;
 import io.github.lounode.extrabotany.common.entity.FlamescionUltEntity;
 import io.github.lounode.extrabotany.common.entity.FlamescionVoidEntity;
 import io.github.lounode.extrabotany.common.entity.StrengthenSlashEntity;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingAttackEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketFlamescion;
@@ -44,21 +44,21 @@ public class FlamescionWeaponItem extends SwordItem {
 		super(tier, properties.attributes(SwordItem.createAttributes(tier, 5, -1.6F)));
 	}
 
-	public static void leftClick(PlayerInteractEventWrapper.LeftClickEmpty event) {
+	public static void leftClick(PlayerInteractEvent.LeftClickEmpty event) {
 		ItemStack stack = event.getItemStack();
 		if (!stack.isEmpty() && stack.is(ExtraBotanyItems.flamescionWeapon)) {
 			ExClientXplatAbstractions.INSTANCE.sendToServer(LeftClickPacketFlamescion.INSTANCE);
 		}
 	}
 
-	public static void attackEntity(AttackEntityEventWrapper event) {
+	public static void attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide && player.getMainHandItem().is(ExtraBotanyItems.flamescionWeapon)) {
 			tryStrengthenAttack(player, player.getMainHandItem(), player.getAttackStrengthScale(0F));
 		}
 	}
 
-	public static void onLivingAttack(LivingAttackEventWrapper event) {
+	public static void onLivingAttack(LivingIncomingDamageEvent event) {
 		Entity source = event.getSource().getEntity();
 		if (!(source instanceof Player player) || !isFlamescionMode(player)) {
 			return;

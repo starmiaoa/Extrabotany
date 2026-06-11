@@ -24,7 +24,7 @@ import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.lounode.extrabotany.api.item.NatureEnergyItem;
 import io.github.lounode.extrabotany.common.entity.gaia.GaiaIII;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
@@ -73,7 +73,7 @@ public class NatureOrbItem extends BaubleItem implements CustomCreativeTabConten
 		return super.useOn(context);
 	}
 
-	public static void onPlayerInteract(PlayerInteractEventWrapper.RightClickBlock event) {
+	public static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
 		Player player = event.getEntity();
 		BlockPos pos = event.getPos();
 		ItemStack handItem = event.getItemStack();

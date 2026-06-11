@@ -5,14 +5,14 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHealEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 
 public class WitchCurseMobEffect extends MobEffect {
 	public WitchCurseMobEffect(MobEffectCategory category, int color) {
 		super(category, color);
 	}
 
-	public static void onLivingHeal(LivingHealEventWrapper event) {
+	public static void onLivingHeal(LivingHealEvent event) {
 		LivingEntity entity = event.getEntity();
 		float amount = event.getAmount();
 		if (!Float.isFinite(amount) || amount <= 0F) {

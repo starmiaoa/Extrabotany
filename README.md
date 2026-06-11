@@ -35,7 +35,7 @@
 - 盖亚守护者 III
 - 空之律者（未完成）
 
-以及：**Forge和Fabric均可以游玩！！！**
+以及：**NeoForge 可以游玩！！！**
 
 ## KubeJS
 

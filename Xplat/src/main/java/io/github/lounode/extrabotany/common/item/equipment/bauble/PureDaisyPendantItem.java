@@ -19,7 +19,7 @@ import vazkii.botania.common.crafting.BotaniaRecipeTypes;
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.lounode.extrabotany.common.util.PlayerUtil;
 import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 
@@ -54,7 +54,7 @@ public class PureDaisyPendantItem extends BaubleItem {
 
 	public static class EventHandler {
 
-		public static void onPlayerInteract(PlayerInteractEventWrapper.RightClickBlock event) {
+		public static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
 			if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
 				return;
 			}

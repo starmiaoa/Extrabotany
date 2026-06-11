@@ -33,8 +33,8 @@ import vazkii.botania.common.helper.VecHelper;
 import vazkii.botania.common.item.equipment.tool.manasteel.ManasteelSwordItem;
 import vazkii.botania.common.item.relic.RelicImpl;
 
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.material.ItemTiers;
@@ -64,14 +64,14 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 						EquipmentSlotGroup.bySlot(EquipmentSlot.MAINHAND));
 	}
 
-	public static void leftClick(PlayerInteractEventWrapper.LeftClickEmpty event) {
+	public static void leftClick(PlayerInteractEvent.LeftClickEmpty event) {
 		ItemStack stack = event.getItemStack();
 		if (!stack.isEmpty() && stack.getItem() instanceof ExcaliburItem) {
 			ExClientXplatAbstractions.INSTANCE.sendToServer(LeftClickPacketExcalibur.INSTANCE);
 		}
 	}
 
-	public static void attackEntity(AttackEntityEventWrapper event) {
+	public static void attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide && player.getMainHandItem().getItem() instanceof ExcaliburItem) {
 			trySpawnBurst(player, player.getAttackStrengthScale(0F));

@@ -9,8 +9,8 @@ import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.lounode.extrabotany.common.entity.AuraFireEntity;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
@@ -25,12 +25,12 @@ public class FeatherOfJingweiItem extends BaubleItem {
 		super(props);
 	}
 
-	public static void leftClick(PlayerInteractEventWrapper.LeftClickEmpty event) {
+	public static void leftClick(PlayerInteractEvent.LeftClickEmpty event) {
 		Player player = event.getEntity();
 		sendLeftClickPacketIfReady(player);
 	}
 
-	public static void leftClickBlock(PlayerInteractEventWrapper.LeftClickBlock event) {
+	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
 		sendLeftClickPacketIfReady(event.getEntity());
 	}
 
@@ -43,7 +43,7 @@ public class FeatherOfJingweiItem extends BaubleItem {
 		}
 	}
 
-	public static InteractionResult attackEntity(AttackEntityEventWrapper event) {
+	public static InteractionResult attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide) {
 			trySpawnAuraFire(player);

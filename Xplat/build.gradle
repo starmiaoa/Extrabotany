@@ -70,6 +70,8 @@ neoForge {
 }
 
 dependencies {
+    compileOnly "net.neoforged:neoforge:${neoforge_version}:universal"
+    compileOnly "net.neoforged:bus:8.0.5"
     compileOnly "net.fabricmc:sponge-mixin:0.15.2+mixin.0.8.7"
     compileOnly "vazkii.patchouli:Patchouli-xplat:${patchouli_version}"
     compileOnly "vazkii.botania:botania-neoforge-${minecraft_version}:${botania_version}"

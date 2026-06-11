@@ -31,7 +31,7 @@ import vazkii.botania.common.item.equipment.bauble.SnowflakePendantItem;
 import vazkii.botania.common.item.equipment.bauble.ThirdEyeItem;
 import vazkii.botania.common.item.relic.RelicImpl;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingAttackEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
 
@@ -117,7 +117,7 @@ public class MoonPendantItem extends NimbusAmuletItem implements BlockChangedLis
 	}
 
 	public static class EventHandler {
-		public static void onLivingAttack(LivingAttackEventWrapper event) {
+		public static void onLivingAttack(LivingIncomingDamageEvent event) {
 			if (!isFireDamage(event.getSource())) {
 				return;
 			}

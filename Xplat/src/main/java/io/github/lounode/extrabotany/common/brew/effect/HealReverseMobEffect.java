@@ -4,7 +4,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHealEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 
@@ -13,7 +13,7 @@ public class HealReverseMobEffect extends MobEffect {
 		super(category, color);
 	}
 
-	public static void onLivingHeal(LivingHealEventWrapper event) {
+	public static void onLivingHeal(LivingHealEvent event) {
 		LivingEntity entity = event.getEntity();
 		float amount = event.getAmount();
 

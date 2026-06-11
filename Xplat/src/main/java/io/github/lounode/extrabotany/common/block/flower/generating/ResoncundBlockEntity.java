@@ -19,14 +19,18 @@ import org.jetbrains.annotations.Nullable;
 import io.github.lounode.extrabotany.common.block.flower.ExtraGeneratingFlowerBlockEntity;
 import vazkii.botania.api.block_entity.RadiusDescriptor;
 
-import io.github.lounode.extrabotany.common.event.EventSubscriptions;
-import io.github.lounode.extrabotany.common.event.PlayLevelSoundEventWrapper;
+import net.neoforged.neoforge.event.PlayLevelSoundEvent;
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.WeakHashMap;
 
 public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 
@@ -39,6 +43,7 @@ public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 
 	public static final int MAX_MANA = 1200;
 	public static final int MANA_LOSS_PER_HEARD = 50;
+	private static final Set<ResoncundBlockEntity> LISTENERS = Collections.newSetFromMap(new WeakHashMap<>());
 
 	private final LoadingCache<SoundEvent, Integer> SOUND_HEARD = CacheBuilder.newBuilder()
 			.maximumSize(getCacheSize())
@@ -47,7 +52,25 @@ public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 
 	public ResoncundBlockEntity(BlockPos pos, BlockState blockState) {
 		super(ExtrabotanyFlowerBlocks.RESONCUND, pos, blockState);
-		EventSubscriptions.register(this);
+		register(this);
+	}
+
+	public static List<ResoncundBlockEntity> listeners() {
+		synchronized (LISTENERS) {
+			return new ArrayList<>(LISTENERS);
+		}
+	}
+
+	private static void register(ResoncundBlockEntity listener) {
+		synchronized (LISTENERS) {
+			LISTENERS.add(listener);
+		}
+	}
+
+	private static void unregister(ResoncundBlockEntity listener) {
+		synchronized (LISTENERS) {
+			LISTENERS.remove(listener);
+		}
 	}
 
 	@Override
@@ -149,16 +172,16 @@ public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 		SOUND_HEARD.putAll(soundHeard);
 	}
 
-	public void onPlayLevelSound(PlayLevelSoundEventWrapper.AtPosition event) {
+	public void onPlayLevelSound(PlayLevelSoundEvent.AtPosition event) {
 		if (getLevel() == null) {
 			return;
 		}
 		if (getLevel().isClientSide()) {
-			EventSubscriptions.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (this.isRemoved()) {
-			EventSubscriptions.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (event.getSound() == null) {
@@ -171,16 +194,16 @@ public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 		}
 	}
 
-	public void onPlayLevelSound(PlayLevelSoundEventWrapper.AtEntity event) {
+	public void onPlayLevelSound(PlayLevelSoundEvent.AtEntity event) {
 		if (getLevel() == null) {
 			return;
 		}
 		if (getLevel().isClientSide()) {
-			EventSubscriptions.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (this.isRemoved()) {
-			EventSubscriptions.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (event.getSound() == null) {

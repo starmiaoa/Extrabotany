@@ -36,7 +36,7 @@ Even more vanilla.
 - Guardian of Gaia III
 - Herrscher of The Void(WIP)
 
-**And you can play Extrabotany both on `Forge` or `Fabric`.**
+**And you can play Extrabotany on `NeoForge`.**
 
 ## KubeJS
 

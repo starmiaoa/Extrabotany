@@ -24,7 +24,7 @@ import vazkii.botania.common.item.relic.RelicBaubleItem;
 import vazkii.botania.common.item.relic.RelicImpl;
 
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHealEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingHealEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.util.FrostWalkerEffectHelper;
 import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
@@ -211,7 +211,7 @@ public class SilentEternityItem extends RelicBaubleItem {
 	}
 
 	public static class EventHandler {
-		public static void onLivingHeal(LivingHealEventWrapper event) {
+		public static void onLivingHeal(LivingHealEvent event) {
 			if (!(event.getEntity() instanceof Player player)) {
 				return;
 			}

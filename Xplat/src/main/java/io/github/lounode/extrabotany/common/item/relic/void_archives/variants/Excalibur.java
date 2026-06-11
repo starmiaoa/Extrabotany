@@ -12,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.common.entity.ManaBurstEntity;
 
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.lounode.extrabotany.api.item.VoidArchivesVariant;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
@@ -44,14 +44,14 @@ public class Excalibur implements VoidArchivesVariant {
 		return Component.translatable("item.extrabotany.void_archives.variant", Component.translatable("item.extrabotany.excalibur"));
 	}
 
-	public static void leftClick(PlayerInteractEventWrapper.LeftClickEmpty event) {
+	public static void leftClick(PlayerInteractEvent.LeftClickEmpty event) {
 		ItemStack stack = event.getItemStack();
 		if (!stack.isEmpty() && stack.getItem() instanceof VoidArchivesItem) {
 			ExClientXplatAbstractions.INSTANCE.sendToServer(LeftClickPacketVoidArchives.INSTANCE);
 		}
 	}
 
-	public static void attackEntity(AttackEntityEventWrapper event) {
+	public static void attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide && player.getMainHandItem().getItem() instanceof VoidArchivesItem) {
 			INSTANCE.trySpawnBurst(player, player.getAttackStrengthScale(0F));

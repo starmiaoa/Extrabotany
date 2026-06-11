@@ -6,7 +6,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHurtEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 
@@ -20,7 +20,7 @@ public class LinkMobEffect extends MobEffect {
 		super(category, color);
 	}
 
-	public static void onEntityDamaged(LivingHurtEventWrapper event) {
+	public static void onEntityDamaged(LivingIncomingDamageEvent event) {
 		LivingEntity victim = event.getEntity();
 		DamageSource source = event.getSource();
 		float damage = event.getAmount();

@@ -18,7 +18,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.entity.PixieEntity;
 
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.util.AttributeUtil;
 
@@ -35,7 +35,7 @@ public class ShadowKatanaItem extends SwordItem {
 		super(tier, properties.attributes(SwordItem.createAttributes(tier, 3, -2.4F)));
 	}
 
-	public static void attackEntity(AttackEntityEventWrapper event) {
+	public static void attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (player.level().isClientSide || player.isSpectator() || player.getAttackStrengthScale(0F) != 1F) {
 			return;

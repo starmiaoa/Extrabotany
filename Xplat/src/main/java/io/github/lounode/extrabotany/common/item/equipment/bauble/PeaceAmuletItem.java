@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.common.handler.EquipmentHandler;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHurtEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 
@@ -20,7 +20,7 @@ public class PeaceAmuletItem extends SimpleBaubleItem {
 	}
 
 	public static class EventHandler {
-		public static void onLivingHurt(LivingHurtEventWrapper event) {
+		public static void onLivingHurt(LivingIncomingDamageEvent event) {
 			Entity attacker = event.getSource().getEntity();
 			if (!(attacker instanceof Player player)) {
 				return;
@@ -38,7 +38,7 @@ public class PeaceAmuletItem extends SimpleBaubleItem {
 			}
 		}
 
-		private static boolean isPeaceAmuletDamage(LivingHurtEventWrapper event, Player player) {
+		private static boolean isPeaceAmuletDamage(LivingIncomingDamageEvent event, Player player) {
 			return event.getSource().is(ExtraBotanyTags.DamageTypes.PEACE_AMULET_AVAILABLE)
 					|| isExtraBotanyItem(player.getMainHandItem())
 					|| isExtraBotanyItem(player.getOffhandItem());

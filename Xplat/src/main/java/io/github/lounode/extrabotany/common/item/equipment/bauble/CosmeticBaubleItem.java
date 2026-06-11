@@ -21,7 +21,7 @@ import vazkii.botania.client.render.AccessoryRenderer;
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.proxy.Proxy;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHurtEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
 import java.util.List;
@@ -83,7 +83,7 @@ public class CosmeticBaubleItem extends SimpleBaubleItem {
 	public static class EventHandler {
 		private static final float SUPER_CROWN_DAMAGE_REDUCTION = 2.0F;
 
-		public static void onLivingHurt(LivingHurtEventWrapper event) {
+		public static void onLivingHurt(LivingIncomingDamageEvent event) {
 			if (!(event.getEntity() instanceof Player player)) {
 				return;
 			}

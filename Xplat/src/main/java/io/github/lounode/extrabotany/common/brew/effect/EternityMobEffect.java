@@ -6,14 +6,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingAttackEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 public class EternityMobEffect extends MobEffect {
 	public EternityMobEffect(MobEffectCategory category, int color) {
 		super(category, color);
 	}
 
-	public static void onLivingAttack(LivingAttackEventWrapper event) {
+	public static void onLivingAttack(LivingIncomingDamageEvent event) {
 		if (event.getEntity() instanceof Player player && player.hasEffect(ExtraBotanyMobEffects.ETERNITY)) {
 			event.setAmount(0);
 			event.setCanceled(true);

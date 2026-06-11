@@ -31,7 +31,7 @@ import vazkii.botania.common.item.relic.RelicImpl;
 
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.entity.SubspaceEntity;
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
@@ -60,7 +60,7 @@ public class SpearOfSubspaceItem extends SwordItem {
 						EquipmentSlotGroup.bySlot(EquipmentSlot.MAINHAND));
 	}
 
-	public static void attackEntity(AttackEntityEventWrapper event) {
+	public static void attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide && player.getMainHandItem().getItem() instanceof SpearOfSubspaceItem spear) {
 			spear.trySpawnSpear(player, player.getAttackStrengthScale(0F));

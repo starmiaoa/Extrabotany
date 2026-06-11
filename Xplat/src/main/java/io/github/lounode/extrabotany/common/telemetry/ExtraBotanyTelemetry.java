@@ -7,8 +7,8 @@ import net.minecraft.Util;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.Difficulty;
 
-import io.github.lounode.extrabotany.common.event.server.ServerStartedEventWrapper;
-import io.github.lounode.extrabotany.common.event.server.ServerStoppingEventWrapper;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import io.github.lounode.extrabotany.common.entity.gaia.Gaia;
 import io.github.lounode.extrabotany.common.entity.gaia.GaiaIII;
 import io.github.lounode.extrabotany.common.entity.gaia.GaiaIIIAI;
@@ -48,7 +48,7 @@ public class ExtraBotanyTelemetry {
 		this.deviceSessionProperties = builder.build();
 	}
 
-	public static void onServerStarted(ServerStartedEventWrapper event) {
+	public static void onServerStarted(ServerStartedEvent event) {
 		var server = event.getServer();
 		boolean enableTelemetry = ExtraBotanyConfig.common().enableTelemetry();
 		if (!enableTelemetry) {
@@ -82,7 +82,7 @@ public class ExtraBotanyTelemetry {
 		getInstance().metricsNew.start();
 	}
 
-	public static void onServerStopping(ServerStoppingEventWrapper event) {
+	public static void onServerStopping(ServerStoppingEvent event) {
 		var metricsNew = getInstance().metricsNew;
 		if (metricsNew != null) {
 			metricsNew.shutdown();

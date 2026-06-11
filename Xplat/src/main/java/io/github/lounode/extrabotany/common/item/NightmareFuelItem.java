@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 import vazkii.botania.common.advancements.UseItemSuccessTrigger;
 
-import io.github.lounode.extrabotany.common.event.furnace.FurnaceFuelBurnTimeEventWrapper;
+import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
 
 public class NightmareFuelItem extends Item {
 	public NightmareFuelItem(Properties properties) {
@@ -45,9 +45,9 @@ public class NightmareFuelItem extends Item {
 		}
 	}
 
-	public static void makeFuel(FurnaceFuelBurnTimeEventWrapper wrapper) {
-		if (wrapper.getItemStack().is(ExtraBotanyItems.nightmareFuel)) {
-			wrapper.setBurnTime(3200);
+	public static void makeFuel(FurnaceFuelBurnTimeEvent event) {
+		if (event.getItemStack().is(ExtraBotanyItems.nightmareFuel)) {
+			event.setBurnTime(3200);
 		}
 	}
 }

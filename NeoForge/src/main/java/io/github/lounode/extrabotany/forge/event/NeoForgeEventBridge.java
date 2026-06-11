@@ -31,22 +31,8 @@ import io.github.lounode.extrabotany.common.brew.effect.LinkMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.ThirrorMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.WarmMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.WitchCurseMobEffect;
-import io.github.lounode.extrabotany.common.event.EventSubscriptions;
-import io.github.lounode.extrabotany.common.event.PlayLevelSoundEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingAttackEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingDamageEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingDeathEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHealEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHurtEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.MobEffectEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.ShieldBlockEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
-import io.github.lounode.extrabotany.common.event.furnace.FurnaceFuelBurnTimeEventWrapper;
-import io.github.lounode.extrabotany.common.event.level.LevelEventWrapper;
-import io.github.lounode.extrabotany.common.event.server.ServerStartedEventWrapper;
-import io.github.lounode.extrabotany.common.event.server.ServerStoppingEventWrapper;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import io.github.lounode.extrabotany.common.impl.WindImpl;
 import io.github.lounode.extrabotany.common.handler.OldExbotanyStatRewardHandler;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
@@ -109,89 +95,65 @@ public final class NeoForgeEventBridge {
 	}
 
 	private static void onLevelLoad(LevelEvent.Load event) {
-		WindImpl.EventHandler.onLevelLoad(new LevelEventWrapper.Load(event.getLevel()));
+		WindImpl.EventHandler.onLevelLoad(event);
 	}
 
 	private static void onLevelUnload(LevelEvent.Unload event) {
-		WindImpl.EventHandler.onLevelUnLoad(new LevelEventWrapper.Unload(event.getLevel()));
+		WindImpl.EventHandler.onLevelUnLoad(event);
 	}
 
 	private static void onServerStarted(net.neoforged.neoforge.event.server.ServerStartedEvent event) {
-		ExtraBotanyTelemetry.onServerStarted(new ServerStartedEventWrapper(event.getServer()));
+		ExtraBotanyTelemetry.onServerStarted(event);
 	}
 
 	private static void onServerStopping(net.neoforged.neoforge.event.server.ServerStoppingEvent event) {
-		ExtraBotanyTelemetry.onServerStopping(new ServerStoppingEventWrapper(event.getServer()));
+		ExtraBotanyTelemetry.onServerStopping(event);
 	}
 
 	private static void onFurnaceFuel(FurnaceFuelBurnTimeEvent event) {
-		FurnaceFuelBurnTimeEventWrapper wrapper = new FurnaceFuelBurnTimeEventWrapper(event.getItemStack(), event.getBurnTime());
-		SpiritFuelItem.makeFuel(wrapper);
-		NightmareFuelItem.makeFuel(wrapper);
-		if (wrapper.isModified()) {
-			event.setBurnTime(wrapper.getBurnTime());
-		}
+		SpiritFuelItem.makeFuel(event);
+		NightmareFuelItem.makeFuel(event);
 	}
 
 	private static void onIncomingDamage(LivingIncomingDamageEvent event) {
-		LivingAttackEventWrapper attack = new LivingAttackEventWrapper(event.getEntity(), event.getSource(), event.getAmount());
-		WarmMobEffect.EventHandler.onEntityHurt(attack);
-		ThirrorMobEffect.EventHandler.onLivingAttack(attack);
-		MoonPendantItem.EventHandler.onLivingAttack(attack);
-		FlamescionWeaponItem.onLivingAttack(attack);
-		CoreOfTheVoidItem.onLivingAttack(attack);
-		EternityMobEffect.onLivingAttack(attack);
-		applyIncoming(event, attack);
+		WarmMobEffect.EventHandler.onEntityHurt(event);
+		ThirrorMobEffect.EventHandler.onLivingAttack(event);
+		MoonPendantItem.EventHandler.onLivingAttack(event);
+		FlamescionWeaponItem.onLivingAttack(event);
+		CoreOfTheVoidItem.onLivingAttack(event);
+		EternityMobEffect.onLivingAttack(event);
 		if (event.isCanceled()) {
 			return;
 		}
 
-		LivingHurtEventWrapper hurt = new LivingHurtEventWrapper(event.getEntity(), event.getSource(), event.getAmount());
-		LinkMobEffect.onEntityDamaged(hurt);
-		ShadowWarriorHelmetItem.EventHandler.onPlayerAttacked(hurt);
-		GoblinSlayerHelmetItem.EventHandler.onPlayerAttack(hurt);
-		PleiadesCombatMaidSuitItem.EventHandler.onEntityAttacked(hurt);
-		PleiadesCombatMaidSuitItem.EventHandler.onPlayerAttacked(hurt);
-		PeaceAmuletItem.EventHandler.onLivingHurt(hurt);
-		CosmeticBaubleItem.EventHandler.onLivingHurt(hurt);
-		CoreOfTheVoidItem.onLivingHurt(hurt);
-		applyIncoming(event, hurt);
+		LinkMobEffect.onEntityDamaged(event);
+		ShadowWarriorHelmetItem.EventHandler.onPlayerAttacked(event);
+		GoblinSlayerHelmetItem.EventHandler.onPlayerAttack(event);
+		PleiadesCombatMaidSuitItem.EventHandler.onEntityAttacked(event);
+		PleiadesCombatMaidSuitItem.EventHandler.onPlayerAttacked(event);
+		PeaceAmuletItem.EventHandler.onLivingHurt(event);
+		CosmeticBaubleItem.EventHandler.onLivingHurt(event);
+		CoreOfTheVoidItem.onLivingHurt(event);
 		if (event.isCanceled()) {
 			return;
 		}
 
-		LivingDamageEventWrapper damage = new LivingDamageEventWrapper(event.getEntity(), event.getSource(), event.getAmount());
-		CoreOfTheVoidItem.onLivingDamage(damage);
-		applyIncoming(event, damage);
-	}
-
-	private static void applyIncoming(LivingIncomingDamageEvent target, LivingAttackEventWrapper source) {
-		target.setAmount(source.getAmount());
-		if (source.isCanceled()) {
-			target.setCanceled(true);
-		}
+		CoreOfTheVoidItem.onLivingDamage(event);
 	}
 
 	private static void onDamagePost(LivingDamageEvent.Post event) {
-		SanguinePleiadesCombatMaidSuitItem.EventHandler.onAttackLiving(
-				new LivingDamageEventWrapper(event.getEntity(), event.getSource(), event.getNewDamage()));
+		SanguinePleiadesCombatMaidSuitItem.EventHandler.onAttackLiving(event);
 	}
 
 	private static void onLivingHeal(LivingHealEvent event) {
-		LivingHealEventWrapper wrapper = new LivingHealEventWrapper(event.getEntity(), event.getAmount());
-		HealReverseMobEffect.onLivingHeal(wrapper);
-		WitchCurseMobEffect.onLivingHeal(wrapper);
-		SilentEternityItem.EventHandler.onLivingHeal(wrapper);
-		event.setAmount(wrapper.getAmount());
+		HealReverseMobEffect.onLivingHeal(event);
+		WitchCurseMobEffect.onLivingHeal(event);
+		SilentEternityItem.EventHandler.onLivingHeal(event);
 	}
 
 	private static void onLivingDeath(LivingDeathEvent event) {
-		LivingDeathEventWrapper wrapper = new LivingDeathEventWrapper(event.getEntity(), event.getSource());
-		SanguinePleiadesCombatMaidSuitItem.EventHandler.onKilled(wrapper);
-		PotatoChipsItem.EventHandler.onPlayerDeath(wrapper);
-		if (wrapper.isCanceled()) {
-			event.setCanceled(true);
-		}
+		SanguinePleiadesCombatMaidSuitItem.EventHandler.onKilled(event);
+		PotatoChipsItem.EventHandler.onPlayerDeath(event);
 	}
 
 	private static void onManaDiscount(ManaDiscountEvent event) {
@@ -222,35 +184,25 @@ public final class NeoForgeEventBridge {
 	}
 
 	private static void onEffectApplicable(MobEffectEvent.Applicable event) {
-		MobEffectEventWrapper.Applicable wrapper = new MobEffectEventWrapper.Applicable(event.getEntity(), event.getEffectInstance());
-		CoreOfTheVoidItem.onEffectAdd(wrapper);
-		if (wrapper.getResult() == MobEffectEventWrapper.Applicable.Result.APPLY) {
-			event.setResult(MobEffectEvent.Applicable.Result.APPLY);
-		} else if (wrapper.getResult() == MobEffectEventWrapper.Applicable.Result.DO_NOT_APPLY) {
-			event.setResult(MobEffectEvent.Applicable.Result.DO_NOT_APPLY);
-		}
+		CoreOfTheVoidItem.onEffectAdd(event);
 	}
 
 	private static void onEffectAdded(MobEffectEvent.Added event) {
-		SanguinePleiadesCombatMaidSuitItem.EventHandler.onEffectAdded(
-				new MobEffectEventWrapper.Added(event.getEntity(), event.getEffectInstance()));
+		SanguinePleiadesCombatMaidSuitItem.EventHandler.onEffectAdded(event);
 	}
 
 	private static void onEffectRemoved(MobEffectEvent.Remove event) {
 		if (event.getEffectInstance() != null) {
-			SanguinePleiadesCombatMaidSuitItem.EventHandler.onEffectRemove(
-					new MobEffectEventWrapper.Remove(event.getEntity(), event.getEffectInstance()));
+			SanguinePleiadesCombatMaidSuitItem.EventHandler.onEffectRemove(event);
 		}
 	}
 
 	private static void onEffectExpired(MobEffectEvent.Expired event) {
-		SanguinePleiadesCombatMaidSuitItem.EventHandler.onEffectExpired(
-				new MobEffectEventWrapper.Expired(event.getEntity(), event.getEffectInstance()));
+		SanguinePleiadesCombatMaidSuitItem.EventHandler.onEffectExpired(event);
 	}
 
 	private static void onShieldBlock(LivingShieldBlockEvent event) {
-		ManasteelShieldItem.EventHandler.onShieldBlockDamage(
-				new ShieldBlockEventWrapper(event.getEntity(), event.getDamageSource(), event.getBlockedDamage()));
+		ManasteelShieldItem.EventHandler.onShieldBlockDamage(event);
 	}
 
 	private static void onAdvancementEarned(AdvancementEvent.AdvancementEarnEvent event) {
@@ -260,58 +212,42 @@ public final class NeoForgeEventBridge {
 	}
 
 	private static void onAttackEntity(AttackEntityEvent event) {
-		AttackEntityEventWrapper wrapper = new AttackEntityEventWrapper(event.getEntity(), event.getTarget());
-		ExcaliburItem.attackEntity(wrapper);
-		OldExbotanyRelicSwordItem.attackEntity(wrapper);
-		FlamescionWeaponItem.attackEntity(wrapper);
-		ShadowKatanaItem.attackEntity(wrapper);
-		SpearOfSubspaceItem.attackEntity(wrapper);
-		FeatherOfJingweiItem.attackEntity(wrapper);
-		io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Excalibur.attackEntity(wrapper);
-		if (wrapper.isCanceled()) {
-			event.setCanceled(true);
-		}
+		ExcaliburItem.attackEntity(event);
+		OldExbotanyRelicSwordItem.attackEntity(event);
+		FlamescionWeaponItem.attackEntity(event);
+		ShadowKatanaItem.attackEntity(event);
+		SpearOfSubspaceItem.attackEntity(event);
+		FeatherOfJingweiItem.attackEntity(event);
+		io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Excalibur.attackEntity(event);
 	}
 
 	private static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
-		PlayerInteractEventWrapper.LeftClickEmpty wrapper = new PlayerInteractEventWrapper.LeftClickEmpty(event.getEntity());
-		ExcaliburItem.leftClick(wrapper);
-		OldExbotanyRelicSwordItem.leftClick(wrapper);
-		FlamescionWeaponItem.leftClick(wrapper);
-		FeatherOfJingweiItem.leftClick(wrapper);
-		io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Excalibur.leftClick(wrapper);
+		ExcaliburItem.leftClick(event);
+		OldExbotanyRelicSwordItem.leftClick(event);
+		FlamescionWeaponItem.leftClick(event);
+		FeatherOfJingweiItem.leftClick(event);
+		io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Excalibur.leftClick(event);
 	}
 
 	private static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-		OldExbotanyRelicSwordItem.leftClickBlock(
-				new PlayerInteractEventWrapper.LeftClickBlock(event.getEntity(), event.getHand(), event.getPos()));
-		FeatherOfJingweiItem.leftClickBlock(
-				new PlayerInteractEventWrapper.LeftClickBlock(event.getEntity(), event.getHand(), event.getPos()));
+		OldExbotanyRelicSwordItem.leftClickBlock(event);
+		FeatherOfJingweiItem.leftClickBlock(event);
 	}
 
 	private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-		PlayerInteractEventWrapper.RightClickBlock wrapper =
-				new PlayerInteractEventWrapper.RightClickBlock(event.getEntity(), event.getHand(), event.getPos());
-		NatureOrbItem.onPlayerInteract(wrapper);
-		PureDaisyPendantItem.EventHandler.onPlayerInteract(wrapper);
-		if (wrapper.isCanceled()) {
+		NatureOrbItem.onPlayerInteract(event);
+		PureDaisyPendantItem.EventHandler.onPlayerInteract(event);
+		if (event.isCanceled()) {
 			event.setCancellationResult(InteractionResult.SUCCESS);
-			event.setCanceled(true);
 		}
 	}
 
 	private static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
-		PlayerEventWrapper.BreakSpeed wrapper = new PlayerEventWrapper.BreakSpeed(
-				event.getEntity(), event.getState(), event.getPosition().orElse(null), event.getNewSpeed());
-		RheinHammerItem.onDig(wrapper);
-		event.setNewSpeed(wrapper.getNewSpeed());
-		if (wrapper.isCanceled()) {
-			event.setCanceled(true);
-		}
+		RheinHammerItem.onDig(event);
 	}
 
 	private static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		CoreOfTheVoidItem.playerLoggedOut(new PlayerEventWrapper.PlayerLoggedOutEvent(event.getEntity()));
+		CoreOfTheVoidItem.playerLoggedOut(event);
 	}
 
 	private static void onPlayerTickPost(PlayerTickEvent.Post event) {
@@ -322,18 +258,14 @@ public final class NeoForgeEventBridge {
 	}
 
 	private static void onSoundAtPosition(PlayLevelSoundEvent.AtPosition event) {
-		PlayLevelSoundEventWrapper.AtPosition wrapper =
-				new PlayLevelSoundEventWrapper.AtPosition(event.getPosition(), event.getSound());
-		for (ResoncundBlockEntity listener : EventSubscriptions.listeners(ResoncundBlockEntity.class)) {
-			listener.onPlayLevelSound(wrapper);
+		for (ResoncundBlockEntity listener : ResoncundBlockEntity.listeners()) {
+			listener.onPlayLevelSound(event);
 		}
 	}
 
 	private static void onSoundAtEntity(PlayLevelSoundEvent.AtEntity event) {
-		PlayLevelSoundEventWrapper.AtEntity wrapper =
-				new PlayLevelSoundEventWrapper.AtEntity(event.getEntity(), event.getSound());
-		for (ResoncundBlockEntity listener : EventSubscriptions.listeners(ResoncundBlockEntity.class)) {
-			listener.onPlayLevelSound(wrapper);
+		for (ResoncundBlockEntity listener : ResoncundBlockEntity.listeners()) {
+			listener.onPlayLevelSound(event);
 		}
 	}
 }

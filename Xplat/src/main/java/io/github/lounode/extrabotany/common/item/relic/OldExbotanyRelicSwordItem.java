@@ -29,8 +29,8 @@ import vazkii.botania.api.item.Relic;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.item.relic.RelicImpl;
 
-import io.github.lounode.extrabotany.common.event.entity.player.AttackEntityEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.player.PlayerInteractEventWrapper;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketOldRelicSword;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 import io.github.lounode.extrabotany.xplat.ExClientXplatAbstractions;
@@ -57,21 +57,21 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 		this.relic = relic;
 	}
 
-	public static void leftClick(PlayerInteractEventWrapper.LeftClickEmpty event) {
+	public static void leftClick(PlayerInteractEvent.LeftClickEmpty event) {
 		ItemStack stack = event.getItemStack();
 		if (!stack.isEmpty() && (stack.getItem() instanceof OldExbotanyRelicSwordItem || stack.getItem() instanceof SpearOfSubspaceItem)) {
 			ExClientXplatAbstractions.INSTANCE.sendToServer(LeftClickPacketOldRelicSword.INSTANCE);
 		}
 	}
 
-	public static void attackEntity(AttackEntityEventWrapper event) {
+	public static void attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide && player.getMainHandItem().getItem() instanceof OldExbotanyRelicSwordItem sword) {
 			sword.tryUse(player, event.getTarget(), player.getAttackStrengthScale(0F));
 		}
 	}
 
-	public static void leftClickBlock(PlayerInteractEventWrapper.LeftClickBlock event) {
+	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide && event.getHand() == net.minecraft.world.InteractionHand.MAIN_HAND
 				&& player.getMainHandItem().getItem() instanceof OldExbotanyRelicSwordItem sword) {

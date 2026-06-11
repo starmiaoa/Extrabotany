@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.mana.ManaDiscountArmor;
 import vazkii.botania.api.mana.ManaItemHandler;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingHurtEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.NatureOrbItem;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 
@@ -59,7 +59,7 @@ public class PleiadesCombatMaidSuitItem extends PleiadesCombatMaidArmorItem impl
 
 	public static class EventHandler {
 
-			public static void onEntityAttacked(LivingHurtEventWrapper event) {
+			public static void onEntityAttacked(LivingIncomingDamageEvent event) {
 			Entity attacker = event.getSource().getEntity();
 			LivingEntity target = event.getEntity();
 
@@ -89,7 +89,7 @@ public class PleiadesCombatMaidSuitItem extends PleiadesCombatMaidArmorItem impl
 			}
 		}
 
-			public static void onPlayerAttacked(LivingHurtEventWrapper event) {
+			public static void onPlayerAttacked(LivingIncomingDamageEvent event) {
 			Entity target = event.getEntity();
 			if (!(target instanceof Player player)) {
 				return;

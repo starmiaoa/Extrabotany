@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.handler.EquipmentHandler;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingDeathEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import io.github.lounode.extrabotany.common.entity.gaia.Gaia;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
@@ -27,7 +27,7 @@ public class PotatoChipsItem extends SimpleBaubleItem {
 	}
 
 	public static class EventHandler {
-		public static void onPlayerDeath(LivingDeathEventWrapper event) {
+		public static void onPlayerDeath(LivingDeathEvent event) {
 			if (!(event.getEntity() instanceof Player player)) {
 				return;
 			}
@@ -50,7 +50,7 @@ public class PotatoChipsItem extends SimpleBaubleItem {
 			player.getCooldowns().addCooldown(chips.getItem(), isBossSource(event) ? BOSS_COOLDOWN : COOLDOWN);
 		}
 
-		private static boolean isBossSource(LivingDeathEventWrapper event) {
+		private static boolean isBossSource(LivingDeathEvent event) {
 			Entity source = event.getSource().getEntity();
 			return source instanceof EnderDragon || source instanceof WitherBoss || source instanceof Gaia;
 		}

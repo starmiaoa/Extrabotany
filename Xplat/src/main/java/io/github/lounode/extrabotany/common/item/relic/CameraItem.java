@@ -40,7 +40,6 @@ import vazkii.botania.common.helper.PlayerHelper;
 import vazkii.botania.common.item.relic.RelicImpl;
 import vazkii.botania.common.item.relic.RelicItem;
 
-import io.github.lounode.extrabotany.common.event.entity.player.ItemCooldownFinishEventWrapper;
 import io.github.lounode.extrabotany.api.item.IShadowium;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
@@ -195,11 +194,10 @@ public class CameraItem extends RelicItem implements IShadowium {
 		}
 	}
 
-	public static void onItemCooldownFinish(ItemCooldownFinishEventWrapper event) {
-		if (!(event.getItem() instanceof CameraItem)) {
+	public static void onItemCooldownFinish(Player player, Item item) {
+		if (!(item instanceof CameraItem)) {
 			return;
 		}
-		Player player = event.getEntity();
 		if (!player.level().isClientSide()) {
 			return;
 		}

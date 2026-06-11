@@ -19,9 +19,9 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.common.brew.BotaniaMobEffects;
 import vazkii.botania.common.brew.effect.BloodthirstMobEffect;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingDamageEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.LivingDeathEventWrapper;
-import io.github.lounode.extrabotany.common.event.entity.living.MobEffectEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
 import java.util.Locale;
@@ -66,7 +66,7 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 	}
 
 	public static class EventHandler {
-			public static void onAttackLiving(LivingDamageEventWrapper event) {
+			public static void onAttackLiving(LivingDamageEvent.Post event) {
 			Entity attacker = event.getSource().getEntity();
 			if (!(attacker instanceof LivingEntity living)) {
 				return;
@@ -76,13 +76,13 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 			}
 
 			living.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20 * 10, 1));
-			living.heal(HEAL_RATE * event.getAmount());
+			living.heal(HEAL_RATE * event.getNewDamage());
 		}
 
 		//Get Blood Suit
 		private static final Map<UUID, Integer> bloodthirstKilled = new ConcurrentHashMap<>();
 
-			public static void onEffectAdded(MobEffectEventWrapper.Added event) {
+			public static void onEffectAdded(MobEffectEvent.Added event) {
 			if (!(event.getEffectInstance().getEffect().value() instanceof BloodthirstMobEffect)) {
 				return;
 			}
@@ -92,7 +92,7 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 			bloodthirstKilled.put(serverPlayer.getUUID(), 0);
 		}
 
-			public static void onKilled(LivingDeathEventWrapper event) {
+			public static void onKilled(LivingDeathEvent event) {
 			if (!(event.getSource().getEntity() instanceof ServerPlayer serverPlayer)) {
 				return;
 			}
@@ -103,13 +103,13 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 			bloodthirstKilled.computeIfPresent(serverPlayer.getUUID(), (uuid, count) -> count + 1);
 		}
 
-			public static void onEffectRemove(MobEffectEventWrapper.Remove event) {
+			public static void onEffectRemove(MobEffectEvent.Remove event) {
 			if (event.getEntity() instanceof ServerPlayer serverPlayer) {
 				onEffectRemovedOrExpired(serverPlayer, event.getEffectInstance());
 			}
 		}
 
-			public static void onEffectExpired(MobEffectEventWrapper.Expired event) {
+			public static void onEffectExpired(MobEffectEvent.Expired event) {
 			if (event.getEntity() instanceof ServerPlayer serverPlayer) {
 				onEffectRemovedOrExpired(serverPlayer, event.getEffectInstance());
 			}

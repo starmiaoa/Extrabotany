@@ -4,7 +4,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
-import io.github.lounode.extrabotany.common.event.entity.living.LivingAttackEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 
 import java.util.Objects;
@@ -16,7 +16,7 @@ public class ThirrorMobEffect extends MobEffect {
 
 	public static class EventHandler {
 
-			public static void onLivingAttack(LivingAttackEventWrapper event) {
+			public static void onLivingAttack(LivingIncomingDamageEvent event) {
 			LivingEntity defender = event.getEntity();
 			if (!defender.hasEffect(ExtraBotanyMobEffects.THIRROR)) {
 				return;

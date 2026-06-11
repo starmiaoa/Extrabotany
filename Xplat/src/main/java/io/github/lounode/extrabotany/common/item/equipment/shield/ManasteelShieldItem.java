@@ -14,7 +14,7 @@ import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.item.equipment.CustomDamageItem;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 
-import io.github.lounode.extrabotany.common.event.entity.living.ShieldBlockEventWrapper;
+import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 
 import java.util.function.Consumer;
 
@@ -76,7 +76,7 @@ public class ManasteelShieldItem extends ShieldItem implements CustomDamageItem,
 
 	public static class EventHandler {
 
-			public static void onShieldBlockDamage(ShieldBlockEventWrapper event) {
+			public static void onShieldBlockDamage(LivingShieldBlockEvent event) {
 			if (!(event.getEntity() instanceof Player player)) {
 				return;
 			}
