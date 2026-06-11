@@ -15,6 +15,7 @@ import net.minecraft.world.phys.HitResult;
 
 import io.github.lounode.extrabotany.common.handler.DamageHandler;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class SubspaceSpearEntity extends ThrowableItemProjectile {
 	}
 
 	private void dealTrueDamage(LivingEntity target, float amount) {
-		if (!target.isAlive() || amount <= 0F) {
+		if (!target.isAlive() || !HerrscherCombatHelper.isFinitePositive(amount)) {
 			return;
 		}
 		float health = target.getHealth();

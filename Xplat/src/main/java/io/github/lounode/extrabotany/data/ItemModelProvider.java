@@ -117,12 +117,18 @@ public class ItemModelProvider implements DataProvider {
 		takeAll(items, manasteelHammer, elementiumHammer, gaiaHammer,
 				photoniumHammer, shadowiumHammer, aerialiteHammer,
 				walkingCane, magicFinger, manaReader, rodOfDiscord, uuzFan, photonShotgun,
-				kingGarden, flamescionWeapon, motor, flyingBoat, elementiumFlyingBoat, terrasteelFlyingBoat,
+				kingGarden, flamescionWeapon, motor,
 				trueTerrablade, trueShadowKatana, influxWaver, starWrath, firstFractal, spearOfSubspace
 		).forEach(i -> ModelTemplates.FLAT_HANDHELD_ITEM.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(i), consumer));
 
 		takeAll(items, recordHerrscherOfTheVoid)
 				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/music_disc_herrscher_of_the_void")), consumer));
+
+		takeAll(items, voidCaller)
+				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/voidcaller")), consumer));
+
+		takeAll(items, emptyCoreOfTheVoid)
+				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/empty_core_of_the_void")), consumer));
 
 		takeAll(items, universalPetal)
 				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/universal_petal")), consumer));

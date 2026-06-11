@@ -1,5 +1,5 @@
 {
-  "parent": "extrabotany:main/gaia_trial",
+  "parent": "extrabotany:main/herrscher_defeat",
   "criteria": {
     "open_pandoras_box": {
       "conditions": {

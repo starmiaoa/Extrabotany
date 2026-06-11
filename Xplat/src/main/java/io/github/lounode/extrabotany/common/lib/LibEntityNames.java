@@ -9,6 +9,7 @@ public class LibEntityNames {
 	public static final ResourceLocation MAGIC_LANDMINE = prefix("magic_landmine");
 	public static final ResourceLocation GAIA_LEGACY = prefix("gaia_legacy");
 	public static final ResourceLocation GAIA_III = prefix("gaia_3rd");
+	public static final ResourceLocation VOID_HERRSCHER = prefix("void_herrscher");
 	public static final ResourceLocation SKULL_MISSILE = prefix("skull_missile");
 	public static final ResourceLocation SKULL_LANDMINE_BLUE = prefix("skull_landmine_blue");
 	public static final ResourceLocation SKULL_LANDMINE_RED = prefix("skull_landmine_red");
@@ -30,10 +31,12 @@ public class LibEntityNames {
 	public static final ResourceLocation STAR_WRATH_FALLING_STAR = prefix("star_wrath_falling_star");
 	public static final ResourceLocation SUBSPACE = prefix("subspace");
 	public static final ResourceLocation SUBSPACE_SPEAR = prefix("subspace_spear");
+	public static final ResourceLocation SUBSPACE_LANCE = prefix("subspace_lance");
+	public static final ResourceLocation SWORD_DOMAIN = prefix("sword_domain");
+	public static final ResourceLocation VOID_FIELD = prefix("void_field");
 	public static final ResourceLocation JUDAH_OATH = prefix("judah_oath");
 	public static final ResourceLocation JUDAH_SPEAR = prefix("judah_spear");
 	public static final ResourceLocation JUDAH_SWORD = prefix("judah_sword");
 	public static final ResourceLocation UFO = prefix("ufo");
 	public static final ResourceLocation MOTOR = prefix("motor");
-	public static final ResourceLocation FLYING_BOAT = prefix("flying_boat");
 }

@@ -60,9 +60,9 @@ public class GaiaIII extends Gaia {
 		if (!arena.checksModern(player, world, stack)) {
 			return false;
 		}
-		if (!arena.checkInventory(world)) {
+		if (!arena.checkGuardianInventoryStrict(world)) {
 			if (!world.isClientSide()) {
-				player.sendSystemMessage(Component.translatable("message.extrabotany.chat.unsafe_inventory").withStyle(ChatFormatting.RED));
+				player.sendSystemMessage(Component.translatable("extrabotany.message.guardian_no_response").withStyle(ChatFormatting.RED));
 			}
 			return false;
 		}

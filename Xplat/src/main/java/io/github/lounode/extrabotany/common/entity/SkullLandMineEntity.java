@@ -13,6 +13,8 @@ import net.minecraft.world.phys.AABB;
 import vazkii.botania.client.fx.WispParticleData;
 
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
+import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 
 import java.util.List;
 
@@ -41,7 +43,8 @@ public abstract class SkullLandMineEntity extends MagicLandMineEntity {
 
 	@Override
 	public List<? extends LivingEntity> getVictims(Class<? extends LivingEntity> entityClass) {
-		return level().getEntitiesOfClass(entityClass, new AABB(getX(), getY(), getZ(), getX(), getY(), getZ()).inflate(LANDMINE_WIDTH / 2));
+		double range = LANDMINE_WIDTH / 2D;
+		return level().getEntitiesOfClass(entityClass, new AABB(getX() - range, getY() - 5D, getZ() - range, getX() + range, getY() + 5D, getZ() + range));
 	}
 
 	public ResourceLocation getTexture() {
@@ -93,6 +96,20 @@ public abstract class SkullLandMineEntity extends MagicLandMineEntity {
 		}
 
 		//TODO 真实伤害
+		@Override
+		public void explode() {
+			List<Player> players = getVictimPlayers();
+			super.explode();
+			for (Player player : players) {
+				if (player.isSpectator() || player.isCreative()) {
+					continue;
+				}
+				HerrscherCombatHelper.dealTrueMagicDamage(player, this, player.getMaxHealth() * 0.3F + 8F);
+				if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+					HerrscherCombatHelper.award(serverPlayer, LibAdvancementNames.LANDMINE_ACTIVE);
+				}
+			}
+		}
 
 		@Override
 		public ResourceLocation getTexture() {
@@ -139,7 +156,7 @@ public abstract class SkullLandMineEntity extends MagicLandMineEntity {
 
 				ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND).copy();
 				player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-				player.drop(itemStack, false, true);
+				HerrscherCombatHelper.dropWithPickupDelay(player, itemStack, 90);
 			}
 		}
 

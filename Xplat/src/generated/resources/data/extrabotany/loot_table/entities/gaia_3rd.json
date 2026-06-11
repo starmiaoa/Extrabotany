@@ -29,28 +29,6 @@
       "conditions": [
         {
           "condition": "botania:killed_by_player"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": 3.0,
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "extrabotany:limited_edition_supply_bag"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "botania:killed_by_player"
         },
         {
           "chance": 0.2,

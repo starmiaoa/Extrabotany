@@ -76,6 +76,9 @@ public abstract class OldSwordProjectileEntity extends ThrowableItemProjectile {
 		List<LivingEntity> filtered = DamageHandler.INSTANCE.getFilteredEntities(targets, this.getOwner());
 
 		for (LivingEntity target : filtered) {
+			if (!canHitTarget(target)) {
+				continue;
+			}
 			if (target.hurtTime > 0 && shouldRespectInvulnerability()) {
 				continue;
 			}
@@ -147,6 +150,10 @@ public abstract class OldSwordProjectileEntity extends ThrowableItemProjectile {
 	}
 
 	protected boolean shouldRespectInvulnerability() {
+		return true;
+	}
+
+	protected boolean canHitTarget(LivingEntity target) {
 		return true;
 	}
 

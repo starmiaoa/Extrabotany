@@ -23,7 +23,6 @@ import vazkii.botania.api.block.WandHUD;
 import vazkii.patchouli.api.PatchouliAPI;
 
 import io.github.lounode.extrabotany.client.ExtraBotanyItemProperties;
-import io.github.lounode.extrabotany.client.FlyingBoatInputHandler;
 import io.github.lounode.extrabotany.client.MotorInputHandler;
 import io.github.lounode.extrabotany.client.MountAccessoryInputHandler;
 import io.github.lounode.extrabotany.client.UfoInputHandler;
@@ -92,7 +91,6 @@ public class ForgeClientInitializer {
 		*/
 		bus.addListener((ClientTickEvent.Post event) -> UfoInputHandler.tick(Minecraft.getInstance()));
 		bus.addListener((ClientTickEvent.Post event) -> MotorInputHandler.tick(Minecraft.getInstance()));
-		bus.addListener((ClientTickEvent.Post event) -> FlyingBoatInputHandler.tick(Minecraft.getInstance()));
 		bus.addListener((ClientTickEvent.Post event) -> MountAccessoryInputHandler.tick(Minecraft.getInstance()));
 		bus.addListener((ClientPlayerNetworkEvent.LoggingOut event) -> HUD.onDisconnected());
 	}

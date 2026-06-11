@@ -12,7 +12,6 @@ import io.github.lounode.extrabotany.network.clientbound.ColorfulBossEventPacket
 import io.github.lounode.extrabotany.network.clientbound.GaiaBossEventPacket;
 import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
-import io.github.lounode.extrabotany.network.serverbound.FlyingBoatInputPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionShiftPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionUltPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
@@ -38,7 +37,6 @@ public class ForgePacketHandler {
 		registrar.playToServer(LeftClickPacketVoidArchives.TYPE, LeftClickPacketVoidArchives.STREAM_CODEC, makeServerBoundHandler(LeftClickPacketVoidArchives::handle));
 		registrar.playToServer(UfoInputPacket.TYPE, UfoInputPacket.STREAM_CODEC, makeServerBoundHandler(UfoInputPacket::handle));
 		registrar.playToServer(MotorInputPacket.TYPE, MotorInputPacket.STREAM_CODEC, makeServerBoundHandler(MotorInputPacket::handle));
-		registrar.playToServer(FlyingBoatInputPacket.TYPE, FlyingBoatInputPacket.STREAM_CODEC, makeServerBoundHandler(FlyingBoatInputPacket::handle));
 		registrar.playToServer(MountAccessoryPacket.TYPE, MountAccessoryPacket.STREAM_CODEC, makeServerBoundHandler(MountAccessoryPacket::handle));
 		registrar.playToServer(FlamescionShiftPacket.TYPE, FlamescionShiftPacket.STREAM_CODEC, makeServerBoundHandler(FlamescionShiftPacket::handle));
 		registrar.playToServer(FlamescionUltPacket.TYPE, FlamescionUltPacket.STREAM_CODEC, makeServerBoundHandler(FlamescionUltPacket::handle));

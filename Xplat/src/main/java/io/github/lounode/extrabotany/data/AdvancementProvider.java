@@ -97,9 +97,29 @@ public class AdvancementProvider extends vazkii.botania.data.AdvancementProvider
 							)
 					)
 					.save(consumer, mainId(LibAdvancementNames.GAIA_TRIAL));
+			AdvancementHolder herrscherDefeat = Advancement.Builder.advancement()
+					.display(simple(ExtraBotanyItems.voidCaller, LibAdvancementNames.HERRSCHER_DEFEAT, AdvancementType.CHALLENGE))
+					.parent(gaiaTrial)
+					.addCriterion("kill_herrscher",
+							KilledTrigger.TriggerInstance.playerKilledEntity(
+									EntityPredicate.Builder.entity()
+											.of(ExtraBotanyEntityType.VOID_HERRSCHER)
+							)
+					)
+					.save(consumer, mainId(LibAdvancementNames.HERRSCHER_DEFEAT));
+			AdvancementHolder endgameGoal = Advancement.Builder.advancement()
+					.display(hidden(ExtraBotanyItems.coreOfTheVoid, LibAdvancementNames.ENDGAME_GOAL, AdvancementType.CHALLENGE))
+					.parent(herrscherDefeat)
+					.addCriterion("code_triggered", impossible())
+					.save(consumer, mainId(LibAdvancementNames.ENDGAME_GOAL));
+			AdvancementHolder landmineActive = Advancement.Builder.advancement()
+					.display(hidden(ExtraBotanyItems.voidCaller, LibAdvancementNames.LANDMINE_ACTIVE, AdvancementType.TASK))
+					.parent(herrscherDefeat)
+					.addCriterion("code_triggered", impossible())
+					.save(consumer, mainId(LibAdvancementNames.LANDMINE_ACTIVE));
 			AdvancementHolder theSourceOfHonkai = Advancement.Builder.advancement()
 					.display(simple(ExtraBotanyItems.pandorasBox, LibAdvancementNames.THE_SOURCE_OF_HONKAI, AdvancementType.TASK))
-					.parent(gaiaTrial)
+					.parent(herrscherDefeat)
 					.addCriterion("open_pandoras_box", UseItemSuccessTrigger.Instance.used(ExtraBotanyItems.pandorasBox))
 					.save(consumer, mainId(LibAdvancementNames.THE_SOURCE_OF_HONKAI));
 			AdvancementHolder theOriginalDivineKey = relicBindAdvancement(

@@ -33,6 +33,7 @@ public final class EntityRenderers {
 		consumer.accept(ExtraBotanyEntityType.MAGIC_LANDMINE, MagicLandMineRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.GAIA_LEGACY, GaiaRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.GAIA_III, GaiaRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.VOID_HERRSCHER, VoidHerrscherRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SKULL_MISSILE, SkullMissileRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SKULL_LANDMINE_BLUE, SkullLandMineRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SKULL_LANDMINE_RED, SkullLandMineRenderer::new);
@@ -50,16 +51,18 @@ public final class EntityRenderers {
 		consumer.accept(ExtraBotanyEntityType.TRUE_TERRABLADE_PROJECTILE, ThrownItemRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.TRUE_SHADOW_KATANA_PROJECTILE, ThrownItemRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.INFLUX_WAVER_PROJECTILE, ThrownItemRenderer::new);
-		consumer.accept(ExtraBotanyEntityType.PHANTOM_SWORD, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.PHANTOM_SWORD, PhantomSwordRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.STAR_WRATH_FALLING_STAR, ThrownItemRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SUBSPACE, NoopRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SUBSPACE_SPEAR, ThrownItemRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.SUBSPACE_LANCE, SubspaceLanceRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.SWORD_DOMAIN, SwordDomainRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.VOID_FIELD, VoidFieldRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.JUDAH_OATH, ThrownItemRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.JUDAH_SPEAR, ThrownItemRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.JUDAH_SWORD, NoopRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.UFO, UfoRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.MOTOR, MotorRenderer::new);
-		consumer.accept(ExtraBotanyEntityType.FLYING_BOAT, FlyingBoatRenderer::new);
 	}
 
 	public static void registerBlockEntityRenderers(BERConsumer consumer) {

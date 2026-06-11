@@ -33,6 +33,7 @@ public class ExtraBotanyMobEffects {
 	public static final Holder<MobEffect> INCANDESCENCE = create(LibPotionNames.INCANDESCENCE, new IncandescenceMobEffect(MobEffectCategory.BENEFICIAL, 0xFF4500));
 	public static final Holder<MobEffect> TIMELOCK = create(LibPotionNames.TIMELOCK, new TimeLockMobEffect(MobEffectCategory.HARMFUL, 0x892CDC));
 	public static final Holder<MobEffect> FLAMESCION = create(LibPotionNames.FLAMESCION, new FlamescionMobEffect(MobEffectCategory.BENEFICIAL, 0xFF4500));
+	public static final Holder<MobEffect> WITCH_CURSE = create(LibPotionNames.WITCH_CURSE, new WitchCurseMobEffect(MobEffectCategory.HARMFUL, 0x4B0082));
 
 	private static Holder<MobEffect> create(String name, MobEffect effect) {
 		RegistryHelper.HolderProxy<MobEffect> proxy = RegistryHelper.holderProxy(Registries.MOB_EFFECT, prefix(name), effect);

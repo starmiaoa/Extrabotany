@@ -26,6 +26,8 @@ import vazkii.botania.xplat.XplatAbstractions;
 import io.github.lounode.extrabotany.api.item.NatureEnergyItem;
 import io.github.lounode.extrabotany.network.ExtrabotanyPacket;
 
+import java.util.List;
+
 public interface EXplatAbstractions extends XplatAbstractions {
 	EXplatAbstractions INSTANCE = ServiceUtil.findService(EXplatAbstractions.class, null);
 
@@ -71,6 +73,10 @@ public interface EXplatAbstractions extends XplatAbstractions {
 	}
 
 	Player createFakePlayer(ServerLevel level, GameProfile userName);
+
+	default List<ItemStack> getEquippedCurios(Player player) {
+		return List.of();
+	}
 
 	default int getFluidTemperature(Fluid fluid) {
 		return 0;

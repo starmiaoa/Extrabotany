@@ -13,7 +13,6 @@ import io.github.lounode.extrabotany.network.clientbound.ColorfulBossEventPacket
 import io.github.lounode.extrabotany.network.clientbound.GaiaBossEventPacket;
 import io.github.lounode.extrabotany.network.clientbound.ManaReaderPacket;
 import io.github.lounode.extrabotany.network.clientbound.SpawnGaiaPacket;
-import io.github.lounode.extrabotany.network.serverbound.FlyingBoatInputPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionShiftPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionUltPacket;
 import io.github.lounode.extrabotany.network.serverbound.LeftClickPacketExcalibur;
@@ -39,7 +38,6 @@ public class FabricPacketHandler {
 		ServerPlayNetworking.registerGlobalReceiver(LeftClickPacketVoidArchives.ID, makeServerBoundHandler(LeftClickPacketVoidArchives::decode, LeftClickPacketVoidArchives::handle));
 		ServerPlayNetworking.registerGlobalReceiver(UfoInputPacket.ID, makeServerBoundHandler(UfoInputPacket::decode, UfoInputPacket::handle));
 		ServerPlayNetworking.registerGlobalReceiver(MotorInputPacket.ID, makeServerBoundHandler(MotorInputPacket::decode, MotorInputPacket::handle));
-		ServerPlayNetworking.registerGlobalReceiver(FlyingBoatInputPacket.ID, makeServerBoundHandler(FlyingBoatInputPacket::decode, FlyingBoatInputPacket::handle));
 		ServerPlayNetworking.registerGlobalReceiver(MountAccessoryPacket.ID, makeServerBoundHandler(MountAccessoryPacket::decode, MountAccessoryPacket::handle));
 		ServerPlayNetworking.registerGlobalReceiver(FlamescionShiftPacket.ID, makeServerBoundHandler(FlamescionShiftPacket::decode, FlamescionShiftPacket::handle));
 		ServerPlayNetworking.registerGlobalReceiver(FlamescionUltPacket.ID, makeServerBoundHandler(FlamescionUltPacket::decode, FlamescionUltPacket::handle));

@@ -68,11 +68,12 @@ public class ForgeItemTagProvider extends net.minecraft.data.tags.ItemTagsProvid
 
 	private void generateAccessoryTags() {
 		tag(accessory("ring")).add(RINGS);
-		tag(accessory("necklace")).add(pureDaisyPendant);
+		tag(accessory("necklace")).add(NECKLACES);
 		tag(accessory("head")).add(HEAD);
 		tag(accessory(("body"))).add(BODY);
-		tag(accessory("curio")).add(ALL_SLOT);
-		tag(accessory("mount")).add(motorAccessory, cosmicCarKeyAccessory);
+		tag(accessory("charm")).add(CHARMS);
+		tag(accessory("curio")).add(CURIOS);
+		tag(accessory("mount")).add(MOUNTS);
 	}
 
 	private void generateToolTags() {

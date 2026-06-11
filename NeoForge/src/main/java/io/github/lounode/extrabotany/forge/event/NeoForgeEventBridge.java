@@ -30,6 +30,7 @@ import io.github.lounode.extrabotany.common.brew.effect.HealReverseMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.LinkMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.ThirrorMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.WarmMobEffect;
+import io.github.lounode.extrabotany.common.brew.effect.WitchCurseMobEffect;
 import io.github.lounode.extrabotany.common.event.EventSubscriptions;
 import io.github.lounode.extrabotany.common.event.PlayLevelSoundEventWrapper;
 import io.github.lounode.extrabotany.common.event.entity.living.LivingAttackEventWrapper;
@@ -179,6 +180,7 @@ public final class NeoForgeEventBridge {
 	private static void onLivingHeal(LivingHealEvent event) {
 		LivingHealEventWrapper wrapper = new LivingHealEventWrapper(event.getEntity(), event.getAmount());
 		HealReverseMobEffect.onLivingHeal(wrapper);
+		WitchCurseMobEffect.onLivingHeal(wrapper);
 		SilentEternityItem.EventHandler.onLivingHeal(wrapper);
 		event.setAmount(wrapper.getAmount());
 	}
@@ -281,6 +283,8 @@ public final class NeoForgeEventBridge {
 	}
 
 	private static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+		OldExbotanyRelicSwordItem.leftClickBlock(
+				new PlayerInteractEventWrapper.LeftClickBlock(event.getEntity(), event.getHand(), event.getPos()));
 		FeatherOfJingweiItem.leftClickBlock(
 				new PlayerInteractEventWrapper.LeftClickBlock(event.getEntity(), event.getHand(), event.getPos()));
 	}

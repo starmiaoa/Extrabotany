@@ -24,6 +24,6 @@ public class ExtrabotanyLayerDefinitions {
 		consumer.accept(ExtrabotanyModelLayers.GOBLIN_SLAYER_ARMOR_LEGGINGS, () -> LayerDefinition.create(GoblinSlayerArmorModel.createLeggingsMesh(), 128, 128));
 		consumer.accept(ExtrabotanyModelLayers.UFO, UfoModel::createLayer);
 		consumer.accept(ExtrabotanyModelLayers.MOTOR, MotorModel::createLayer);
-		consumer.accept(ExtrabotanyModelLayers.FLYING_BOAT, FlyingBoatModel::createLayer);
+		consumer.accept(ExtrabotanyModelLayers.VOID_HERRSCHER, ModelVoidHerrscher::createLayer);
 	}
 }

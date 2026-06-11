@@ -32,6 +32,8 @@ import io.github.lounode.extrabotany.network.ExtrabotanyPacket;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExForgeXplatImpl extends ForgeXplatImpl implements EXplatAbstractions {
 	@Override
@@ -59,6 +61,20 @@ public class ExForgeXplatImpl extends ForgeXplatImpl implements EXplatAbstractio
 	@Override
 	public Player createFakePlayer(ServerLevel level, GameProfile userName) {
 		return FakePlayerFactory.get(level, userName);
+	}
+
+	@Override
+	public List<ItemStack> getEquippedCurios(Player player) {
+		List<ItemStack> stacks = new ArrayList<>();
+		top.theillusivec4.curios.api.CuriosApi.getCuriosInventory(player).ifPresent(handler -> {
+			handler.getCurios().values().forEach(slot -> {
+				var stackHandler = slot.getStacks();
+				for (int i = 0; i < stackHandler.getSlots(); i++) {
+					stacks.add(stackHandler.getStackInSlot(i));
+				}
+			});
+		});
+		return stacks;
 	}
 
 	@Override

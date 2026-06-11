@@ -19,7 +19,6 @@ import vazkii.patchouli.api.PatchouliAPI;
 
 import io.github.lounode.extrabotany.api.client.IArmor;
 import io.github.lounode.extrabotany.client.ExtraBotanyItemProperties;
-import io.github.lounode.extrabotany.client.FlyingBoatInputHandler;
 import io.github.lounode.extrabotany.client.MotorInputHandler;
 import io.github.lounode.extrabotany.client.MountAccessoryInputHandler;
 import io.github.lounode.extrabotany.client.UfoInputHandler;
@@ -61,7 +60,6 @@ public class FabricClientInitializer implements ClientModInitializer {
 		ClientLifecycleEvents.CLIENT_STARTED.register(this::loadComplete);
 		ClientTickEvents.END_CLIENT_TICK.register(UfoInputHandler::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(MotorInputHandler::tick);
-		ClientTickEvents.END_CLIENT_TICK.register(FlyingBoatInputHandler::tick);
 		ClientTickEvents.END_CLIENT_TICK.register(MountAccessoryInputHandler::tick);
 		HudRenderCallback.EVENT.register((gui, partialTick) -> this.hud.onDrawScreenPost(gui, partialTick));
 		ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> HUD.onDisconnected());

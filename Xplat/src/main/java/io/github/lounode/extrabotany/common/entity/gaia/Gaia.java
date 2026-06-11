@@ -30,6 +30,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -261,6 +262,9 @@ public class Gaia extends Monster {
 	///
 	@Override
 	public boolean hurt(@NotNull DamageSource source, float amount) {
+		if (source.is(DamageTypes.GENERIC_KILL)) {
+			return super.hurt(source, amount);
+		}
 		Entity e = source.getEntity();
 		if (e instanceof Player player && isTruePlayer(e) && getInvulTime() == 0) {
 
@@ -274,6 +278,10 @@ public class Gaia extends Monster {
 
 	@Override
 	protected void actuallyHurt(@NotNull DamageSource source, float amount) {
+		if (source.is(DamageTypes.GENERIC_KILL)) {
+			super.actuallyHurt(source, amount);
+			return;
+		}
 		super.actuallyHurt(source, Math.min(getDamageCap(), amount));
 
 		Entity attacker = source.getDirectEntity();
