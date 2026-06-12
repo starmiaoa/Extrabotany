@@ -517,6 +517,7 @@ public class GaiaArena {
 
 	private static final Set<String> GUARDIAN_ALLOWED_ITEMS = Set.of(
 			"enigmaticlegacy:cursed_ring",
+			"enigmaticlegacyplus:cursed_ring",
 			"celestial_artifacts:catastrophe_scroll",
 			"celestial_artifacts:chaotic_etching",
 			"celestial_artifacts:origin_etching",
