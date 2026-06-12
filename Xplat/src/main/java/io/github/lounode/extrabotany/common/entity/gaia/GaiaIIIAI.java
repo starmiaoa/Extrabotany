@@ -11,6 +11,9 @@ import net.minecraft.world.entity.ai.behavior.Swim;
 import net.minecraft.world.entity.schedule.Activity;
 
 import io.github.lounode.extrabotany.common.entity.gaia.behavior.*;
+import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
+
+import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
 public class GaiaIIIAI extends GaiaAI {
 	public static final int EMERGE_TIME = 200;
@@ -49,7 +52,7 @@ public class GaiaIIIAI extends GaiaAI {
 	protected static void initCoreActivity(Brain<? extends Gaia> brain) {
 		brain.addActivity(Activity.CORE, 0, ImmutableList.of(
 				new Swim(0.8F),
-				new GaiaDisarm<>()
+				new GaiaDisarm<>(prefix("main/" + LibAdvancementNames.VOID_ARCHIVES_OBTAIN))
 		));
 	}
 
