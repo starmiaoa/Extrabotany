@@ -515,7 +515,8 @@ public class GaiaArena {
 			return true;
 		}
 		String namespace = RegistryHelper.getRegistryName(stack.getItem()).getNamespace();
-		return namespace.equals("minecraft") || namespace.equals("botania") || namespace.equals("extrabotany");
+		return namespace.equals("minecraft") || namespace.equals("botania") || namespace.equals("extrabotany")
+				|| namespace.equals("mythicbotany");
 	}
 
 	public static boolean checkInventoryPass(Player player) {
