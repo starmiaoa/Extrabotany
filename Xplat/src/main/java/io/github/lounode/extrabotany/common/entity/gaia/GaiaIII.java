@@ -32,9 +32,12 @@ import vazkii.botania.common.handler.BotaniaSounds;
 
 import io.github.lounode.extrabotany.api.gaia.GaiaArena;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyEntityType;
+import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 
 import java.util.List;
+
+import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
 public class GaiaIII extends Gaia {
 	public static final float ARENA_RANGE = 15F;
@@ -60,7 +63,7 @@ public class GaiaIII extends Gaia {
 		if (!arena.checksModern(player, world, stack)) {
 			return false;
 		}
-		if (!arena.checkGuardianInventoryStrict(world)) {
+		if (!arena.checkGuardianInventoryStrict(world, prefix("main/" + LibAdvancementNames.VOID_ARCHIVES_OBTAIN))) {
 			if (!world.isClientSide()) {
 				player.sendSystemMessage(Component.translatable("extrabotany.message.guardian_no_response").withStyle(ChatFormatting.RED));
 			}

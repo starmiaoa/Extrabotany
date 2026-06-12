@@ -53,6 +53,7 @@ import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static vazkii.botania.common.helper.PlayerHelper.isTruePlayer;
@@ -484,8 +485,12 @@ public class GaiaArena {
 		return true;
 	}
 
-	public boolean checkGuardianInventoryStrict(Level level) {
+	public boolean checkGuardianInventoryStrict(Level level, ResourceLocation bypassAdvancement) {
 		for (Player player : getPlayersAround(level)) {
+			if (bypassAdvancement != null && player instanceof ServerPlayer serverPlayer
+					&& PlayerHelper.hasAdvancement(serverPlayer, bypassAdvancement)) {
+				continue;
+			}
 			if (!checkGuardianInventoryPass(player)) {
 				return false;
 			}
@@ -510,13 +515,25 @@ public class GaiaArena {
 		return true;
 	}
 
+	private static final Set<String> GUARDIAN_ALLOWED_ITEMS = Set.of(
+			"enigmaticlegacy:cursed_ring",
+			"celestial_artifacts:catastrophe_scroll",
+			"celestial_artifacts:chaotic_etching",
+			"celestial_artifacts:origin_etching",
+			"celestial_artifacts:life_etching",
+			"celestial_artifacts:truth_etching",
+			"celestial_artifacts:desire_etching",
+			"celestial_artifacts:nihility_etching",
+			"celestial_artifacts:end_etching");
+
 	public static boolean checkGuardianAllowed(ItemStack stack) {
 		if (stack.isEmpty()) {
 			return true;
 		}
-		String namespace = RegistryHelper.getRegistryName(stack.getItem()).getNamespace();
+		ResourceLocation id = RegistryHelper.getRegistryName(stack.getItem());
+		String namespace = id.getNamespace();
 		return namespace.equals("minecraft") || namespace.equals("botania") || namespace.equals("extrabotany")
-				|| namespace.equals("mythicbotany");
+				|| namespace.equals("mythicbotany") || GUARDIAN_ALLOWED_ITEMS.contains(id.toString());
 	}
 
 	public static boolean checkInventoryPass(Player player) {

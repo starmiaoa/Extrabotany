@@ -66,6 +66,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
+
 public class VoidHerrscher extends Gaia {
 	public static final float ARENA_RANGE = 15F;
 	public static final int ARENA_HEIGHT = 7;
@@ -130,7 +132,7 @@ public class VoidHerrscher extends Gaia {
 		if (arena.countGaiaAround(world, VoidHerrscher.class) > 0) {
 			return false;
 		}
-		if (!arena.checkGuardianInventoryStrict(world)) {
+		if (!arena.checkGuardianInventoryStrict(world, prefix("main/" + LibAdvancementNames.FIRST_FRACTAL_OBTAIN))) {
 			if (!world.isClientSide()) {
 				player.sendSystemMessage(Component.translatable("extrabotany.message.guardian_no_response").withStyle(ChatFormatting.RED));
 			}

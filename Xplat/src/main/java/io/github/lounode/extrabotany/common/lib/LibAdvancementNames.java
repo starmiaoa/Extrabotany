@@ -35,4 +35,6 @@ public class LibAdvancementNames {
 	public static final String HERRSCHER_DEFEAT = "herrscher_defeat";
 	public static final String ENDGAME_GOAL = "endgame_goal";
 	public static final String LANDMINE_ACTIVE = "landmine_active";
+	public static final String VOID_ARCHIVES_OBTAIN = "void_archives_obtain";
+	public static final String FIRST_FRACTAL_OBTAIN = "first_fractal_obtain";
 }
