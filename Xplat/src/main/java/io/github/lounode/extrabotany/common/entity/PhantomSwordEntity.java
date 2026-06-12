@@ -28,6 +28,8 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 	private static final int LIFETIME = 26;
 	private static final EntityDataAccessor<Integer> VARIETY = SynchedEntityData.defineId(PhantomSwordEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> FAKE = SynchedEntityData.defineId(PhantomSwordEntity.class, EntityDataSerializers.BOOLEAN);
+	// Synced so the renderer can hide swords that have not been launched yet, like the old version did.
+	private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.defineId(PhantomSwordEntity.class, EntityDataSerializers.INT);
 	private static final float[][] RGB = {
 			{ 0.82F, 0.2F, 0.58F }, { 0F, 0.71F, 0.10F }, { 0.74F, 0.07F, 0.32F },
 			{ 0.01F, 0.45F, 0.8F }, { 0.05F, 0.39F, 0.9F }, { 0.38F, 0.34F, 0.42F },
@@ -35,7 +37,6 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 			{ 0.18F, 0.45F, 0.43F }
 	};
 
-	private int delay;
 	private int lifeTicks;
 
 	public PhantomSwordEntity(EntityType<? extends PhantomSwordEntity> entityType, Level level) {
@@ -49,7 +50,7 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 	public PhantomSwordEntity(Level level, LivingEntity owner, Vec3 startPos, Vec3 targetPos, int delay, int variety) {
 		super(ExtraBotanyEntityType.PHANTOM_SWORD, level, owner);
 		this.setPos(startPos.x, startPos.y, startPos.z);
-		this.delay = delay;
+		this.setDelay(delay);
 		this.setVariety(variety);
 		this.setTargetPos(targetPos);
 		if (delay <= 0) {
@@ -59,9 +60,9 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 
 	@Override
 	public void tick() {
-		if (!this.level().isClientSide() && this.delay > 0) {
-			this.delay--;
-			if (this.delay == 0) {
+		if (!this.level().isClientSide() && this.getDelay() > 0) {
+			this.setDelay(this.getDelay() - 1);
+			if (this.getDelay() == 0) {
 				this.shootAt(this.getTargetPos(), 1.05D);
 			}
 			return;
@@ -70,7 +71,7 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 			this.setDeltaMovement(Vec3.ZERO);
 		}
 		super.tick();
-		if (!this.level().isClientSide() && this.delay <= 0) {
+		if (!this.level().isClientSide() && this.getDelay() <= 0) {
 			this.lifeTicks++;
 			if (!this.isFake() && this.lifeTicks % 6 == 0) {
 				PhantomSwordEntity illusion = new PhantomSwordEntity(ExtraBotanyEntityType.PHANTOM_SWORD, this.level());
@@ -93,7 +94,7 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 
 	@Override
 	protected int getHitStartTick() {
-		return this.delay > 0 ? Integer.MAX_VALUE : 0;
+		return this.getDelay() > 0 ? Integer.MAX_VALUE : 0;
 	}
 
 	@Override
@@ -170,10 +171,18 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		this.entityData.set(FAKE, fake);
 	}
 
+	public int getDelay() {
+		return this.entityData.get(DELAY);
+	}
+
+	public void setDelay(int delay) {
+		this.entityData.set(DELAY, delay);
+	}
+
 	@Override
 	public void addAdditionalSaveData(CompoundTag tag) {
 		super.addAdditionalSaveData(tag);
-		tag.putInt(TAG_DELAY, this.delay);
+		tag.putInt(TAG_DELAY, this.getDelay());
 		tag.putInt(TAG_LIFE_TICKS, this.lifeTicks);
 		tag.putInt(TAG_VARIETY, this.getVariety());
 		tag.putBoolean(TAG_FAKE, this.isFake());
@@ -182,7 +191,7 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
 		super.readAdditionalSaveData(tag);
-		this.delay = tag.getInt(TAG_DELAY);
+		this.setDelay(tag.getInt(TAG_DELAY));
 		this.lifeTicks = tag.getInt(TAG_LIFE_TICKS);
 		this.setVariety(tag.getInt(TAG_VARIETY));
 		this.setFake(tag.getBoolean(TAG_FAKE));
@@ -193,5 +202,6 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		super.defineSynchedData();
 		this.entityData.define(VARIETY, 0);
 		this.entityData.define(FAKE, false);
+		this.entityData.define(DELAY, 0);
 	}
 }

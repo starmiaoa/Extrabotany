@@ -117,6 +117,14 @@ public class AdvancementProvider extends vazkii.botania.data.AdvancementProvider
 							)
 					)
 					.save(consumer, mainId(LibAdvancementNames.HERRSCHER_DEFEAT));
+			// Display-less tracking advancements: owning these relics permanently lifts the
+			// guardian summon inventory gate (GaiaIII <- void archives, Herrscher <- first fractal).
+			Advancement.Builder.advancement()
+					.addCriterion("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ExtraBotanyItems.voidArchives))
+					.save(consumer, mainId(LibAdvancementNames.VOID_ARCHIVES_OBTAIN));
+			Advancement.Builder.advancement()
+					.addCriterion("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ExtraBotanyItems.firstFractal))
+					.save(consumer, mainId(LibAdvancementNames.FIRST_FRACTAL_OBTAIN));
 			Advancement.Builder.advancement()
 					.display(hidden(ExtraBotanyItems.coreOfTheVoid, LibAdvancementNames.ENDGAME_GOAL, FrameType.CHALLENGE))
 					.parent(herrscherDefeat)
