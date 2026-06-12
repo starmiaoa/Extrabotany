@@ -24,8 +24,9 @@ public class LimitedEditionSupplyBagData extends SavedData {
 	private static final String TAG_POOLS = "Pools";
 	private static final String TAG_UUID = "UUID";
 	private static final String TAG_POOL = "Pool";
-	// Bumped when TEMPLATE contents change; stale pools predate the empty core entry and are discarded on load.
-	private static final int VERSION = 2;
+	// Bumped when TEMPLATE contents change; stale pools are discarded on load.
+	// v2 added the empty core jackpot; v3 restored the silent eternity jackpot alongside it.
+	private static final int VERSION = 3;
 	private static final int EMPTY = -1;
 	private static final int[] TEMPLATE = createTemplate();
 
@@ -107,9 +108,10 @@ public class LimitedEditionSupplyBagData extends SavedData {
 	}
 
 	private static int[] createTemplate() {
-		int[] pool = new int[100];
+		int[] pool = new int[101];
 		int index = 0;
 		index = fill(pool, index, 1, 8);
+		index = fill(pool, index, 1, 0);
 		index = fill(pool, index, 4, 1);
 		index = fill(pool, index, 10, 2);
 		index = fill(pool, index, 10, 3);
