@@ -624,6 +624,22 @@ public final class PatchouliBookProvider extends PatchouliProvider {
 						crafting(ExtraBotanyItems.parkourRing).withText("extrabotany.page.parkour_ring1")
 				)
 				.save(consumer, id("parkour_ring"));
+		PatchouliBuilder.entry(BAUBLES)
+				.withName("extrabotany.entry.elven_king")
+				.withIcon(ExtraBotanyItems.elvenKing)
+				.pages(
+						text("extrabotany.page.elven_king0"),
+						runicAlter(ExtraBotanyItems.elvenKing).withText("extrabotany.page.elven_king1")
+				)
+				.save(consumer, id("elven_king"));
+		PatchouliBuilder.entry(BAUBLES)
+				.withName("extrabotany.entry.all_for_one")
+				.withIcon(ExtraBotanyItems.allForOne)
+				.pages(
+						text("extrabotany.page.all_for_one0"),
+						runicAlter(ExtraBotanyItems.allForOne).withText("extrabotany.page.all_for_one1")
+				)
+				.save(consumer, id("all_for_one"));
 		PatchouliBuilder.entry(GENERATING_FLOWERS)
 				.withName("extrabotany.entry.sunshine_lily")
 				.withIcon(ExtrabotanyFlowerBlocks.sunshineLily)

@@ -165,6 +165,26 @@ public class RunicAltarProvider extends ExtraBotanyRecipeProvider {
 				Ingredient.of(BotaniaItems.icePendant),
 				Ingredient.of(BotaniaItems.itemFinder)
 		));
+		// 1.12.2 recipes: elementium x2 + elven quartz x2 + rune of spring, then the
+		// upgrade adds a hero medal and the seven sin runes.
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.elvenKing), new ItemStack(ExtraBotanyItems.elvenKing), 4000,
+				Ingredient.of(BotaniaItems.elementium),
+				Ingredient.of(BotaniaItems.elementium),
+				Ingredient.of(BotaniaItems.elfQuartz),
+				Ingredient.of(BotaniaItems.elfQuartz),
+				Ingredient.of(BotaniaItems.runeSpring)
+		));
+		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.allForOne), new ItemStack(ExtraBotanyItems.allForOne), 50000,
+				Ingredient.of(ExtraBotanyItems.elvenKing),
+				Ingredient.of(ExtraBotanyItems.heroMedal),
+				Ingredient.of(BotaniaItems.runeLust),
+				Ingredient.of(BotaniaItems.runeGluttony),
+				Ingredient.of(BotaniaItems.runeGreed),
+				Ingredient.of(BotaniaItems.runeSloth),
+				Ingredient.of(BotaniaItems.runeWrath),
+				Ingredient.of(BotaniaItems.runeEnvy),
+				Ingredient.of(BotaniaItems.runePride)
+		));
 		consumer.accept(new FinishedRecipe(idFor(ExtraBotanyItems.potatoChips), new ItemStack(ExtraBotanyItems.potatoChips), 50000,
 				Ingredient.of(ExtraBotanyItems.gildedPotato),
 				Ingredient.of(BuiltInRegistries.ITEM.get(new ResourceLocation("botania", "cosmetic_tiny_potato_mask"))),

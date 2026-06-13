@@ -1,0 +1,24 @@
+{
+  "type": "botania:runic_altar",
+  "ingredients": [
+    {
+      "item": "botania:elementium_ingot"
+    },
+    {
+      "item": "botania:elementium_ingot"
+    },
+    {
+      "item": "botania:elf_quartz"
+    },
+    {
+      "item": "botania:elf_quartz"
+    },
+    {
+      "item": "botania:rune_spring"
+    }
+  ],
+  "mana": 4000,
+  "output": {
+    "item": "extrabotany:elven_king"
+  }
+}

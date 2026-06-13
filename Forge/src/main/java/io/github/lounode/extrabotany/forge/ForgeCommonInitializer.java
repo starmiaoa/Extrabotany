@@ -72,6 +72,7 @@ import io.github.lounode.extrabotany.common.impl.WindImpl;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.brew.InfiniteWineItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.AquaStoneItem;
+import io.github.lounode.extrabotany.common.item.equipment.bauble.BaubleBoxSimulatorItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.FeatherOfJingweiItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.MoonPendantItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.NatureOrbItem;
@@ -358,6 +359,8 @@ public class ForgeCommonInitializer {
 			Map.entry(ExtraBotanyItems.achillesShield, AchillesShieldItem::makeRelic),
 			Map.entry(ExtraBotanyItems.sunRing, SunRingItem::makeRelic),
 			Map.entry(ExtraBotanyItems.moonPendant, MoonPendantItem::makeRelic),
+			Map.entry(ExtraBotanyItems.elvenKing, BaubleBoxSimulatorItem::makeRelic),
+			Map.entry(ExtraBotanyItems.allForOne, BaubleBoxSimulatorItem::makeRelic),
 			Map.entry(ExtraBotanyItems.silentEternity, SilentEternityItem::makeRelic)
 	));
 

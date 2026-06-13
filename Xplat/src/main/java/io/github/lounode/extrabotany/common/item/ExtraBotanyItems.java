@@ -13,6 +13,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
+import vazkii.botania.common.item.BaubleBoxItem;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 import vazkii.botania.common.item.lens.Lens;
 import vazkii.botania.common.item.lens.LensItem;
@@ -301,6 +302,8 @@ public final class ExtraBotanyItems {
 	public static final Item potatoChips = make(prefix(LibItemNames.POTATO_CHIPS), new PotatoChipsItem(unstackable()));
 	public static final Item sunRing = make(prefix(LibItemNames.SUN_RING), new SunRingItem(unstackable().rarity(Rarity.EPIC).fireResistant()));
 	public static final Item moonPendant = make(prefix(LibItemNames.MOON_PENDANT), new MoonPendantItem(unstackable().rarity(Rarity.EPIC).fireResistant()));
+	public static final Item elvenKing = make(prefix(LibItemNames.ELVEN_KING), new BaubleBoxSimulatorItem(3, unstackable().rarity(Rarity.EPIC).fireResistant()));
+	public static final Item allForOne = make(prefix(LibItemNames.ALL_FOR_ONE), new BaubleBoxSimulatorItem(BaubleBoxItem.SIZE, unstackable().rarity(Rarity.EPIC).fireResistant()));
 	public static final Item foxEar = make(prefix(LibItemNames.FOX_EAR), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.FOX_EAR, unstackable()));
 	public static final Item foxMask = make(prefix(LibItemNames.FOX_MASK), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.FOX_MASK, unstackable()));
 	public static final Item pylon = make(prefix(LibItemNames.PYLON), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.PYLON, unstackable()));
@@ -383,7 +386,8 @@ public final class ExtraBotanyItems {
 	// (silent_eternity TRINKET -> curio, bottled_flame CHARM -> charm).
 	public static final Item[] RINGS = {
 			manaRingMaster, frostRing, dispersiveRing, curseRing,
-			spiderRing, jackieChanRing, parkourRing, sunRing, deathRing, frostStar
+			spiderRing, jackieChanRing, parkourRing, sunRing, deathRing, frostStar,
+			elvenKing, allForOne
 	};
 
 	public static final Item[] BODY = {

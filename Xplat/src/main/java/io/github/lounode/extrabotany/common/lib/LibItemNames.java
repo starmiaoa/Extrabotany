@@ -135,6 +135,8 @@ public final class LibItemNames {
 	public static final String POTATO_CHIPS = "potato_chips";
 	public static final String SUN_RING = "sun_ring";
 	public static final String MOON_PENDANT = "moon_pendant";
+	public static final String ELVEN_KING = "elven_king";
+	public static final String ALL_FOR_ONE = "all_for_one";
 	public static final String FOX_EAR = "fox_ear";
 	public static final String FOX_MASK = "fox_mask";
 	public static final String PYLON = "pylon";
