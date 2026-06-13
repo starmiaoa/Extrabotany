@@ -12,6 +12,8 @@ import net.minecraft.world.phys.Vec3;
 import io.github.lounode.extrabotany.common.handler.DamageHandler;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
+import vazkii.botania.common.entity.FallingStarEntity;
+
 public class BottledStarEntity extends ThrowableItemProjectile {
 	private static final int LIFETIME = 130;
 
@@ -80,7 +82,7 @@ public class BottledStarEntity extends ThrowableItemProjectile {
 		Vec3 start = impact.add(motionSource);
 		Vec3 velocity = motionSource.normalize().reverse().scale(1.5D);
 
-		StarWrathFallingStarEntity star = new StarWrathFallingStarEntity(this.level(), owner);
+		FallingStarEntity star = new FallingStarEntity(owner, this.level());
 		star.setPos(start.x, start.y, start.z);
 		star.setDeltaMovement(velocity);
 		this.level().addFreshEntity(star);

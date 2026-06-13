@@ -28,7 +28,6 @@ public class LibEntityNames {
 	public static final ResourceLocation TRUE_SHADOW_KATANA_PROJECTILE = prefix("true_shadow_katana_projectile");
 	public static final ResourceLocation INFLUX_WAVER_PROJECTILE = prefix("influx_waver_projectile");
 	public static final ResourceLocation PHANTOM_SWORD = prefix("phantom_sword");
-	public static final ResourceLocation STAR_WRATH_FALLING_STAR = prefix("star_wrath_falling_star");
 	public static final ResourceLocation SUBSPACE = prefix("subspace");
 	public static final ResourceLocation SUBSPACE_SPEAR = prefix("subspace_spear");
 	public static final ResourceLocation SUBSPACE_LANCE = prefix("subspace_lance");
