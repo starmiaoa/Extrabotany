@@ -13,6 +13,7 @@
     "accessor.DaffomillBlockEntityAccessor",
     "accessor.LightningBoltAccessor",
     "botania.DisplayWindLevel",
+    "botania.EquipmentHandlerSimulateBoxBaubles",
     "botania.GaiaGuardianAdditionalSpawnCheck",
     "botania.MagicMissileTargetBypassGaiaIII",
     "botania.WandOfTheForestExtension",
