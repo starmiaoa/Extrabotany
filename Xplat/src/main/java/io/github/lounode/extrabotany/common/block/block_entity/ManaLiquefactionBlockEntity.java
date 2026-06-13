@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -35,8 +36,12 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 	public static final String TAG_MANA = "mana";
 	public static final String TAG_ENERGY = "energy";
 
+	private static final int SYNC_INTERVAL = 10;
+
 	private int mana;
 	private int energy;
+	private int ticks;
+	private boolean syncPending;
 
 	public ManaLiquefactionBlockEntity(BlockPos pos, BlockState state) {
 		super(ExtraBotanyBlockEntities.MANA_LIQUEFACTION, pos, state);
@@ -65,8 +70,14 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 
 		if (changed) {
 			self.setChanged();
-			level.sendBlockUpdated(pos, state, state, 3);
+			self.syncPending = true;
 		}
+
+		if (self.syncPending && self.ticks % SYNC_INTERVAL == 0) {
+			level.sendBlockUpdated(pos, state, state, 3);
+			self.syncPending = false;
+		}
+		self.ticks++;
 	}
 
 	private boolean pullFluid(BlockPos sourcePos, Direction sourceSide) {
@@ -239,6 +250,8 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 		mana = Mth.clamp(getCurrentMana() + amount, 0, getMaxMana());
 		if (oldMana != mana) {
 			setChanged();
+			// Sparks and bursts call this outside serverTick, so the sync flag must live here.
+			syncPending = true;
 		}
 	}
 
@@ -251,6 +264,7 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 	public boolean onUsedByWand(net.minecraft.world.entity.player.Player player, ItemStack stack, Direction direction) {
 		if (level != null && !level.isClientSide()) {
 			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+			syncPending = false;
 		}
 		return true;
 	}
@@ -275,5 +289,11 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 		tag.putInt(TAG_MANA, getCurrentMana());
 		tag.putInt(TAG_ENERGY, getEnergyStored());
 		return tag;
+	}
+
+	// Without this, sendBlockUpdated never carries the block entity data to the client.
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 }
