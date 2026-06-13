@@ -145,7 +145,8 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 		//Pickaxe
 		Set<Block> pickaxe = new HashSet<>(Set.of(
 				aerialiteBlock, orichalcosBlock, photoniumBlock, shadowiumBlock,
-				dimensionCatalyst, powerFrame, manaBuffer, quantumManaBuffer, manaGenerator, livingrockBarrel, trophy
+				dimensionCatalyst, powerFrame, manaBuffer, quantumManaBuffer, manaGenerator, manaLiquefaction,
+				livingrockBarrel, trophy
 		));
 		pickaxe.addAll(List.of(ALL_PEDESTALS));
 		pickaxe.addAll(List.of(ALL_QUARTZ));
