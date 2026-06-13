@@ -16,6 +16,9 @@ import java.util.function.Function;
 
 public class ExtraBotanyModels {
 	public static final ExtraBotanyModels INSTANCE = new ExtraBotanyModels();
+	public static final ResourceLocation TRUE_TERRABLADE_PROJECTILE = model("true_terrablade_projectile");
+	public static final ResourceLocation TRUE_SHADOW_KATANA_PROJECTILE = model("true_shadow_katana_projectile");
+	public static final ResourceLocation INFLUX_WAVER_PROJECTILE = model("influx_waver_projectile");
 	private final Map<ResourceLocation, Function<BakedModel, BakedModel>> afterBakeModifiers;
 	private final Map<ResourceLocation, Consumer<BakedModel>> modelConsumers;
 
@@ -25,6 +28,9 @@ public class ExtraBotanyModels {
 		afterBakeModifiers = new HashMap<>();
 
 		modelConsumers = new HashMap<>();
+		modelConsumers.put(TRUE_TERRABLADE_PROJECTILE, model -> {});
+		modelConsumers.put(TRUE_SHADOW_KATANA_PROJECTILE, model -> {});
+		modelConsumers.put(INFLUX_WAVER_PROJECTILE, model -> {});
 
 		for (var variant : ExtraBotanyAPI.instance().getCOVVariants().values()) {
 			if (variant instanceof ClientCoreOfTheVoidVariant clientVariant) {
@@ -58,5 +64,9 @@ public class ExtraBotanyModels {
 
 	private static ModelResourceLocation standaloneModel(ResourceLocation id) {
 		return new ModelResourceLocation(id, "standalone");
+	}
+
+	private static ResourceLocation model(String name) {
+		return ResourceLocation.fromNamespaceAndPath("extrabotany", "icon/" + name);
 	}
 }

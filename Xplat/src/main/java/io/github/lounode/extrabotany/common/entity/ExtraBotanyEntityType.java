@@ -179,13 +179,6 @@ public class ExtraBotanyEntityType {
 			.updateInterval(2)
 			.build(LibEntityNames.PHANTOM_SWORD.toString());
 
-	public static final EntityType<StarWrathFallingStarEntity> STAR_WRATH_FALLING_STAR = EntityType.Builder.<StarWrathFallingStarEntity>of(
-			StarWrathFallingStarEntity::new, MobCategory.MISC)
-			.sized(0.35F, 0.35F)
-			.clientTrackingRange(4)
-			.updateInterval(2)
-			.build(LibEntityNames.STAR_WRATH_FALLING_STAR.toString());
-
 	public static final EntityType<SubspaceEntity> SUBSPACE = EntityType.Builder.<SubspaceEntity>of(
 			SubspaceEntity::new, MobCategory.MISC)
 			.sized(0.1F, 0.1F)
@@ -281,7 +274,6 @@ public class ExtraBotanyEntityType {
 		r.accept(TRUE_SHADOW_KATANA_PROJECTILE, LibEntityNames.TRUE_SHADOW_KATANA_PROJECTILE);
 		r.accept(INFLUX_WAVER_PROJECTILE, LibEntityNames.INFLUX_WAVER_PROJECTILE);
 		r.accept(PHANTOM_SWORD, LibEntityNames.PHANTOM_SWORD);
-		r.accept(STAR_WRATH_FALLING_STAR, LibEntityNames.STAR_WRATH_FALLING_STAR);
 		r.accept(SUBSPACE, LibEntityNames.SUBSPACE);
 		r.accept(SUBSPACE_SPEAR, LibEntityNames.SUBSPACE_SPEAR);
 		r.accept(SUBSPACE_LANCE, LibEntityNames.SUBSPACE_LANCE);

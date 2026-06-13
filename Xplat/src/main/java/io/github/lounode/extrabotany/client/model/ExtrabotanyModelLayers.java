@@ -16,6 +16,7 @@ public class ExtrabotanyModelLayers {
 	public static final ModelLayerLocation UFO = make("ufo");
 	public static final ModelLayerLocation MOTOR = make("motor");
 	public static final ModelLayerLocation VOID_HERRSCHER = make("void_herrscher");
+	public static final ModelLayerLocation SUBSPACE_SPEAR = make("subspace_spear");
 
 	private static ModelLayerLocation make(String name) {
 		return make(name, "main");

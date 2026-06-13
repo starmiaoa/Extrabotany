@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.phys.Vec3;
 
-import io.github.lounode.extrabotany.common.entity.StarWrathFallingStarEntity;
+import vazkii.botania.common.entity.FallingStarEntity;
 
 public class StarWrathItem extends OldExbotanyRelicSwordItem {
 	private static final int MANA_PER_USE = 500;
@@ -27,7 +27,7 @@ public class StarWrathItem extends OldExbotanyRelicSwordItem {
 			Vec3 start = impact.add(motionSource);
 			Vec3 velocity = motionSource.normalize().reverse().scale(1.5D);
 
-			StarWrathFallingStarEntity star = new StarWrathFallingStarEntity(player.level(), player);
+			FallingStarEntity star = new FallingStarEntity(player, player.level());
 			star.setPos(start.x, start.y, start.z);
 			star.setDeltaMovement(velocity);
 			player.level().addFreshEntity(star);

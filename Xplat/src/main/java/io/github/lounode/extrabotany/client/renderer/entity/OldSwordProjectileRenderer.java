@@ -4,48 +4,72 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.level.block.state.BlockState;
 
-import org.joml.Matrix4f;
+import net.neoforged.neoforge.client.ClientHooks;
 
 import io.github.lounode.extrabotany.common.entity.OldSwordProjectileEntity;
 
 public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> extends EntityRenderer<T> {
-	private final ResourceLocation texture;
+	private static final int FULLBRIGHT = 0xF000F0;
+	private static final int COLOR = 0xFFFFFF | ((int) (0.9F * 255F) << 24);
+	private final ModelResourceLocation modelLocation;
 
-	public OldSwordProjectileRenderer(EntityRendererProvider.Context context, ResourceLocation texture) {
+	public OldSwordProjectileRenderer(EntityRendererProvider.Context context, ResourceLocation modelLocation) {
 		super(context);
-		this.texture = texture;
+		this.modelLocation = new ModelResourceLocation(modelLocation, "standalone");
 	}
 
 	@Override
 	public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
 		poseStack.pushPose();
-		poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot()));
-		poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
-		poseStack.mulPose(Axis.ZP.rotationDegrees(45.0F));
-		poseStack.scale(1.15F, 1.15F, 1.15F);
-		VertexConsumer vertex = buffer.getBuffer(RenderType.entityTranslucent(getTextureLocation(entity)));
-		Matrix4f matrix = poseStack.last().pose();
-		quad(matrix, vertex);
+		poseStack.scale(1.2F, 1.2F, 1.2F);
+		poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot() + 90F));
+		poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getXRot()));
+		poseStack.mulPose(Axis.ZP.rotationDegrees(-45F));
+		BakedModel model = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
+		model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+		poseStack.translate(-0.5F, -0.5F, -0.5F);
+		renderModel(model, poseStack, buffer.getBuffer(Sheets.translucentItemSheet()));
 		poseStack.popPose();
 		super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
 	}
 
-	private static void quad(Matrix4f matrix, VertexConsumer vertex) {
-		vertex.addVertex(matrix, -0.5F, -0.5F, 0.0F).setColor(0xFFFFFFFF).setUv(0.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0F, 0.0F, 1.0F);
-		vertex.addVertex(matrix, 0.5F, -0.5F, 0.0F).setColor(0xFFFFFFFF).setUv(1.0F, 1.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0F, 0.0F, 1.0F);
-		vertex.addVertex(matrix, 0.5F, 0.5F, 0.0F).setColor(0xFFFFFFFF).setUv(1.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0F, 0.0F, 1.0F);
-		vertex.addVertex(matrix, -0.5F, 0.5F, 0.0F).setColor(0xFFFFFFFF).setUv(0.0F, 0.0F).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0F, 0.0F, 1.0F);
+	private static void renderModel(BakedModel model, PoseStack poseStack, VertexConsumer vertex) {
+		RandomSource random = RandomSource.create();
+		for (Direction direction : Direction.values()) {
+			random.setSeed(42L);
+			renderQuads(model.getQuads((BlockState) null, direction, random), poseStack, vertex);
+		}
+		random.setSeed(42L);
+		renderQuads(model.getQuads((BlockState) null, null, random), poseStack, vertex);
+	}
+
+	private static void renderQuads(Iterable<BakedQuad> quads, PoseStack poseStack, VertexConsumer vertex) {
+		float red = (float) (COLOR >> 16 & 255) / 255.0F;
+		float green = (float) (COLOR >> 8 & 255) / 255.0F;
+		float blue = (float) (COLOR & 255) / 255.0F;
+		float alpha = ((COLOR >> 24) & 255) / 255.0F;
+		for (BakedQuad quad : quads) {
+			vertex.putBulkData(poseStack.last(), quad, red, green, blue, alpha, FULLBRIGHT, OverlayTexture.NO_OVERLAY);
+		}
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(T entity) {
-		return texture;
+		return this.modelLocation.id();
 	}
 }
