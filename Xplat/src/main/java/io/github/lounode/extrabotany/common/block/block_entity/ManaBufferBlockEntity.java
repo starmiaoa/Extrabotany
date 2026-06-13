@@ -5,6 +5,7 @@ import com.google.common.base.Predicates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -29,11 +30,16 @@ public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, 
 	public static final int TRANSFER_SPEED = 1_000;
 	public static final String TAG_MANA = "mana";
 
+	// Matches the original IThrottledPacket cadence: at most one sync packet per 10 ticks.
+	private static final int SYNC_INTERVAL = 10;
+
 	private static final Direction[] INPUT_DIRECTIONS = {
 			Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.DOWN
 	};
 
 	private int mana;
+	private int ticks;
+	private boolean syncPending;
 
 	public ManaBufferBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -44,55 +50,53 @@ public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, 
 	}
 
 	public static void serverTick(Level level, BlockPos pos, BlockState state, ManaBufferBlockEntity self) {
-		boolean changed = false;
 		for (Direction direction : INPUT_DIRECTIONS) {
-			changed |= self.pullFrom(pos.relative(direction));
+			self.pullFrom(pos.relative(direction));
 			if (self.isFull()) {
 				break;
 			}
 		}
 
-		changed |= self.pushTo(pos.above());
+		self.pushTo(pos.above());
 
-		if (changed) {
-			self.setChanged();
+		if (self.syncPending && self.ticks % SYNC_INTERVAL == 0) {
 			level.sendBlockUpdated(pos, state, state, 3);
+			self.syncPending = false;
 		}
+		self.ticks++;
 	}
 
-	private boolean pullFrom(BlockPos sourcePos) {
+	private void pullFrom(BlockPos sourcePos) {
 		ManaReceiver source = getManaEndpoint(sourcePos);
 		if (source == null || source == this || source.getCurrentMana() <= 0 || isFull()) {
-			return false;
+			return;
 		}
 
 		int transfer = Math.min(getTransferSpeed(), source.getCurrentMana());
 		transfer = Math.min(transfer, getAvailableSpaceForMana());
 		if (transfer <= 0) {
-			return false;
+			return;
 		}
 
 		source.receiveMana(-transfer);
 		receiveMana(transfer);
-		return true;
 	}
 
-	private boolean pushTo(BlockPos targetPos) {
+	private void pushTo(BlockPos targetPos) {
 		ManaReceiver target = getManaEndpoint(targetPos);
 		if (target == null || target == this || getCurrentMana() <= 0) {
-			return false;
+			return;
 		}
 
 		int space = getAvailableSpace(target);
 		int transfer = Math.min(getTransferSpeed(), getCurrentMana());
 		transfer = Math.min(transfer, space);
 		if (transfer <= 0) {
-			return false;
+			return;
 		}
 
 		target.receiveMana(transfer);
 		receiveMana(-transfer);
-		return true;
 	}
 
 	@Nullable
@@ -180,6 +184,8 @@ public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, 
 		mana = Mth.clamp(getCurrentMana() + amount, 0, getMaxMana());
 		if (oldMana != mana) {
 			setChanged();
+			// Sparks and bursts call this outside serverTick, so the sync flag must live here.
+			syncPending = true;
 		}
 	}
 
@@ -192,6 +198,7 @@ public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, 
 	public boolean onUsedByWand(@Nullable Player player, ItemStack stack, Direction direction) {
 		if (level != null && !level.isClientSide()) {
 			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+			syncPending = false;
 		}
 		return true;
 	}
@@ -213,5 +220,11 @@ public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, 
 		CompoundTag tag = super.getUpdateTag();
 		tag.putInt(TAG_MANA, getCurrentMana());
 		return tag;
+	}
+
+	// Without this, sendBlockUpdated never carries the block entity data to the client.
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 }

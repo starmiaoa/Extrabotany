@@ -3,6 +3,7 @@ package io.github.lounode.extrabotany.common.block.block_entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -28,8 +29,12 @@ public class ManaGeneratorBlockEntity extends BlockEntity implements Wandable {
 	public static final String TAG_MANA = "mana";
 	public static final String TAG_ENERGY = "energy";
 
+	private static final int SYNC_INTERVAL = 10;
+
 	private int mana;
 	private int energy;
+	private int ticks;
+	private boolean syncPending;
 
 	public ManaGeneratorBlockEntity(BlockPos pos, BlockState state) {
 		super(ExtraBotanyBlockEntities.MANA_GENERATOR, pos, state);
@@ -50,8 +55,14 @@ public class ManaGeneratorBlockEntity extends BlockEntity implements Wandable {
 
 		if (changed) {
 			self.setChanged();
-			level.sendBlockUpdated(pos, state, state, 3);
+			self.syncPending = true;
 		}
+
+		if (self.syncPending && self.ticks % SYNC_INTERVAL == 0) {
+			level.sendBlockUpdated(pos, state, state, 3);
+			self.syncPending = false;
+		}
+		self.ticks++;
 	}
 
 	private boolean pullEnergy(BlockPos sourcePos, Direction sourceSide) {
@@ -139,6 +150,7 @@ public class ManaGeneratorBlockEntity extends BlockEntity implements Wandable {
 	public boolean onUsedByWand(@Nullable Player player, ItemStack stack, Direction direction) {
 		if (level != null && !level.isClientSide()) {
 			level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+			syncPending = false;
 		}
 		return true;
 	}
@@ -163,5 +175,11 @@ public class ManaGeneratorBlockEntity extends BlockEntity implements Wandable {
 		tag.putInt(TAG_MANA, getCurrentMana());
 		tag.putInt(TAG_ENERGY, getEnergyStored());
 		return tag;
+	}
+
+	// Without this, sendBlockUpdated never carries the block entity data to the client.
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 }

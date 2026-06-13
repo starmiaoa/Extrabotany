@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.block.block_entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -167,6 +168,12 @@ public class CocoonOfDesireBlockEntity extends BlockEntity {
 		CompoundTag tag = super.getUpdateTag();
 		saveAdditional(tag);
 		return tag;
+	}
+
+	// Without this, sendBlockUpdated never carries the block entity data to the client.
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	private static Map<Item, EntityType<? extends LivingEntity>> createHatches() {

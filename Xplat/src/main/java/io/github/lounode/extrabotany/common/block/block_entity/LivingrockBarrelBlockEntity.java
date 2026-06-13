@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -128,5 +129,11 @@ public class LivingrockBarrelBlockEntity extends BlockEntity {
 		CompoundTag tag = super.getUpdateTag();
 		saveAdditional(tag);
 		return tag;
+	}
+
+	// Without this, sendBlockUpdated never carries the block entity data to the client.
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 }
