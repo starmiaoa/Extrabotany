@@ -8,6 +8,7 @@
     "client.ItemStarryIdolArmorForgeMixin"
   ],
   "client": [
+    "client.ModelBakeryNullGuardMixin"
   ],
   "injectors": {
     "defaultRequire": 1
