@@ -11,6 +11,7 @@ import io.github.lounode.extrabotany.api.item.ClientCoreOfTheVoidVariant;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -41,7 +42,9 @@ public class ExtraBotanyModels {
 	}
 
 	public void onModelRegister(ResourceManager rm, Consumer<ResourceLocation> consumer) {
-		modelConsumers.keySet().forEach(consumer);
+		// Defensive: never hand a null id to ModelEvent.RegisterAdditional. A null would reach
+		// ModelBakery.getModel and NPE under ModernFix's dynamic_resources hook.
+		modelConsumers.keySet().stream().filter(Objects::nonNull).forEach(consumer);
 
 		if (!registeredModels) {
 			registeredModels = true;
