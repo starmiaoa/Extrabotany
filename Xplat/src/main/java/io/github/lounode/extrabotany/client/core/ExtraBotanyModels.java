@@ -22,16 +22,18 @@ public class ExtraBotanyModels {
 	public static final ResourceLocation INFLUX_WAVER_PROJECTILE = model("influx_waver_projectile");
 	private final Map<ResourceLocation, Function<BakedModel, BakedModel>> afterBakeModifiers;
 	private final Map<ResourceLocation, Consumer<BakedModel>> modelConsumers;
+	private final Map<ResourceLocation, BakedModel> bakedProjectiles;
 
 	public boolean registeredModels = false;
 
 	private ExtraBotanyModels() {
 		afterBakeModifiers = new HashMap<>();
 
+		bakedProjectiles = new HashMap<>();
 		modelConsumers = new HashMap<>();
-		modelConsumers.put(TRUE_TERRABLADE_PROJECTILE, model -> {});
-		modelConsumers.put(TRUE_SHADOW_KATANA_PROJECTILE, model -> {});
-		modelConsumers.put(INFLUX_WAVER_PROJECTILE, model -> {});
+		modelConsumers.put(TRUE_TERRABLADE_PROJECTILE, model -> bakedProjectiles.put(TRUE_TERRABLADE_PROJECTILE, model));
+		modelConsumers.put(TRUE_SHADOW_KATANA_PROJECTILE, model -> bakedProjectiles.put(TRUE_SHADOW_KATANA_PROJECTILE, model));
+		modelConsumers.put(INFLUX_WAVER_PROJECTILE, model -> bakedProjectiles.put(INFLUX_WAVER_PROJECTILE, model));
 
 		for (var variant : ExtraBotanyAPI.instance().getCOVVariants().values()) {
 			if (variant instanceof ClientCoreOfTheVoidVariant clientVariant) {
@@ -63,6 +65,10 @@ public class ExtraBotanyModels {
 	public BakedModel modifyModelAfterbake(BakedModel bakedModel, ResourceLocation id) {
 		modelConsumers.getOrDefault(id, model -> {}).accept(bakedModel);
 		return afterBakeModifiers.getOrDefault(id, Function.identity()).apply(bakedModel);
+	}
+
+	public BakedModel getBakedModel(ResourceLocation id) {
+		return bakedProjectiles.get(id);
 	}
 
 	private static ModelResourceLocation standaloneModel(ResourceLocation id) {

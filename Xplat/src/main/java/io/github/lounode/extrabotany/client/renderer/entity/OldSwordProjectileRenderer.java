@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -12,7 +11,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -21,26 +19,31 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import net.neoforged.neoforge.client.ClientHooks;
 
+import io.github.lounode.extrabotany.client.core.ExtraBotanyModels;
 import io.github.lounode.extrabotany.common.entity.OldSwordProjectileEntity;
 
 public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> extends EntityRenderer<T> {
 	private static final int FULLBRIGHT = 0xF000F0;
 	private static final int COLOR = 0xFFFFFF | ((int) (0.9F * 255F) << 24);
-	private final ModelResourceLocation modelLocation;
+	private final ResourceLocation modelLocation;
 
 	public OldSwordProjectileRenderer(EntityRendererProvider.Context context, ResourceLocation modelLocation) {
 		super(context);
-		this.modelLocation = new ModelResourceLocation(modelLocation, "standalone");
+		this.modelLocation = modelLocation;
 	}
 
 	@Override
 	public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+		BakedModel model = ExtraBotanyModels.INSTANCE.getBakedModel(this.modelLocation);
+		if (model == null) {
+			return;
+		}
+
 		poseStack.pushPose();
 		poseStack.scale(1.2F, 1.2F, 1.2F);
 		poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot() + 90F));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getXRot()));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(-45F));
-		BakedModel model = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
 		model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 		poseStack.translate(-0.5F, -0.5F, -0.5F);
 		renderModel(model, poseStack, buffer.getBuffer(Sheets.translucentItemSheet()));
@@ -70,6 +73,6 @@ public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> exte
 
 	@Override
 	public ResourceLocation getTextureLocation(T entity) {
-		return this.modelLocation.id();
+		return this.modelLocation;
 	}
 }
