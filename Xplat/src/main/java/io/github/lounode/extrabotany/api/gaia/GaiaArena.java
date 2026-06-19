@@ -114,7 +114,7 @@ public class GaiaArena {
 			.where('_', BlockInWorld.hasState(BlockStatePredicate.ANY))
 			.where('B', BlockInWorld.hasState(BlockStatePredicate.forBlock(Blocks.BEACON)))
 			.where('I', BlockInWorld.hasState(BlockTagPredicate.forTag(BlockTags.BEACON_BASE_BLOCKS)))
-			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.gaiaPylon)))
+			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.GAIA_PYLON)))
 			.createPattern();
 	public static final Predicate<BlockInWorld>[][][] PYLONS_PATTERN = BlockPatternExtendBuilder.start()
 			.aisle(
@@ -129,7 +129,7 @@ public class GaiaArena {
 					"P_______P"
 			)
 			.where('_', BlockInWorld.hasState(BlockStatePredicate.ANY))
-			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.gaiaPylon)))
+			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.GAIA_PYLON)))
 			.createPattern();
 
 	private static List<String> CACHED_BYPASS_CONFIG = new ArrayList<>();
@@ -687,7 +687,7 @@ public class GaiaArena {
 			BlockPos pos_ = beaconPos.offset(coords);
 
 			BlockState state = world.getBlockState(pos_);
-			if (!state.is(BotaniaBlocks.gaiaPylon)) {
+			if (!state.is(BotaniaBlocks.GAIA_PYLON)) {
 				invalidPylonBlocks.add(pos_);
 			}
 		}

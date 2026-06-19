@@ -221,7 +221,7 @@ public class ItemModelProvider implements DataProvider {
 						consumer);
 			}
 			if (key.equals(FruitOfGrisaia.INSTANCE.getId())) {
-				GENERATED_0.create(overrideModel, TextureMapping.layer0(BotaniaItems.infiniteFruit), consumer);
+				GENERATED_0.create(overrideModel, TextureMapping.layer0(BotaniaItems.FRUIT_OF_GRISAIA), consumer);
 			}
 			if (key.equals(Camera.INSTANCE.getId())) {
 				GENERATED_0.create(overrideModel, TextureMapping.layer0(camera), consumer);

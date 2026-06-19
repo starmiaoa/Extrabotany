@@ -43,22 +43,22 @@ public class RunicAltarProvider extends ExtraBotanyRecipeProvider {
 		save(recipeOutput, idFor("orichalcos_ingot"), new ItemStack(ExtraBotanyItems.orichalcos), 150000,
 				Ingredient.of(ExtraBotanyItems.heroMedal),
 				Ingredient.of(ExtraBotanyItems.gildedPotatoMashed),
-				Ingredient.of(BotaniaItems.gaiaIngot),
-				Ingredient.of(BotaniaItems.gaiaIngot),
-				Ingredient.of(BotaniaItems.lifeEssence),
-				Ingredient.of(BotaniaItems.lifeEssence),
-				Ingredient.of(BotaniaItems.lifeEssence),
-				Ingredient.of(BotaniaItems.lifeEssence)
+				Ingredient.of(BotaniaItems.GAIA_INGOT),
+				Ingredient.of(BotaniaItems.GAIA_INGOT),
+				Ingredient.of(BotaniaItems.GAIA_SPIRIT),
+				Ingredient.of(BotaniaItems.GAIA_SPIRIT),
+				Ingredient.of(BotaniaItems.GAIA_SPIRIT),
+				Ingredient.of(BotaniaItems.GAIA_SPIRIT)
 		);
 		save(recipeOutput, idFor("shadowium_ingot"), new ItemStack(ExtraBotanyItems.shadowium), 4200,
-				Ingredient.of(BotaniaItems.elementium),
+				Ingredient.of(BotaniaItems.ELEMENTIUM_INGOT),
 				Ingredient.of(ExtraBotanyItems.gildedPotatoMashed),
 				Ingredient.of(ExtraBotanyItems.nightmareFuel),
 				Ingredient.of(ExtraBotanyItems.nightmareFuel),
 				Ingredient.of(ExtraBotanyItems.nightmareFuel)
 		);
 		save(recipeOutput, idFor("photonium_ingot"), new ItemStack(ExtraBotanyItems.photonium), 4200,
-				Ingredient.of(BotaniaItems.elementium),
+				Ingredient.of(BotaniaItems.ELEMENTIUM_INGOT),
 				Ingredient.of(ExtraBotanyItems.gildedPotatoMashed),
 				Ingredient.of(ExtraBotanyItems.spiritFragment),
 				Ingredient.of(ExtraBotanyItems.spiritFragment),
@@ -76,51 +76,51 @@ public class RunicAltarProvider extends ExtraBotanyRecipeProvider {
 				Ingredient.of(ExtraBotanyItems.theEnd)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.aeroStone), new ItemStack(ExtraBotanyItems.aeroStone), 2000,
-				Ingredient.of(BotaniaItems.runeAir),
-				Ingredient.of(BotaniaItems.runeAir),
-				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(BotaniaItems.RUNE_OF_AIR),
+				Ingredient.of(BotaniaItems.RUNE_OF_AIR),
+				Ingredient.of(BotaniaItems.MANA_DIAMOND),
 				Ingredient.of(Items.LAPIS_LAZULI),
 				Ingredient.of(Items.QUARTZ)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.aquaStone), new ItemStack(ExtraBotanyItems.aquaStone), 2000,
-				Ingredient.of(BotaniaItems.runeWater),
-				Ingredient.of(BotaniaItems.runeWater),
-				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(BotaniaItems.RUNE_OF_WATER),
+				Ingredient.of(BotaniaItems.RUNE_OF_WATER),
+				Ingredient.of(BotaniaItems.MANA_DIAMOND),
 				Ingredient.of(Items.LAPIS_LAZULI),
 				Ingredient.of(Items.QUARTZ)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.earthStone), new ItemStack(ExtraBotanyItems.earthStone), 2000,
-				Ingredient.of(BotaniaItems.runeEarth),
-				Ingredient.of(BotaniaItems.runeEarth),
-				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(BotaniaItems.RUNE_OF_EARTH),
+				Ingredient.of(BotaniaItems.RUNE_OF_EARTH),
+				Ingredient.of(BotaniaItems.MANA_DIAMOND),
 				Ingredient.of(Items.LAPIS_LAZULI),
 				Ingredient.of(Items.QUARTZ)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.ignisStone), new ItemStack(ExtraBotanyItems.ignisStone), 2000,
-				Ingredient.of(BotaniaItems.runeFire),
-				Ingredient.of(BotaniaItems.runeFire),
-				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(BotaniaItems.RUNE_OF_FIRE),
+				Ingredient.of(BotaniaItems.RUNE_OF_FIRE),
+				Ingredient.of(BotaniaItems.MANA_DIAMOND),
 				Ingredient.of(Items.LAPIS_LAZULI),
 				Ingredient.of(Items.QUARTZ)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.powerGlove), new ItemStack(ExtraBotanyItems.powerGlove), 2000,
-				Ingredient.of(BotaniaItems.runeWrath),
-				Ingredient.of(BotaniaItems.manaDiamond),
-				Ingredient.of(BotaniaItems.manaweaveCloth),
-				Ingredient.of(BotaniaItems.manaweaveCloth),
-				Ingredient.of(BotaniaItems.manaweaveCloth)
+				Ingredient.of(BotaniaItems.RUNE_OF_WRATH),
+				Ingredient.of(BotaniaItems.MANA_DIAMOND),
+				Ingredient.of(BotaniaItems.MANAWEAVE_CLOTH),
+				Ingredient.of(BotaniaItems.MANAWEAVE_CLOTH),
+				Ingredient.of(BotaniaItems.MANAWEAVE_CLOTH)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.deathRing), new ItemStack(ExtraBotanyItems.deathRing), 2000,
-				Ingredient.of(BotaniaItems.runeEnvy),
-				Ingredient.of(BotaniaItems.manaSteel),
-				Ingredient.of(BotaniaItems.manaSteel),
-				Ingredient.of(BotaniaItems.manaDiamond),
+				Ingredient.of(BotaniaItems.RUNE_OF_ENVY),
+				Ingredient.of(BotaniaItems.MANASTEEL_INGOT),
+				Ingredient.of(BotaniaItems.MANASTEEL_INGOT),
+				Ingredient.of(BotaniaItems.MANA_DIAMOND),
 				Ingredient.of(Items.WITHER_SKELETON_SKULL)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.frostStar), new ItemStack(ExtraBotanyItems.frostStar), 2000,
-				Ingredient.of(BotaniaItems.runeMana),
-				Ingredient.of(BotaniaItems.manaSteel),
-				Ingredient.of(BotaniaItems.manaSteel),
+				Ingredient.of(BotaniaItems.RUNE_OF_MANA),
+				Ingredient.of(BotaniaItems.MANASTEEL_INGOT),
+				Ingredient.of(BotaniaItems.MANASTEEL_INGOT),
 				Ingredient.of(Items.ICE),
 				Ingredient.of(Items.ICE)
 		);
@@ -135,47 +135,47 @@ public class RunicAltarProvider extends ExtraBotanyRecipeProvider {
 				Ingredient.of(ExtraBotanyItems.theEnd),
 				Ingredient.of(ExtraBotanyItems.frostStar),
 				Ingredient.of(ExtraBotanyItems.deathRing),
-				Ingredient.of(BotaniaItems.auraRingGreater),
-				Ingredient.of(BotaniaItems.miningRing),
-				Ingredient.of(BotaniaItems.pixieRing),
-				Ingredient.of(BotaniaItems.swapRing),
-				Ingredient.of(BotaniaItems.waterRing),
+				Ingredient.of(BotaniaItems.GREATER_BAND_OF_AURA),
+				Ingredient.of(BotaniaItems.RING_OF_THE_MANTLE),
+				Ingredient.of(BotaniaItems.GREAT_FAIRY_RING),
+				Ingredient.of(BotaniaItems.RING_OF_CORRECTION),
+				Ingredient.of(BotaniaItems.RING_OF_CHORDATA),
 				Ingredient.of(ExtraBotanyItems.dispersiveRing),
-				Ingredient.of(BotaniaItems.reachRing)
+				Ingredient.of(BotaniaItems.RING_OF_FAR_REACH)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.moonPendant), new ItemStack(ExtraBotanyItems.moonPendant), 500000,
 				Ingredient.of(ExtraBotanyItems.theOrigin),
-				Ingredient.of(BotaniaItems.knockbackBelt),
-				Ingredient.of(BotaniaItems.superCloudPendant),
-				Ingredient.of(BotaniaItems.superLavaPendant),
-				Ingredient.of(BotaniaItems.icePendant),
-				Ingredient.of(BotaniaItems.itemFinder)
+				Ingredient.of(BotaniaItems.TECTONIC_GIRDLE),
+				Ingredient.of(BotaniaItems.NIMBUS_AMULET),
+				Ingredient.of(BotaniaItems.CRIMSON_PENDANT),
+				Ingredient.of(BotaniaItems.SNOWFLAKE_PENDANT),
+				Ingredient.of(BotaniaItems.THIRD_EYE)
 		);
 		// 1.12.2 recipes: elementium x2 + elven quartz x2 + rune of spring, then the
 		// upgrade adds a hero medal and the seven sin runes.
 		save(recipeOutput, idFor(ExtraBotanyItems.elvenKing), new ItemStack(ExtraBotanyItems.elvenKing), 4000,
-				Ingredient.of(BotaniaItems.elementium),
-				Ingredient.of(BotaniaItems.elementium),
-				Ingredient.of(BotaniaItems.elfQuartz),
-				Ingredient.of(BotaniaItems.elfQuartz),
-				Ingredient.of(BotaniaItems.runeSpring)
+				Ingredient.of(BotaniaItems.ELEMENTIUM_INGOT),
+				Ingredient.of(BotaniaItems.ELEMENTIUM_INGOT),
+				Ingredient.of(BotaniaItems.ELVEN_QUARTZ),
+				Ingredient.of(BotaniaItems.ELVEN_QUARTZ),
+				Ingredient.of(BotaniaItems.RUNE_OF_SPRING)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.allForOne), new ItemStack(ExtraBotanyItems.allForOne), 50000,
 				Ingredient.of(ExtraBotanyItems.elvenKing),
 				Ingredient.of(ExtraBotanyItems.heroMedal),
-				Ingredient.of(BotaniaItems.runeLust),
-				Ingredient.of(BotaniaItems.runeGluttony),
-				Ingredient.of(BotaniaItems.runeGreed),
-				Ingredient.of(BotaniaItems.runeSloth),
-				Ingredient.of(BotaniaItems.runeWrath),
-				Ingredient.of(BotaniaItems.runeEnvy),
-				Ingredient.of(BotaniaItems.runePride)
+				Ingredient.of(BotaniaItems.RUNE_OF_LUST),
+				Ingredient.of(BotaniaItems.RUNE_OF_GLUTTONY),
+				Ingredient.of(BotaniaItems.RUNE_OF_GREED),
+				Ingredient.of(BotaniaItems.RUNE_OF_SLOTH),
+				Ingredient.of(BotaniaItems.RUNE_OF_WRATH),
+				Ingredient.of(BotaniaItems.RUNE_OF_ENVY),
+				Ingredient.of(BotaniaItems.RUNE_OF_PRIDE)
 		);
 		save(recipeOutput, idFor(ExtraBotanyItems.potatoChips), new ItemStack(ExtraBotanyItems.potatoChips), 50000,
 				Ingredient.of(ExtraBotanyItems.gildedPotato),
-				Ingredient.of(BotaniaItems.tinyPotatoMask),
-				Ingredient.of(BotaniaBlocks.tinyPotato),
-				Ingredient.of(BotaniaItems.runeMana),
+				Ingredient.of(BotaniaItems.COSMETIC_TINY_POTATO_MASK),
+				Ingredient.of(BotaniaBlocks.TINY_POTATO),
+				Ingredient.of(BotaniaItems.RUNE_OF_MANA),
 				Ingredient.of(Items.TOTEM_OF_UNDYING),
 				Ingredient.of(Items.TOTEM_OF_UNDYING),
 				Ingredient.of(Items.TOTEM_OF_UNDYING),
@@ -186,7 +186,7 @@ public class RunicAltarProvider extends ExtraBotanyRecipeProvider {
 	}
 
 	private static void save(RecipeOutput recipeOutput, ResourceLocation id, ItemStack output, int mana, Ingredient... inputs) {
-		recipeOutput.accept(id, new RunicAltarRecipe(output, Ingredient.of(BotaniaBlocks.livingrock), mana, inputs, new Ingredient[0]), null);
+		recipeOutput.accept(id, new RunicAltarRecipe(output, Ingredient.of(BotaniaBlocks.LIVINGROCK), mana, inputs, new Ingredient[0]), null);
 	}
 
 	private static ResourceLocation idFor(String s) {

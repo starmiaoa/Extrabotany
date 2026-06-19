@@ -66,16 +66,16 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 		tag(ExtraBotanyTags.Blocks.PEDESTALS).add(ALL_PEDESTALS);
 		tag(ExtraBotanyTags.Blocks.MANA_POOLS).add(
-				BotaniaBlocks.manaPool,
-				BotaniaBlocks.creativePool,
-				BotaniaBlocks.dilutedPool,
-				BotaniaBlocks.fabulousPool
+				BotaniaBlocks.MANA_POOL,
+				BotaniaBlocks.CREATIVE_MANA_POOL,
+				BotaniaBlocks.DILUTED_MANA_POOL,
+				BotaniaBlocks.FABULOUS_MANA_POOL
 		);
 		tag(ExtraBotanyTags.Blocks.MANA_SPREADERS).add(
-				BotaniaBlocks.manaSpreader,
-				BotaniaBlocks.redstoneSpreader,
-				BotaniaBlocks.elvenSpreader,
-				BotaniaBlocks.gaiaSpreader
+				BotaniaBlocks.MANA_SPREADER,
+				BotaniaBlocks.PULSE_MANA_SPREADER,
+				BotaniaBlocks.ELVEN_MANA_SPREADER,
+				BotaniaBlocks.GAIA_MANA_SPREADER
 		);
 		tag(ExtraBotanyTags.Blocks.CHARGERS).add(powerFrame, manaCharger);
 		tag(ExtraBotanyTags.Blocks.BELLFLOWER_IGNORE)
@@ -83,10 +83,10 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.addTag(ExtraBotanyTags.Blocks.MANA_SPREADERS);
 
 		tag(BotaniaTags.Blocks.MUNDANE_FLOATING_FLOWERS);
-		tag(BotaniaTags.Blocks.MYSTICAL_FLOWERS);
+		tag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
 		tag(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
-		tag(BotaniaTags.Blocks.SHINY_FLOWERS);
-		tag(BotaniaTags.Blocks.DOUBLE_MYSTICAL_FLOWERS);
+		tag(BotaniaTags.Blocks.GLIMMERING_FLOWERS);
+		tag(BotaniaTags.Blocks.TALL_MYSTICAL_FLOWERS);
 		tag(BotaniaTags.Blocks.MISC_SPECIAL_FLOWERS);
 		tag(BotaniaTags.Blocks.SPECIAL_FLOATING_FLOWERS).add(BuiltInRegistries.BLOCK.stream().filter(EXTRABOTANY_BLOCK)
 				.filter(b -> b instanceof FloatingSpecialFlowerBlock)

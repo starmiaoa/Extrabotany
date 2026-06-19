@@ -116,7 +116,7 @@ public class GaiaSpawnMob<E extends Gaia> extends Behavior<E> {
 					entity.finalizeSpawn((ServerLevelAccessor) gaia.level(), gaia.level().getCurrentDifficultyAt(entity.blockPosition()),
 							MobSpawnType.MOB_SUMMONED, null);
 					if (entity instanceof WitherSkeleton) {
-						entity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(BotaniaItems.elementiumSword));
+						entity.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(BotaniaItems.ELEMENTIUM_SWORD));
 					}
 					gaia.level().addFreshEntity(entity);
 				}

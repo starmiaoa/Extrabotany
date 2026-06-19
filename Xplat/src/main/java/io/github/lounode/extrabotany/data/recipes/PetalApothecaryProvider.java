@@ -39,28 +39,28 @@ public class PetalApothecaryProvider extends ExtraBotanyRecipeProvider {
 		Ingredient green = tagIngr("petals/green");
 		Ingredient red = tagIngr("petals/red");
 		Ingredient black = tagIngr("petals/black");
-		Ingredient runeWater = Ingredient.of(BotaniaItems.runeWater);
-		Ingredient runeFire = Ingredient.of(BotaniaItems.runeFire);
-		Ingredient runeEarth = Ingredient.of(BotaniaItems.runeEarth);
-		Ingredient runeAir = Ingredient.of(BotaniaItems.runeAir);
-		Ingredient runeSpring = Ingredient.of(BotaniaItems.runeSpring);
-		Ingredient runeSummer = Ingredient.of(BotaniaItems.runeSummer);
-		Ingredient runeAutumn = Ingredient.of(BotaniaItems.runeAutumn);
-		Ingredient runeWinter = Ingredient.of(BotaniaItems.runeWinter);
-		Ingredient runeMana = Ingredient.of(BotaniaItems.runeMana);
-		Ingredient runeLust = Ingredient.of(BotaniaItems.runeLust);
-		Ingredient runeGluttony = Ingredient.of(BotaniaItems.runeGluttony);
-		Ingredient runeGreed = Ingredient.of(BotaniaItems.runeGreed);
-		Ingredient runeSloth = Ingredient.of(BotaniaItems.runeSloth);
-		Ingredient runeWrath = Ingredient.of(BotaniaItems.runeWrath);
-		Ingredient runeEnvy = Ingredient.of(BotaniaItems.runeEnvy);
-		Ingredient runePride = Ingredient.of(BotaniaItems.runePride);
+		Ingredient runeWater = Ingredient.of(BotaniaItems.RUNE_OF_WATER);
+		Ingredient runeFire = Ingredient.of(BotaniaItems.RUNE_OF_FIRE);
+		Ingredient runeEarth = Ingredient.of(BotaniaItems.RUNE_OF_EARTH);
+		Ingredient runeAir = Ingredient.of(BotaniaItems.RUNE_OF_AIR);
+		Ingredient runeSpring = Ingredient.of(BotaniaItems.RUNE_OF_SPRING);
+		Ingredient runeSummer = Ingredient.of(BotaniaItems.RUNE_OF_SUMMER);
+		Ingredient runeAutumn = Ingredient.of(BotaniaItems.RUNE_OF_AUTUMN);
+		Ingredient runeWinter = Ingredient.of(BotaniaItems.RUNE_OF_WINTER);
+		Ingredient runeMana = Ingredient.of(BotaniaItems.RUNE_OF_MANA);
+		Ingredient runeLust = Ingredient.of(BotaniaItems.RUNE_OF_LUST);
+		Ingredient runeGluttony = Ingredient.of(BotaniaItems.RUNE_OF_GLUTTONY);
+		Ingredient runeGreed = Ingredient.of(BotaniaItems.RUNE_OF_GREED);
+		Ingredient runeSloth = Ingredient.of(BotaniaItems.RUNE_OF_SLOTH);
+		Ingredient runeWrath = Ingredient.of(BotaniaItems.RUNE_OF_WRATH);
+		Ingredient runeEnvy = Ingredient.of(BotaniaItems.RUNE_OF_ENVY);
+		Ingredient runePride = Ingredient.of(BotaniaItems.RUNE_OF_PRIDE);
 
-		Ingredient redstoneRoot = Ingredient.of(BotaniaItems.redstoneRoot);
-		Ingredient pixieDust = Ingredient.of(BotaniaItems.pixieDust);
-		Ingredient gaiaSpirit = Ingredient.of(BotaniaItems.lifeEssence);
+		Ingredient redstoneRoot = Ingredient.of(BotaniaItems.REDSTONE_ROOT);
+		Ingredient pixieDust = Ingredient.of(BotaniaItems.PIXIE_DUST);
+		Ingredient gaiaSpirit = Ingredient.of(BotaniaItems.GAIA_SPIRIT);
 		Ingredient spritFragment = Ingredient.of(ExtraBotanyItems.spiritFragment);
-		Ingredient manaDust = Ingredient.of(BotaniaItems.manaPowder);
+		Ingredient manaDust = Ingredient.of(BotaniaItems.MANA_POWDER);
 		//Recipes
 
 		save(recipeOutput, ExtrabotanyFlowerBlocks.tradeOrchid, lime, lime, green, brown, runeGreed, runeLust, redstoneRoot);

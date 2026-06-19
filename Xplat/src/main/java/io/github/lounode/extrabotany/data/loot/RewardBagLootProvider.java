@@ -90,10 +90,10 @@ public class RewardBagLootProvider extends RewardBagLootSubProvider {
 						.add(LootItem.lootTableItem(ExtraBotanyItems.vierRewardBag)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(6))))
-						.add(LootItem.lootTableItem(BotaniaItems.gaiaIngot)
+						.add(LootItem.lootTableItem(BotaniaItems.GAIA_INGOT)
 								.setWeight(14)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.lifeEssence)
+						.add(LootItem.lootTableItem(BotaniaItems.GAIA_SPIRIT)
 								.setWeight(20)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
 						.add(LootItem.lootTableItem(ExtraBotanyItems.challengeTicket)
@@ -106,34 +106,34 @@ public class RewardBagLootProvider extends RewardBagLootSubProvider {
 		return LootTable.lootTable()
 				.withPool(LootPool.lootPool()
 						.setRolls(ConstantValue.exactly(1))
-						.add(LootItem.lootTableItem(BotaniaItems.manaSteel)
+						.add(LootItem.lootTableItem(BotaniaItems.MANASTEEL_INGOT)
 								.setWeight(15)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
-						.add(LootItem.lootTableItem(BotaniaItems.manaPearl)
+						.add(LootItem.lootTableItem(BotaniaItems.MANA_PEARL)
 								.setWeight(15)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
-						.add(LootItem.lootTableItem(BotaniaItems.manaDiamond)
+						.add(LootItem.lootTableItem(BotaniaItems.MANA_DIAMOND)
 								.setWeight(15)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
-						.add(LootItem.lootTableItem(BotaniaItems.elementium)
+						.add(LootItem.lootTableItem(BotaniaItems.ELEMENTIUM_INGOT)
 								.setWeight(11)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(3))))
-						.add(LootItem.lootTableItem(BotaniaItems.pixieDust)
+						.add(LootItem.lootTableItem(BotaniaItems.PIXIE_DUST)
 								.setWeight(11)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(3))))
-						.add(LootItem.lootTableItem(BotaniaItems.dragonstone)
+						.add(LootItem.lootTableItem(BotaniaItems.DRAGONSTONE)
 								.setWeight(11)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(3))))
-						.add(LootItem.lootTableItem(BotaniaItems.manaPowder)
+						.add(LootItem.lootTableItem(BotaniaItems.MANA_POWDER)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(8))))
-						.add(LootItem.lootTableItem(BotaniaItems.terrasteel)
+						.add(LootItem.lootTableItem(BotaniaItems.TERRASTEEL_INGOT)
 								.setWeight(9)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.lifeEssence)
+						.add(LootItem.lootTableItem(BotaniaItems.GAIA_SPIRIT)
 								.setWeight(8)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))))
-						.add(LootItem.lootTableItem(BotaniaItems.gaiaIngot)
+						.add(LootItem.lootTableItem(BotaniaItems.GAIA_INGOT)
 								.setWeight(7)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
 						.add(LootItem.lootTableItem(ExtraBotanyItems.heroMedal)
@@ -150,7 +150,7 @@ public class RewardBagLootProvider extends RewardBagLootSubProvider {
 				.add(LootItem.lootTableItem(Items.REDSTONE).apply(SetItemCountFunction.setCount(ConstantValue.exactly(8))).setWeight(22))
 				.add(LootItem.lootTableItem(Items.ENDER_PEARL).apply(SetItemCountFunction.setCount(ConstantValue.exactly(4))).setWeight(20))
 				.add(LootItem.lootTableItem(Items.DIAMOND).apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))).setWeight(18))
-				.add(LootItem.lootTableItem(BotaniaItems.blackerLotus).apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))).setWeight(16))
+				.add(LootItem.lootTableItem(BotaniaItems.BLACKER_LOTUS).apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))).setWeight(16))
 				.add(LootItem.lootTableItem(ExtraBotanyItems.voidArchives).apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))).setWeight(1))
 				.setRolls(ConstantValue.exactly(1));
 
@@ -161,52 +161,52 @@ public class RewardBagLootProvider extends RewardBagLootSubProvider {
 		return LootTable.lootTable()
 				.withPool(LootPool.lootPool()
 						.setRolls(ConstantValue.exactly(1))
-						.add(LootItem.lootTableItem(BotaniaItems.runeWater)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_WATER)
 								.setWeight(50)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeFire)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_FIRE)
 								.setWeight(50)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeEarth)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_EARTH)
 								.setWeight(50)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeAir)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_AIR)
 								.setWeight(50)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeSpring)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_SPRING)
 								.setWeight(30)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeSummer)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_SUMMER)
 								.setWeight(30)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeAutumn)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_AUTUMN)
 								.setWeight(30)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeWinter)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_WINTER)
 								.setWeight(30)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeMana)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_MANA)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeLust)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_LUST)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeGluttony)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_GLUTTONY)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeGreed)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_GREED)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeSloth)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_SLOTH)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeWrath)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_WRATH)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runeEnvy)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_ENVY)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
-						.add(LootItem.lootTableItem(BotaniaItems.runePride)
+						.add(LootItem.lootTableItem(BotaniaItems.RUNE_OF_PRIDE)
 								.setWeight(10)
 								.apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
 				);
@@ -214,22 +214,22 @@ public class RewardBagLootProvider extends RewardBagLootSubProvider {
 
 	public static LootTable.Builder petalPoll() {
 		Item[] petals = new Item[] {
-				BotaniaItems.whitePetal,
-				BotaniaItems.orangePetal,
-				BotaniaItems.magentaPetal,
-				BotaniaItems.lightBluePetal,
-				BotaniaItems.yellowPetal,
-				BotaniaItems.limePetal,
-				BotaniaItems.pinkPetal,
-				BotaniaItems.grayPetal,
-				BotaniaItems.lightGrayPetal,
-				BotaniaItems.cyanPetal,
-				BotaniaItems.purplePetal,
-				BotaniaItems.bluePetal,
-				BotaniaItems.brownPetal,
-				BotaniaItems.greenPetal,
-				BotaniaItems.redPetal,
-				BotaniaItems.blackPetal
+				BotaniaItems.WHITE_MYSTICAL_PETAL,
+				BotaniaItems.ORANGE_MYSTICAL_PETAL,
+				BotaniaItems.MAGENTA_MYSTICAL_PETAL,
+				BotaniaItems.LIGHT_BLUE_MYSTICAL_PETAL,
+				BotaniaItems.YELLOW_MYSTICAL_PETAL,
+				BotaniaItems.LIME_MYSTICAL_PETAL,
+				BotaniaItems.PINK_MYSTICAL_PETAL,
+				BotaniaItems.GRAY_MYSTICAL_PETAL,
+				BotaniaItems.LIGHT_GRAY_MYSTICAL_PETAL,
+				BotaniaItems.CYAN_MYSTICAL_PETAL,
+				BotaniaItems.PURPLE_MYSTICAL_PETAL,
+				BotaniaItems.BLUE_MYSTICAL_PETAL,
+				BotaniaItems.BROWN_MYSTICAL_PETAL,
+				BotaniaItems.GREEN_MYSTICAL_PETAL,
+				BotaniaItems.RED_MYSTICAL_PETAL,
+				BotaniaItems.BLACK_MYSTICAL_PETAL
 		};
 		LootTable.Builder builder = LootTable.lootTable();
 

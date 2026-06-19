@@ -93,7 +93,7 @@ public class AchillesShieldItem extends ManasteelShieldItem {
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
 		if (isReleased(stack)) {
-			BotaniaItems.thunderSword.hurtEnemy(stack, target, attacker);
+			BotaniaItems.THUNDERCALLER.hurtEnemy(stack, target, attacker);
 		} else {
 			attacker.setAbsorptionAmount(Math.min(MAX_ABSORPTION, attacker.getAbsorptionAmount() + 2F));
 		}

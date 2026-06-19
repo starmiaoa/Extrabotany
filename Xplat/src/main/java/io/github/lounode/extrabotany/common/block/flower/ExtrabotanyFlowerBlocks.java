@@ -42,7 +42,7 @@ import java.util.function.Supplier;
 public class ExtrabotanyFlowerBlocks {
 
 	private static final BlockBehaviour.Properties FLOWER_PROPS = BlockBehaviour.Properties.ofFullCopy(Blocks.POPPY);
-	private static final BlockBehaviour.Properties FLOATING_PROPS = BotaniaBlocks.FLOATING_PROPS;
+	private static final BlockBehaviour.Properties FLOATING_PROPS = BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.WHITE_MYSTICAL_FLOWER);
 
 	public static final Block tradeOrchid = createSpecialFlowerBlock(MobEffects.HERO_OF_THE_VILLAGE, 5 * 20, FLOWER_PROPS, () -> ExtrabotanyFlowerBlocks.TRADE_ORCHID, true);
 	public static final Block tradeOrchidFloating = createFloatingSpecialFlowerBlock(FLOATING_PROPS, () -> ExtrabotanyFlowerBlocks.TRADE_ORCHID, true);

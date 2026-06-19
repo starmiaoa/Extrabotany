@@ -34,7 +34,7 @@ public final class ArmorsMaterial {
 					ArmorItem.Type.HELMET, 2
 			),
 			18, Holder.direct(ExtraBotanySounds.ARMOR_EQUIP_IDOL), 0, 0,
-			() -> Ingredient.of(BotaniaItems.manaweaveCloth));
+			() -> Ingredient.of(BotaniaItems.MANAWEAVE_CLOTH));
 
 	public static final Holder<ArmorMaterial> PLEIADS_MAID_COMBAT = create("pleiads_maid_combat", 50,
 			Map.of(

@@ -14,11 +14,11 @@ import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import java.util.function.Supplier;
 
 public enum HammerTiers implements Tier {
-	MANASTEEL(300, 6.2F, 2, 3, 20, () -> BotaniaItems.manaSteel),
-	ELEMENTIUM(720, 6.2F, 2, 3, 20, () -> BotaniaItems.elementium),
-	TERRASTEEL(2300, 9, 4, 4, 26, () -> BotaniaItems.terrasteel),
+	MANASTEEL(300, 6.2F, 2, 3, 20, () -> BotaniaItems.MANASTEEL_INGOT),
+	ELEMENTIUM(720, 6.2F, 2, 3, 20, () -> BotaniaItems.ELEMENTIUM_INGOT),
+	TERRASTEEL(2300, 9, 4, 4, 26, () -> BotaniaItems.TERRASTEEL_INGOT),
 
-	GAIA(3600, 10, 5, 5, 28, () -> BotaniaItems.gaiaIngot),
+	GAIA(3600, 10, 5, 5, 28, () -> BotaniaItems.GAIA_INGOT),
 	PHOTONIUM(900, 6.2F, 2, 3, 20, () -> ExtraBotanyItems.photonium),
 	SHADOWIUM(900, 6.2F, 2, 3, 20, () -> ExtraBotanyItems.shadowium),
 	AERIALITE(2300, 9, 4, 4, 26, () -> ExtraBotanyItems.aerialite),

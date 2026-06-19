@@ -52,7 +52,7 @@ public class AdvancementProvider extends vazkii.botania.data.AdvancementProvider
 		public void generate(HolderLookup.Provider lookup, Consumer<AdvancementHolder> consumer) {
 			AdvancementHolder root = Advancement.Builder.advancement()
 					.display(rootDisplay(ExtraBotanyItems.zadkiel, "itemGroup.extrabotany", "extrabotany.desc", prefix("textures/block/photonium_block.png")))
-					.addCriterion("use_lexicon", UseItemSuccessTrigger.Instance.used(BotaniaItems.lexicon))
+					.addCriterion("use_lexicon", UseItemSuccessTrigger.Instance.used(BotaniaItems.LEXICA_BOTANIA))
 					.save(consumer, mainId(LibAdvancementNames.ROOT));
 			AdvancementHolder senbonZakura = Advancement.Builder.advancement()
 					.display(simple(ExtraBotanyItems.manaReader, LibAdvancementNames.SENBON_ZAKURA, AdvancementType.CHALLENGE))
@@ -222,7 +222,7 @@ public class AdvancementProvider extends vazkii.botania.data.AdvancementProvider
 					.addCriterion("has_item", onPickup(ExtraBotanyItems.sanguinePleiadesCombatMaidSuit))
 					.save(consumer, mainId(LibAdvancementNames.CORRUPTION));
 			AdvancementHolder aBaldrupt = Advancement.Builder.advancement()
-					.display(hidden(BotaniaBlocks.daffomill, LibAdvancementNames.A_BALDRUPT, AdvancementType.TASK))
+					.display(hidden(BotaniaBlocks.DAFFOMILL, LibAdvancementNames.A_BALDRUPT, AdvancementType.TASK))
 					.parent(goodtek)
 					.addCriterion("code_triggered", impossible())
 					.save(consumer, mainId(LibAdvancementNames.A_BALDRUPT));

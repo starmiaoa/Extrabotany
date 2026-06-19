@@ -46,8 +46,8 @@ public class InfiniteWineItem extends BaseBrewItem {
 	public static final float DURATION_MULTIPLIER = 0.5F;
 
 	public InfiniteWineItem(Properties builder, int swigs, int drinkSpeed, Supplier<Item> baseItem) {
-		super(builder.component(BotaniaDataComponents.MAX_USES, swigs)
-				.component(BotaniaDataComponents.REMAINING_USES, swigs), drinkSpeed, baseItem);
+		super(drinkSpeed, baseItem, builder.component(BotaniaDataComponents.MAX_USES, swigs)
+				.component(BotaniaDataComponents.REMAINING_USES, swigs));
 	}
 
 	@Override

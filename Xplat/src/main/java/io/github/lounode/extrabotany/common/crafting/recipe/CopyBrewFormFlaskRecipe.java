@@ -33,7 +33,7 @@ public final class CopyBrewFormFlaskRecipe extends CopyBrewRecipe {
 
 	@Override
 	public Item getBrewSource() {
-		return BotaniaItems.brewFlask;
+		return BotaniaItems.BREW_FLASK;
 	}
 
 	@Override
@@ -88,8 +88,8 @@ public final class CopyBrewFormFlaskRecipe extends CopyBrewRecipe {
 			Item item = container.getItem(i).getItem();
 			if (item.hasCraftingRemainingItem()) {
 				nonnulllist.set(i, new ItemStack(item.getCraftingRemainingItem()));
-			} else if (item == BotaniaItems.brewFlask) {
-				nonnulllist.set(i, BotaniaItems.flask.getDefaultInstance());
+			} else if (item == BotaniaItems.BREW_FLASK) {
+				nonnulllist.set(i, BotaniaItems.ALFGLASS_FLASK.getDefaultInstance());
 			}
 		}
 

@@ -21,8 +21,8 @@ import java.util.function.Supplier;
 public class ManaCocktailItem extends BaseBrewItem {
 
 	public ManaCocktailItem(Properties properties, int swigs, int drinkSpeed, Supplier<Item> baseItem) {
-		super(properties.component(BotaniaDataComponents.MAX_USES, swigs)
-				.component(BotaniaDataComponents.REMAINING_USES, swigs), drinkSpeed, baseItem);
+		super(drinkSpeed, baseItem, properties.component(BotaniaDataComponents.MAX_USES, swigs)
+				.component(BotaniaDataComponents.REMAINING_USES, swigs));
 	}
 
 	@Override

@@ -55,7 +55,7 @@ public final class ExtraBotanyBlocks {
 			.instrument(NoteBlockInstrument.BASEDRUM)
 			.mapColor(MapColor.TERRACOTTA_PURPLE)
 	);
-	public static final Block dimensionCatalyst = new DimensionCatalystBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingrock));
+	public static final Block dimensionCatalyst = new DimensionCatalystBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.LIVINGROCK));
 	public static final Block livingrockPedestal = new PedestalBlock(PedestalBlock.Variant.LIVINGROCK, BlockBehaviour.Properties.of()
 			.strength(3.5F)
 			.sound(SoundType.STONE)
@@ -66,23 +66,23 @@ public final class ExtraBotanyBlocks {
 			.sound(SoundType.CALCITE));
 	public static final Block[] ALL_PEDESTALS = new Block[] { livingrockPedestal, calcitePedestal };
 	public static final Block powerFrame = new PowerFrameBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SPAWNER));
-	public static final Block manaCharger = new ManaChargerBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingwood)
+	public static final Block manaCharger = new ManaChargerBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.LIVINGWOOD)
 			.explosionResistance(1.0F)
 			.mapColor(MapColor.TERRACOTTA_WHITE));
-	public static final Block manaBuffer = new ManaBufferBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingrock)
+	public static final Block manaBuffer = new ManaBufferBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.LIVINGROCK)
 			.strength(5.5F, 10.0F)
 			.requiresCorrectToolForDrops()
 			.mapColor(MapColor.TERRACOTTA_CYAN));
-	public static final Block quantumManaBuffer = new QuantumManaBufferBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingrock)
+	public static final Block quantumManaBuffer = new QuantumManaBufferBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.LIVINGROCK)
 			.strength(3.0F, 55.0F)
 			.requiresCorrectToolForDrops()
 			.mapColor(MapColor.TERRACOTTA_PURPLE)
 			.noOcclusion());
-	public static final Block manaGenerator = new ManaGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingrock)
+	public static final Block manaGenerator = new ManaGeneratorBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.LIVINGROCK)
 			.strength(2.0F, 10.0F)
 			.requiresCorrectToolForDrops()
 			.mapColor(MapColor.LAPIS));
-	public static final Block manaLiquefaction = new ManaLiquefactionBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingrock)
+	public static final Block manaLiquefaction = new ManaLiquefactionBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.LIVINGROCK)
 			.strength(2.0F, 10.0F)
 			.requiresCorrectToolForDrops()
 			.mapColor(MapColor.COLOR_PURPLE));
@@ -91,7 +91,7 @@ public final class ExtraBotanyBlocks {
 			.sound(SoundType.WOOL)
 			.mapColor(MapColor.WOOL)
 			.noOcclusion());
-	public static final Block livingrockBarrel = new LivingrockBarrelBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.livingrock)
+	public static final Block livingrockBarrel = new LivingrockBarrelBlock(BlockBehaviour.Properties.ofFullCopy(BotaniaBlocks.LIVINGROCK)
 			.strength(1.5F, 10.0F)
 			.sound(SoundType.GLASS)
 			.noOcclusion());

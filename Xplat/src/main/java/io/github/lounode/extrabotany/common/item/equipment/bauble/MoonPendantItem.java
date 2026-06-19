@@ -26,7 +26,7 @@ import vazkii.botania.api.item.Relic;
 import vazkii.botania.common.handler.EquipmentHandler;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.equipment.bauble.NimbusAmuletItem;
-import vazkii.botania.common.item.equipment.bauble.PyroclastPendantItem;
+import vazkii.botania.common.item.equipment.bauble.CrimsonPendantItem;
 import vazkii.botania.common.item.equipment.bauble.SnowflakePendantItem;
 import vazkii.botania.common.item.equipment.bauble.ThirdEyeItem;
 import vazkii.botania.common.item.relic.RelicImpl;
@@ -70,20 +70,20 @@ public class MoonPendantItem extends NimbusAmuletItem implements BlockChangedLis
 		}
 
 		super.onWornTick(stack, entity);
-		if (BotaniaItems.superLavaPendant instanceof PyroclastPendantItem pendant) {
+		if (BotaniaItems.CRIMSON_PENDANT instanceof CrimsonPendantItem pendant) {
 			pendant.onWornTick(stack, entity);
 		}
-		if (BotaniaItems.icePendant instanceof SnowflakePendantItem pendant) {
+		if (BotaniaItems.SNOWFLAKE_PENDANT instanceof SnowflakePendantItem pendant) {
 			pendant.onWornTick(stack, entity);
 		}
-		if (BotaniaItems.itemFinder instanceof ThirdEyeItem finder) {
+		if (BotaniaItems.THIRD_EYE instanceof ThirdEyeItem finder) {
 			finder.onWornTick(stack, entity);
 		}
 	}
 
 	@Override
 	public void onChangedBlock(ItemStack stack, LivingEntity entity, ServerLevel level, BlockPos pos) {
-		if (BotaniaItems.icePendant instanceof SnowflakePendantItem pendant) {
+		if (BotaniaItems.SNOWFLAKE_PENDANT instanceof SnowflakePendantItem pendant) {
 			pendant.onChangedBlock(stack, entity, level, pos);
 		}
 	}

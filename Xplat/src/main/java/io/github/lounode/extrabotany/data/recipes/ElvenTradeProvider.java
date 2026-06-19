@@ -22,7 +22,7 @@ public class ElvenTradeProvider extends ExtraBotanyRecipeProvider {
 	@Override
 	public void buildRecipes(RecipeOutput recipeOutput) {
 		ResourceLocation id = id("elementium_quartz");
-		recipeOutput.accept(id, new ElvenTradeRecipe(new ItemStack[] { new ItemStack(ExtraBotanyItems.elementiumQuartz) }, Ingredient.of(BotaniaItems.manaQuartz), Ingredient.of(BotaniaItems.manaQuartz)), null);
+		recipeOutput.accept(id, new ElvenTradeRecipe(new ItemStack[] { new ItemStack(ExtraBotanyItems.elementiumQuartz) }, Ingredient.of(BotaniaItems.MANA_QUARTZ), Ingredient.of(BotaniaItems.MANA_QUARTZ)), null);
 	}
 
 	protected static Ingredient ingr(ItemLike i) {

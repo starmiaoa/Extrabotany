@@ -31,12 +31,12 @@ public class TerrestrialAgglomerationProvider extends ExtraBotanyRecipeProvider 
 	public void buildRecipes(RecipeOutput recipeOutput) {
 		save(recipeOutput, idFor("aerialite_ingot"), ManaPoolBlock.MAX_MANA / 2,
 				new ItemStack(ExtraBotanyItems.aerialite),
-				Ingredient.of(BotaniaItems.enderAirBottle),
-				Ingredient.of(BotaniaItems.dragonstone),
+				Ingredient.of(BotaniaItems.ENDER_AIR_BOTTLE),
+				Ingredient.of(BotaniaItems.DRAGONSTONE),
 				Ingredient.of(Items.PHANTOM_MEMBRANE));
 		save(recipeOutput, idFor("orichalcos_ingot"), ManaPoolBlock.MAX_MANA / 2,
 				new ItemStack(ExtraBotanyItems.orichalcos),
-				Ingredient.of(BotaniaItems.gaiaIngot),
+				Ingredient.of(BotaniaItems.GAIA_INGOT),
 				Ingredient.of(ExtraBotanyItems.gildedPotatoMashed),
 				Ingredient.of(ExtraBotanyItems.heroMedal));
 		save(recipeOutput, idFor("the_universe"), ManaPoolBlock.MAX_MANA,

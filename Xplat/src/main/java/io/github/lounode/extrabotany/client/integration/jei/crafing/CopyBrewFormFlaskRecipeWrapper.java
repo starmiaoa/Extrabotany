@@ -46,7 +46,7 @@ public class CopyBrewFormFlaskRecipeWrapper implements ICraftingCategoryExtensio
 				.findFirst().orElse(null);
 
 		ItemStack flask = focusGroup.getFocuses(VanillaTypes.ITEM_STACK, RecipeIngredientRole.INPUT)
-				.filter(f -> f.getTypedValue().getIngredient().getItem() == BotaniaItems.brewFlask)
+				.filter(f -> f.getTypedValue().getIngredient().getItem() == BotaniaItems.BREW_FLASK)
 				.map(f -> f.getTypedValue().getIngredient())
 				.findFirst().orElse(null);
 
@@ -62,7 +62,7 @@ public class CopyBrewFormFlaskRecipeWrapper implements ICraftingCategoryExtensio
 		} else {
 
 			BotaniaAPI.instance().getBrewRegistry().forEach(brew -> {
-				ItemStack flaskStack = new ItemStack(BotaniaItems.brewFlask);
+				ItemStack flaskStack = new ItemStack(BotaniaItems.BREW_FLASK);
 				BrewUtil.setBrew(flaskStack, brew);
 				flasks.add(flaskStack);
 			});

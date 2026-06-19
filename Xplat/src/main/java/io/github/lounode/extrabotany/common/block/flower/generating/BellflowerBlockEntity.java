@@ -153,7 +153,7 @@ public class BellflowerBlockEntity extends ExtraGeneratingFlowerBlockEntity impl
 				negative++;
 			}
 
-			if (state.is(BotaniaBlocks.daffomill) || state.is(BotaniaBlocks.daffomillFloating)) {
+			if (state.is(BotaniaBlocks.DAFFOMILL) || state.is(BotaniaBlocks.FLOATING_DAFFOMILL)) {
 				checkBeBlew(pos_);
 			}
 		}

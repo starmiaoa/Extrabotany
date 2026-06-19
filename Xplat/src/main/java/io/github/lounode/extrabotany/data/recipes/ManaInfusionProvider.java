@@ -76,8 +76,8 @@ public class ManaInfusionProvider extends ExtraBotanyRecipeProvider {
 		return Ingredient.of(i);
 	}
 
-	private static final StateIngredient CONJURATION = StateIngredients.of(BotaniaBlocks.conjurationCatalyst);
-	private static final StateIngredient ALCHEMY = StateIngredients.of(BotaniaBlocks.alchemyCatalyst);
+	private static final StateIngredient CONJURATION = StateIngredients.of(BotaniaBlocks.CONJURATION_CATALYST);
+	private static final StateIngredient ALCHEMY = StateIngredients.of(BotaniaBlocks.ALCHEMY_CATALYST);
 	private static final StateIngredient DIMENSION = StateIngredients.of(ExtraBotanyBlocks.dimensionCatalyst);
 
 	private static void dimension(RecipeOutput recipeOutput, ResourceLocation id, ItemStack output, Ingredient input, int mana) {

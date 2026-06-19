@@ -84,7 +84,7 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 			return;
 		}
 
-		getLevel().setBlockAndUpdate(transformPos, BotaniaBlocks.infusedGrass.defaultBlockState());
+		getLevel().setBlockAndUpdate(transformPos, BotaniaBlocks.INFUSED_GRASS_BLOCK.defaultBlockState());
 
 		setConsumedMana(0);
 		setHasLotus(false);
@@ -94,7 +94,7 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 	private void consumeNearbyBlackLotus() {
 		AABB box = new AABB(getEffectivePos()).inflate(1);
 		List<ItemEntity> items = getLevel().getEntitiesOfClass(ItemEntity.class, box,
-				item -> item.isAlive() && item.getItem().is(BotaniaItems.blackLotus));
+				item -> item.isAlive() && item.getItem().is(BotaniaItems.BLACK_LOTUS));
 		for (ItemEntity item : items) {
 			ItemStack stack = item.getItem();
 			if (!stack.isEmpty()) {
@@ -230,8 +230,8 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 
 			ItemStack grass = new ItemStack(Items.GRASS_BLOCK);
-			ItemStack enchanted = new ItemStack(BotaniaBlocks.infusedGrass);
-			ItemStack blackLotus = new ItemStack(BotaniaItems.blackLotus);
+			ItemStack enchanted = new ItemStack(BotaniaBlocks.INFUSED_GRASS_BLOCK);
+			ItemStack blackLotus = new ItemStack(BotaniaItems.BLACK_LOTUS);
 
 			gui.renderItem(blackLotus, centerX - 45, centerY + 34);
 			gui.renderItem(grass, centerX - 11, centerY + 34);

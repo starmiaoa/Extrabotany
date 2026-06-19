@@ -113,7 +113,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		var pedestal = PatchouliAPI.get().tagMatcher(ExtraBotanyTags.Blocks.PEDESTALS);
 		return PatchouliAPI.get().makeMultiblock(
 				TIER1_PATTERN,
-				'P', BotaniaBlocks.naturaPylon,
+				'P', BotaniaBlocks.NATURA_PYLON,
 				'0', pedestal
 		);
 	});
@@ -124,9 +124,9 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		var any = PatchouliAPI.get().anyMatcher();
 		return PatchouliAPI.get().makeMultiblock(
 				TIER2_PATTERN,
-				'P', BotaniaBlocks.naturaPylon,
+				'P', BotaniaBlocks.NATURA_PYLON,
 				'0', pedestal,
-				'S', BotaniaBlocks.shimmerrock,
+				'S', BotaniaBlocks.SHIMMERROCK,
 				'M', manaPool
 		);
 	});
@@ -135,7 +135,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 			.aisle(TIER1_PATTERN[0])
 			.where('_', BlockInWorld.hasState(BlockStatePredicate.ANY))
 			.where('0', BlockInWorld.hasState(BlockTagPredicate.forTag(ExtraBotanyTags.Blocks.PEDESTALS)))
-			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.naturaPylon)))
+			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.NATURA_PYLON)))
 			.createPattern();
 
 	public static final Predicate<BlockInWorld>[][][] TIER_2_PATTERN = BlockPatternExtendBuilder.start()
@@ -144,8 +144,8 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 			.aisle(TIER2_PATTERN[2])
 			.where('_', BlockInWorld.hasState(BlockStatePredicate.ANY))
 			.where('0', BlockInWorld.hasState(BlockTagPredicate.forTag(ExtraBotanyTags.Blocks.PEDESTALS)))
-			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.naturaPylon)))
-			.where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.shimmerrock)))
+			.where('P', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.NATURA_PYLON)))
+			.where('S', BlockInWorld.hasState(BlockStatePredicate.forBlock(BotaniaBlocks.SHIMMERROCK)))
 			.where('M', BlockInWorld.hasState(BlockTagPredicate.forTag(ExtraBotanyTags.Blocks.MANA_POOLS)))
 			.createPattern();
 

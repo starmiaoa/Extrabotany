@@ -43,16 +43,16 @@ public class SunRingItem extends RelicBaubleItem {
 			return;
 		}
 
-		if (BotaniaItems.miningRing instanceof RingOfTheMantleItem ring) {
+		if (BotaniaItems.RING_OF_THE_MANTLE instanceof RingOfTheMantleItem ring) {
 			ring.onWornTick(stack, player);
 		}
-		if (BotaniaItems.auraRingGreater instanceof BandOfAuraItem ring) {
+		if (BotaniaItems.GREATER_BAND_OF_AURA instanceof BandOfAuraItem ring) {
 			ring.onWornTick(stack, player);
 		}
-		if (BotaniaItems.swapRing instanceof RingOfCorrectionItem ring) {
+		if (BotaniaItems.RING_OF_CORRECTION instanceof RingOfCorrectionItem ring) {
 			ring.onWornTick(stack, player);
 		}
-		if (BotaniaItems.waterRing instanceof RingOfChordataItem ring) {
+		if (BotaniaItems.RING_OF_CHORDATA instanceof RingOfChordataItem ring) {
 			ring.onWornTick(stack, player);
 		}
 		((DeathRingItem) ExtraBotanyItems.deathRing).onWornTick(stack, player);
@@ -63,10 +63,10 @@ public class SunRingItem extends RelicBaubleItem {
 	@Override
 	public void onUnequipped(ItemStack stack, LivingEntity entity) {
 		super.onUnequipped(stack, entity);
-		if (BotaniaItems.miningRing instanceof RingOfTheMantleItem ring) {
+		if (BotaniaItems.RING_OF_THE_MANTLE instanceof RingOfTheMantleItem ring) {
 			ring.onUnequipped(stack, entity);
 		}
-		if (BotaniaItems.waterRing instanceof RingOfChordataItem ring) {
+		if (BotaniaItems.RING_OF_CHORDATA instanceof RingOfChordataItem ring) {
 			ring.onUnequipped(stack, entity);
 		}
 	}

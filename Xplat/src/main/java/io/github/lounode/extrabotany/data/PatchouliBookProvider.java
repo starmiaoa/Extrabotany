@@ -346,13 +346,13 @@ public final class PatchouliBookProvider extends PatchouliProvider {
 						crafting(ExtraBotanyItems.natureOrb).withText("extrabotany.page.nature_orb2"),
 						text("extrabotany.page.nature_orb3"),
 						multiBlock("extrabotany.multiblock.nature_pedestal_tier1", PedestalBlockEntity.TIER1_PATTERN)
-								.withMapping("P", RegistryHelper.getRegistryName(BotaniaBlocks.naturaPylon).toString())
+								.withMapping("P", RegistryHelper.getRegistryName(BotaniaBlocks.NATURA_PYLON).toString())
 								.withMapping("0", RegistryHelper.getRegistryName(ExtraBotanyBlocks.livingrockPedestal).toString()),
 						multiBlock("extrabotany.multiblock.nature_pedestal_tier2", PedestalBlockEntity.TIER2_PATTERN)
-								.withMapping("P", RegistryHelper.getRegistryName(BotaniaBlocks.naturaPylon).toString())
+								.withMapping("P", RegistryHelper.getRegistryName(BotaniaBlocks.NATURA_PYLON).toString())
 								.withMapping("0", RegistryHelper.getRegistryName(ExtraBotanyBlocks.livingrockPedestal).toString())
-								.withMapping("S", RegistryHelper.getRegistryName(BotaniaBlocks.shimmerrock).toString())
-								.withMapping("M", RegistryHelper.getRegistryName(BotaniaBlocks.manaPool).toString())
+								.withMapping("S", RegistryHelper.getRegistryName(BotaniaBlocks.SHIMMERROCK).toString())
+								.withMapping("M", RegistryHelper.getRegistryName(BotaniaBlocks.MANA_POOL).toString())
 				)
 				.withAdvancement(botaniaAdvancement("terrasteel_pickup"))
 				.save(consumer, id("nature_orb"));

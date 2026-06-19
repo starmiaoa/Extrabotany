@@ -26,8 +26,8 @@ public class SmithingRecipeProvider extends ExtraBotanyRecipeProvider {
 		Ingredient heroMedal = Ingredient.of(ExtraBotanyItems.heroMedal);
 
 		SmithingTransformRecipeBuilder.smithing(
-				Ingredient.of(BotaniaItems.dreamwoodTwig),
-				Ingredient.of(BotaniaItems.terraSword),
+				Ingredient.of(BotaniaItems.DREAMWOOD_TWIG),
+				Ingredient.of(BotaniaItems.TERRA_BLADE),
 				heroMedal,
 				RecipeCategory.COMBAT,
 				ExtraBotanyItems.excalibur
@@ -35,13 +35,13 @@ public class SmithingRecipeProvider extends ExtraBotanyRecipeProvider {
 				.unlocks("has_item", conditionsFromItem(ExtraBotanyItems.heroMedal))
 				.save(recipeOutput, id(ExtraBotanyItems.excalibur));
 		SmithingTransformRecipeBuilder.smithing(
-				Ingredient.of(BotaniaItems.gaiaIngot),
+				Ingredient.of(BotaniaItems.GAIA_INGOT),
 				Ingredient.of(ExtraBotanyItems.terrasteelHammer),
 				heroMedal,
 				RecipeCategory.COMBAT,
 				ExtraBotanyItems.gaiaHammer
 		)
-				.unlocks("has_item", conditionsFromItem(BotaniaItems.gaiaIngot))
+				.unlocks("has_item", conditionsFromItem(BotaniaItems.GAIA_INGOT))
 				.save(recipeOutput, id(ExtraBotanyItems.gaiaHammer));
 		SmithingTransformRecipeBuilder.smithing(
 				Ingredient.of(ExtraBotanyTags.Items.INGOTS_ORICHALCOS),
