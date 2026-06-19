@@ -9,7 +9,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tiers;
@@ -21,12 +20,9 @@ import vazkii.botania.common.handler.BotaniaSounds;
 import vazkii.botania.common.item.equipment.tool.ToolCommons;
 
 import io.github.lounode.extrabotany.common.entity.PhantomSwordEntity;
-import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import java.util.UUID;
-
-import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
 public class FirstFractalItem extends OldExbotanyRelicSwordItem {
 	private static final double RANGE = 13D;
@@ -86,10 +82,5 @@ public class FirstFractalItem extends OldExbotanyRelicSwordItem {
 				&& ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_DAMAGE * 2, true)) {
 			stack.setDamageValue(stack.getDamageValue() - 1);
 		}
-	}
-
-	@Override
-	protected ResourceLocation getRequiredAdvancement() {
-		return prefix("main/" + LibAdvancementNames.HERRSCHER_DEFEAT);
 	}
 }

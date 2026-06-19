@@ -145,7 +145,8 @@ public abstract class SkullLandMineEntity extends MagicLandMineEntity {
 		@Override
 		public void explode() {
 			super.explode();
-			if (ExtraBotanyConfig.common().disableGaiaDisArm()) {
+			if (ExtraBotanyConfig.common().disableGaiaDisArm()
+					|| !ExtraBotanyConfig.common().guardianItemCheck()) {
 				return;
 			}
 			List<Player> players = getVictimPlayers();

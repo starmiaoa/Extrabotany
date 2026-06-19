@@ -12,10 +12,11 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.joml.Matrix3f;
@@ -24,27 +25,36 @@ import org.joml.Vector3f;
 
 import io.github.lounode.extrabotany.common.entity.OldSwordProjectileEntity;
 
+/**
+ * 老剑投射物(真泰拉/真影刃/波涌)的渲染器。
+ *
+ * <p>这些投射物原本通过 {@code getModelManager().getModel(icon/xxx_projectile#standalone)} 取模型,
+ * 但 ATM9 的 ModernFix dynamic_resources 不会保留这些 standalone 模型 → 取到缺失模型(紫黑)或 null(全透明)。
+ * 改为直接渲染**对应 relic 物品**的烘焙模型({@link net.minecraft.client.renderer.ItemModelShaper#getItemModel}):
+ * 物品模型走核心物品管线、必定烘焙,且投射物模型本就是 {@code item/generated + 同贴图},视觉一致。
+ */
 public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> extends EntityRenderer<T> {
 	private static final int FULLBRIGHT = 0xF000F0;
 	private static final int OVERLAY = OverlayTexture.NO_OVERLAY;
 	private static final float ALPHA = 0.9F;
-	private final ResourceLocation textureLocation;
-	private final ModelResourceLocation modelLocation;
+	private final Item item;
 
-	public OldSwordProjectileRenderer(EntityRendererProvider.Context context, ResourceLocation modelLocation) {
+	public OldSwordProjectileRenderer(EntityRendererProvider.Context context, Item item) {
 		super(context);
-		this.textureLocation = modelLocation;
-		this.modelLocation = new ModelResourceLocation(modelLocation, "standalone");
+		this.item = item;
 	}
 
 	@Override
 	public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+		BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(this.item);
+		if (model == null) {
+			return;
+		}
 		poseStack.pushPose();
 		poseStack.scale(1.2F, 1.2F, 1.2F);
 		poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot() + 90F));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getXRot()));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(-45F));
-		BakedModel model = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
 		poseStack.translate(-0.5F, -0.5F, -0.5F);
 		renderModel(model, poseStack, buffer.getBuffer(Sheets.translucentItemSheet()));
 		poseStack.popPose();
@@ -92,6 +102,6 @@ public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> exte
 
 	@Override
 	public ResourceLocation getTextureLocation(T entity) {
-		return this.textureLocation;
+		return InventoryMenu.BLOCK_ATLAS;
 	}
 }

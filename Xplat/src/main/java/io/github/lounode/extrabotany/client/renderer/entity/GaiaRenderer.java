@@ -21,6 +21,7 @@ import vazkii.botania.client.core.helper.RenderHelper;
 
 import io.github.lounode.extrabotany.client.model.ArmorModels;
 import io.github.lounode.extrabotany.common.entity.gaia.Gaia;
+import io.github.lounode.extrabotany.common.entity.gaia.GaiaIII;
 
 public class GaiaRenderer extends HumanoidMobRenderer<Gaia, HumanoidModel<Gaia>> {
 	public static final float DEFAULT_GRAIN_INTENSITY = 0.05F;
@@ -49,6 +50,12 @@ public class GaiaRenderer extends HumanoidMobRenderer<Gaia, HumanoidModel<Gaia>>
 			} else {
 				disfiguration = (DEFAULT_DISFIGURATION + dopple.hurtTime * ((1F - 0.15F) / 20F)) / 2F;
 				grainIntensity = DEFAULT_GRAIN_INTENSITY + dopple.hurtTime * ((1F - 0.15F) / 10F);
+			}
+
+			// 二阶段每隔一阵闪现"本我"形态:强烈噪点/扭曲一闪(仅视觉,名称不变)。
+			if (dopple instanceof GaiaIII gaiaiii && gaiaiii.getEgoFlicker() > 0) {
+				grainIntensity = 1F;
+				disfiguration = 0.6F;
 			}
 
 			shader.safeGetUniform("BotaniaGrainIntensity").set(grainIntensity);

@@ -71,6 +71,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 		super(properties);
 		registerVariant("herrscher");
 		registerVariant("flandre");
+		registerVariant("rainbow");
 		registerVariant("jim");
 		registerVariant("steampunk");
 		Proxy.INSTANCE.runOnClient(() -> () -> {

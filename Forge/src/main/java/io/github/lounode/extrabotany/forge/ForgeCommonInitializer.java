@@ -24,6 +24,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
@@ -213,6 +214,7 @@ public class ForgeCommonInitializer {
 		bus.addListener(this::onPlayerTick);
 		bus.addListener(this::onLeftClickBlock);
 		bus.addListener(this::onAdvancementEarned);
+		bus.addListener((RegisterCommandsEvent event) -> ForgeExtrabotanyCommands.register(event.getDispatcher()));
 
 		RewardBagManager.registerListener();
 	}

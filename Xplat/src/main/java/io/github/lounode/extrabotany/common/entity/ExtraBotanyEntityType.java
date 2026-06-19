@@ -53,6 +53,14 @@ public class ExtraBotanyEntityType {
 			.updateInterval(10)
 			.build(LibEntityNames.VOID_HERRSCHER.toString());
 
+	public static final EntityType<EgoMinionEntity> EGO_MINION = EntityType.Builder.<EgoMinionEntity>of(
+			EgoMinionEntity::new, MobCategory.MONSTER)
+			.sized(0.6F, 1.8F)
+			.fireImmune()
+			.clientTrackingRange(10)
+			.updateInterval(10)
+			.build(LibEntityNames.EGO_MINION.toString());
+
 	public static final EntityType<SkullMissileEntity> SKULL_MISSILE = EntityType.Builder.<SkullMissileEntity>of(
 			SkullMissileEntity::new, MobCategory.MISC)
 			.sized(0.5F, 0.5F)
@@ -256,6 +264,7 @@ public class ExtraBotanyEntityType {
 		r.accept(GAIA_LEGACY, LibEntityNames.GAIA_LEGACY);
 		r.accept(GAIA_III, LibEntityNames.GAIA_III);
 		r.accept(VOID_HERRSCHER, LibEntityNames.VOID_HERRSCHER);
+		r.accept(EGO_MINION, LibEntityNames.EGO_MINION);
 		r.accept(SKULL_MISSILE, LibEntityNames.SKULL_MISSILE);
 		r.accept(SKULL_LANDMINE_BLUE, LibEntityNames.SKULL_LANDMINE_BLUE);
 		r.accept(SKULL_LANDMINE_RED, LibEntityNames.SKULL_LANDMINE_RED);
@@ -290,6 +299,7 @@ public class ExtraBotanyEntityType {
 		consumer.accept(GAIA_LEGACY, Gaia.createGaiaAttributes());
 		consumer.accept(GAIA_III, GaiaIII.createGaiaAttributes());
 		consumer.accept(VOID_HERRSCHER, VoidHerrscher.createAttributes());
+		consumer.accept(EGO_MINION, EgoMinionEntity.createAttributes());
 
 	}
 }

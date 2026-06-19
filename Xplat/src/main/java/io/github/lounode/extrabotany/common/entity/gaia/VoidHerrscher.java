@@ -130,7 +130,7 @@ public class VoidHerrscher extends Gaia {
 		if (arena.countGaiaAround(world, VoidHerrscher.class) > 0) {
 			return false;
 		}
-		if (!arena.checkGuardianInventoryStrict(world, prefix("main/" + LibAdvancementNames.FIRST_FRACTAL_OBTAIN))) {
+		if (!arena.checkGuardianInventoryStrict(world, ExtraBotanyItems.firstFractal)) {
 			if (!world.isClientSide()) {
 				player.sendSystemMessage(Component.translatable("extrabotany.message.guardian_no_response").withStyle(ChatFormatting.RED));
 			}
@@ -487,6 +487,9 @@ public class VoidHerrscher extends Gaia {
 			}
 			case 1 -> {
 				if (!rankIII) {
+					// 非三阶段不该进虚空审判:重置 CD + 改派别的技能,避免 skillCd 卡在 <=0 每 tick 空转。
+					skillCd = 200;
+					skillType = 0;
 					return;
 				}
 				spawnVoidJudge();
@@ -743,6 +746,12 @@ public class VoidHerrscher extends Gaia {
 	@Override
 	public SoundEvent getBGM() {
 		return ExtraBotanySounds.MUSIC_HERRSCHER;
+	}
+
+	// 持有"最初分型"即可带其它模组物品打空之律者、且不被缴械(不依赖成就)。
+	@Override
+	public net.minecraft.world.item.Item getGuardianBypassItem() {
+		return ExtraBotanyItems.firstFractal;
 	}
 
 	@Override

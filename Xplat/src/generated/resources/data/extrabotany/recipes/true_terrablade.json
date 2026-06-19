@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "0": {
-      "tag": "c:ingots/terrasteel"
+      "tag": "forge:ingots/terrasteel"
     },
     "1": {
       "item": "botania:life_essence"

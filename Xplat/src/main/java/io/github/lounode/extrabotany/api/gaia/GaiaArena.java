@@ -498,8 +498,37 @@ public class GaiaArena {
 		return true;
 	}
 
+	// 不依赖成就的召唤检测:玩家持有 bypassItem(虚空万藏 / 最初分型)即可携带非白名单物品。
+	// 整合包删成就也不影响(成就只为减性能时常被剔除)。
+	public boolean checkGuardianInventoryStrict(Level level, net.minecraft.world.item.Item bypassItem) {
+		for (Player player : getPlayersAround(level)) {
+			if (bypassItem != null && playerHasItem(player, bypassItem)) {
+				continue;
+			}
+			if (!checkGuardianInventoryPass(player)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	// 玩家背包或饰品栏是否持有指定物品。
+	public static boolean playerHasItem(Player player, net.minecraft.world.item.Item item) {
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			if (player.getInventory().getItem(i).is(item)) {
+				return true;
+			}
+		}
+		for (ItemStack stack : EXplatAbstractions.INSTANCE.getEquippedCurios(player)) {
+			if (stack.is(item)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean checkGuardianInventoryPass(Player player) {
-		if (player.isCreative()) {
+		if (player.isCreative() || !ExtraBotanyConfig.common().guardianItemCheck()) {
 			return true;
 		}
 		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
@@ -538,7 +567,7 @@ public class GaiaArena {
 	}
 
 	public static boolean checkInventoryPass(Player player) {
-		if (player.isCreative() || ExtraBotanyConfig.common().disableGaiaDisArm()) {
+		if (player.isCreative() || ExtraBotanyConfig.common().disableGaiaDisArm() || !ExtraBotanyConfig.common().guardianItemCheck()) {
 			return true;
 		}
 		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {

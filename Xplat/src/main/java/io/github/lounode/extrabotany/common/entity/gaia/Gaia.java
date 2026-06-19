@@ -646,26 +646,68 @@ public class Gaia extends Monster {
 		return BotaniaSounds.gaiaMusic2;
 	}
 
-	private static class DopplegangerMusic extends AbstractTickableSoundInstance {
-		private final Gaia guardian;
+	/** 二阶段(本我)BGM;返回 null 表示无二阶段切换。 */
+	@Nullable
+	public SoundEvent getEgoBGM() {
+		return null;
+	}
 
-		private DopplegangerMusic(Gaia guardian) {
-			super(guardian.getBGM(), SoundSource.RECORDS, SoundInstance.createUnseededRandom());
+	/** 是否处于会触发 BGM 交叉淡入的二阶段(本我)。 */
+	public boolean isEgoPhase() {
+		return false;
+	}
+
+	/**
+	 * 召唤/战斗缴械的"放行物品":玩家持有它即可携带非白名单(其它模组)物品参战,且战斗中不被缴械。
+	 * 不依赖成就(整合包常删成就减性能)。默认 null = 无放行物品。
+	 */
+	@Nullable
+	public net.minecraft.world.item.Item getGuardianBypassItem() {
+		return null;
+	}
+
+	private static class DopplegangerMusic extends AbstractTickableSoundInstance {
+		private static final float FADE_STEP = 0.025F;
+		private static final float MAX_VOLUME = 1.3F;
+		private final Gaia guardian;
+		private final boolean egoTrack;
+		private boolean spawnedEgo = false;
+
+		private DopplegangerMusic(Gaia guardian, SoundEvent track, boolean egoTrack) {
+			super(track, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 			this.guardian = guardian;
+			this.egoTrack = egoTrack;
 			this.x = guardian.getHome().pos().getX();
 			this.y = guardian.getHome().pos().getY();
 			this.z = guardian.getHome().pos().getZ();
 			this.looping = true;
+			this.volume = egoTrack ? 0F : MAX_VOLUME;
 		}
 
 		public static void play(Gaia guardian) {
-			Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian));
+			Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getBGM(), false));
 		}
 
 		@Override
 		public void tick() {
 			if (!guardian.isAlive()) {
 				stop();
+				return;
+			}
+			boolean ego = guardian.getEgoBGM() != null && guardian.isEgoPhase();
+			if (egoTrack) {
+				// 本我曲:渐入到满音量
+				this.volume = Math.min(MAX_VOLUME, this.volume + FADE_STEP);
+			} else if (ego) {
+				// 一阶段曲:进入二阶段后渐出;并仅启动一次本我曲(交叉淡入)
+				if (!spawnedEgo) {
+					spawnedEgo = true;
+					Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getEgoBGM(), true));
+				}
+				this.volume = Math.max(0F, this.volume - FADE_STEP);
+				if (this.volume <= 0.01F) {
+					stop();
+				}
 			}
 		}
 	}

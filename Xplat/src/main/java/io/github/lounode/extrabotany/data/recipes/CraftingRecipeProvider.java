@@ -591,10 +591,11 @@ public class CraftingRecipeProvider extends vazkii.botania.data.recipes.Crafting
 		registerMikuArmorUpgrade(consumer, ExtraBotanyItems.mikuChest, BotaniaItems.manasteelChest);
 		registerMikuArmorUpgrade(consumer, ExtraBotanyItems.mikuLegs, BotaniaItems.manasteelLegs);
 		registerMikuArmorUpgrade(consumer, ExtraBotanyItems.mikuBoots, BotaniaItems.manasteelBoots);
-		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianHelm, BotaniaItems.manasteelHelm, botaniaRuneTag("spring"));
-		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianChest, BotaniaItems.manasteelChest, botaniaRuneTag("summer"));
-		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianLegs, BotaniaItems.manasteelLegs, botaniaRuneTag("autumn"));
-		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianBoots, BotaniaItems.manasteelBoots, botaniaRuneTag("winter"));
+		// Botania 1.20.1 没有 runes/<季节> 细分标签(只有 botania:runes 总标签),老配方引用空标签 → 占位符红叉。改用四季符文物品本身。
+		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianHelm, BotaniaItems.manasteelHelm, BotaniaItems.runeSpring);
+		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianChest, BotaniaItems.manasteelChest, BotaniaItems.runeSummer);
+		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianLegs, BotaniaItems.manasteelLegs, BotaniaItems.runeAutumn);
+		registerShootingGuardianArmorUpgrade(consumer, ExtraBotanyItems.shootingGuardianBoots, BotaniaItems.manasteelBoots, BotaniaItems.runeWinter);
 		registerSilentSagesArmorUpgrade(consumer, ExtraBotanyItems.silentSagesHelm, ExtraBotanyItems.mikuHelm);
 		registerSilentSagesArmorUpgrade(consumer, ExtraBotanyItems.silentSagesChest, ExtraBotanyItems.mikuChest);
 		registerSilentSagesArmorUpgrade(consumer, ExtraBotanyItems.silentSagesLegs, ExtraBotanyItems.mikuLegs);
@@ -677,7 +678,7 @@ public class CraftingRecipeProvider extends vazkii.botania.data.recipes.Crafting
 				.save(WrapperResult.ofType(ManaUpgradeRecipe.SERIALIZER, consumer));
 	}
 
-	private void registerShootingGuardianArmorUpgrade(Consumer<FinishedRecipe> consumer, ItemLike result, ItemLike armor, TagKey<Item> rune) {
+	private void registerShootingGuardianArmorUpgrade(Consumer<FinishedRecipe> consumer, ItemLike result, ItemLike armor, ItemLike rune) {
 		ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, result)
 				.define('T', BotaniaItems.livingwoodTwig)
 				.define('S', ExtraBotanyTags.Items.INGOTS_AERIALITE)
@@ -699,10 +700,6 @@ public class CraftingRecipeProvider extends vazkii.botania.data.recipes.Crafting
 				.pattern("OOO")
 				.unlockedBy("has_item", conditionsFromTag(ExtraBotanyTags.Items.INGOTS_ORICHALCOS))
 				.save(WrapperResult.ofType(ManaUpgradeRecipe.SERIALIZER, consumer));
-	}
-
-	private static TagKey<Item> botaniaRuneTag(String name) {
-		return TagKey.create(Registries.ITEM, ResourceLocation.tryBuild("botania", "runes/" + name));
 	}
 
 	private void registerConversions(Consumer<FinishedRecipe> consumer) {
