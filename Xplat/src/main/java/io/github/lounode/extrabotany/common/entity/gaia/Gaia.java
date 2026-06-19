@@ -647,26 +647,60 @@ public class Gaia extends Monster {
 		return BotaniaSounds.musicGaiaBoss2.value();
 	}
 
-	private static class DopplegangerMusic extends AbstractTickableSoundInstance {
-		private final Gaia guardian;
+	@Nullable
+	public SoundEvent getEgoBGM() {
+		return null;
+	}
 
-		private DopplegangerMusic(Gaia guardian) {
-			super(guardian.getBGM(), SoundSource.RECORDS, SoundInstance.createUnseededRandom());
+	public boolean isEgoPhase() {
+		return false;
+	}
+
+	@Nullable
+	public net.minecraft.world.item.Item getGuardianBypassItem() {
+		return null;
+	}
+
+	private static class DopplegangerMusic extends AbstractTickableSoundInstance {
+		private static final float FADE_STEP = 0.025F;
+		private static final float MAX_VOLUME = 1.3F;
+		private final Gaia guardian;
+		private final boolean egoTrack;
+		private boolean spawnedEgo = false;
+
+		private DopplegangerMusic(Gaia guardian, SoundEvent track, boolean egoTrack) {
+			super(track, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 			this.guardian = guardian;
+			this.egoTrack = egoTrack;
 			this.x = guardian.getHome().pos().getX();
 			this.y = guardian.getHome().pos().getY();
 			this.z = guardian.getHome().pos().getZ();
 			this.looping = true;
+			this.volume = egoTrack ? 0F : MAX_VOLUME;
 		}
 
 		public static void play(Gaia guardian) {
-			Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian));
+			Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getBGM(), false));
 		}
 
 		@Override
 		public void tick() {
 			if (!guardian.isAlive()) {
 				stop();
+				return;
+			}
+			boolean ego = guardian.getEgoBGM() != null && guardian.isEgoPhase();
+			if (egoTrack) {
+				this.volume = Math.min(MAX_VOLUME, this.volume + FADE_STEP);
+			} else if (ego) {
+				if (!spawnedEgo) {
+					spawnedEgo = true;
+					Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getEgoBGM(), true));
+				}
+				this.volume = Math.max(0F, this.volume - FADE_STEP);
+				if (this.volume <= 0.01F) {
+					stop();
+				}
 			}
 		}
 	}

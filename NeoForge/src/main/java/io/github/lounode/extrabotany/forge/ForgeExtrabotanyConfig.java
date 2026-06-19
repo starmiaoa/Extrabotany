@@ -55,6 +55,7 @@ public class ForgeExtrabotanyConfig {
 
 	private static class Common implements ExtraBotanyConfig.ConfigAccess {
 		public final ModConfigSpec.BooleanValue disableGaiaDisArm;
+		public final ModConfigSpec.BooleanValue guardianItemCheck;
 		public final ModConfigSpec.BooleanValue enableTelemetry;
 		public final ModConfigSpec.ConfigValue<String> telemetryUUID;
 		public final ModConfigSpec.ConfigValue<String> fakePlayerId;
@@ -165,6 +166,15 @@ public class ForgeExtrabotanyConfig {
 							设为 true 来禁用盖亚的缴械技能
 							Set true to disable Gaia's disarm""")
 					.define("disableGaiaDisarm", false);
+			guardianItemCheck = builder
+					.comment("""
+							设为 true 时检测召唤盖亚守护者III/空之律者的玩家身上(背包+饰品)物品白名单(召唤门禁 + 战斗缴械)。
+							设为 false 则完全不检测,可携带任意模组物品进入 Boss 战。
+							可用命令 /exbot itemcheck true|false 实时切换(与本配置同步)。
+							Set true to check the summoner's inventory+curios against the whitelist for Gaia Guardian III / Void Herrscher (summon gate + in-fight disarm).
+							Set false to disable all item checks, allowing any modded items into the boss fight.
+							Toggle in-game with /exbot itemcheck true|false (synced with this config).""")
+					.define("guardianItemCheck", true);
 			gaiaSpawnUnCheckList = builder
 					.comment("""
 							盖亚三生成时不检查的ModID或者物品
@@ -651,6 +661,11 @@ public class ForgeExtrabotanyConfig {
 		}
 
 		@Override
+		public boolean guardianItemCheck() {
+			return guardianItemCheck.get();
+		}
+
+		@Override
 		public boolean enableTelemetry() {
 			return enableTelemetry.get();
 		}
@@ -1020,6 +1035,11 @@ public class ForgeExtrabotanyConfig {
 		final Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
 		COMMON_SPEC = specPair.getRight();
 		COMMON = specPair.getLeft();
+	}
+
+	public static void setGuardianItemCheck(boolean value) {
+		COMMON.guardianItemCheck.set(value);
+		COMMON_SPEC.save();
 	}
 
 	public static void setup(ModContainer modContainer) {

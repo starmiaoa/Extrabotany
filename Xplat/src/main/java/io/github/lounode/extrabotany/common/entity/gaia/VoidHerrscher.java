@@ -132,7 +132,7 @@ public class VoidHerrscher extends Gaia {
 		if (arena.countGaiaAround(world, VoidHerrscher.class) > 0) {
 			return false;
 		}
-		if (!arena.checkGuardianInventoryStrict(world, prefix("main/" + LibAdvancementNames.FIRST_FRACTAL_OBTAIN))) {
+		if (!arena.checkGuardianInventoryStrict(world, ExtraBotanyItems.firstFractal)) {
 			if (!world.isClientSide()) {
 				player.sendSystemMessage(Component.translatable("extrabotany.message.guardian_no_response").withStyle(ChatFormatting.RED));
 			}
@@ -489,6 +489,8 @@ public class VoidHerrscher extends Gaia {
 			}
 			case 1 -> {
 				if (!rankIII) {
+					skillCd = 200;
+					skillType = 0;
 					return;
 				}
 				spawnVoidJudge();
@@ -749,6 +751,11 @@ public class VoidHerrscher extends Gaia {
 	@Override
 	public SoundEvent getBGM() {
 		return ExtraBotanySounds.MUSIC_HERRSCHER;
+	}
+
+	@Override
+	public net.minecraft.world.item.Item getGuardianBypassItem() {
+		return ExtraBotanyItems.firstFractal;
 	}
 
 	@Override

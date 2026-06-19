@@ -163,5 +163,14 @@
         "volume": 1.3
       }
     ]
+  },
+  "music.ego": {
+    "sounds": [
+      {
+        "name": "extrabotany:music/swordland",
+        "stream": true,
+        "volume": 1.3
+      }
+    ]
   }
 }

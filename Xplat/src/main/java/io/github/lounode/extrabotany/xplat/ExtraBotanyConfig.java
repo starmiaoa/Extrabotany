@@ -42,6 +42,7 @@ public class ExtraBotanyConfig {
 
 	public interface ConfigAccess {
 		boolean disableGaiaDisArm();
+		boolean guardianItemCheck();
 		List<String> gaiaSpawnUnCheckList();
 		boolean enableTelemetry();
 		String telemetryUUID();

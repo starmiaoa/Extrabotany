@@ -18,6 +18,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -498,8 +499,34 @@ public class GaiaArena {
 		return true;
 	}
 
+	public boolean checkGuardianInventoryStrict(Level level, Item bypassItem) {
+		for (Player player : getPlayersAround(level)) {
+			if (bypassItem != null && playerHasItem(player, bypassItem)) {
+				continue;
+			}
+			if (!checkGuardianInventoryPass(player)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static boolean playerHasItem(Player player, Item item) {
+		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+			if (player.getInventory().getItem(i).is(item)) {
+				return true;
+			}
+		}
+		for (ItemStack stack : EXplatAbstractions.INSTANCE.getEquippedCurios(player)) {
+			if (stack.is(item)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static boolean checkGuardianInventoryPass(Player player) {
-		if (player.isCreative()) {
+		if (player.isCreative() || !ExtraBotanyConfig.common().guardianItemCheck()) {
 			return true;
 		}
 		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
@@ -538,7 +565,7 @@ public class GaiaArena {
 	}
 
 	public static boolean checkInventoryPass(Player player) {
-		if (player.isCreative() || ExtraBotanyConfig.common().disableGaiaDisArm()) {
+		if (player.isCreative() || ExtraBotanyConfig.common().disableGaiaDisArm() || !ExtraBotanyConfig.common().guardianItemCheck()) {
 			return true;
 		}
 		for (int i = 0; i < player.getInventory().getContainerSize(); i++) {

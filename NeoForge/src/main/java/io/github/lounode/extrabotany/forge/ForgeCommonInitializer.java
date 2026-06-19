@@ -24,6 +24,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -194,6 +195,7 @@ public class ForgeCommonInitializer {
 
 		bus.addListener((LevelTickEvent.Post event) -> WindImpl.EventHandler.onLevelTick(event.getLevel()));
 		NeoForgeEventBridge.register(bus);
+		bus.addListener((RegisterCommandsEvent event) -> ForgeExtrabotanyCommands.register(event.getDispatcher()));
 
 		RewardBagManager.registerListener();
 	}

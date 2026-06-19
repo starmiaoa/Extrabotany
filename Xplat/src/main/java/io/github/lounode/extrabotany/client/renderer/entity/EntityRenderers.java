@@ -35,6 +35,7 @@ public final class EntityRenderers {
 		consumer.accept(ExtraBotanyEntityType.GAIA_LEGACY, GaiaRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.GAIA_III, GaiaRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.VOID_HERRSCHER, VoidHerrscherRenderer::new);
+		consumer.accept(ExtraBotanyEntityType.EGO_MINION, EgoMinionRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SKULL_MISSILE, SkullMissileRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SKULL_LANDMINE_BLUE, SkullLandMineRenderer::new);
 		consumer.accept(ExtraBotanyEntityType.SKULL_LANDMINE_RED, SkullLandMineRenderer::new);

@@ -60,10 +60,10 @@ public class ModelVoidHerrscher extends HumanoidModel<VoidHerrscher> {
 						.texOffs(16, 32).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.25F)),
 				PartPose.ZERO);
 		root.addOrReplaceChild("left_wing", CubeListBuilder.create()
-						.texOffs(0, 64).mirror().addBox(0.0F, 0.0F, 0.0F, 26.0F, 32.0F, 0.0F),
+						.texOffs(0, 64).addBox(0.0F, 0.0F, 0.0F, 26.0F, 32.0F, 0.0F),
 				PartPose.offsetAndRotation(-30.0F, -11.0F, 5.0F, 0.0F, 0.0F, -0.1745329F));
 		root.addOrReplaceChild("right_wing", CubeListBuilder.create()
-						.texOffs(52, 64).mirror().addBox(0.0F, 0.0F, 0.0F, 26.0F, 32.0F, 0.0F),
+						.texOffs(52, 64).addBox(0.0F, 0.0F, 0.0F, 26.0F, 32.0F, 0.0F),
 				PartPose.offsetAndRotation(4.0F, -15.8F, 5.0F, 0.0F, 0.0F, 0.1745329F));
 		for (int i = 1; i <= 3; i++) {
 			root.addOrReplaceChild("shield" + i, CubeListBuilder.create()
