@@ -52,7 +52,10 @@ public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> exte
 		}
 		poseStack.pushPose();
 		poseStack.scale(1.2F, 1.2F, 1.2F);
-		poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot() + 90F));
+		// Net Y rotation must equal -atan2(dz,dx) like the 1.16 original. The entity yaw is the
+		// vanilla atan2(dx,dz) = 90 - atan2(dz,dx), so subtract 90 (not add) to avoid the 180° flip
+		// that made the blade fly backwards.
+		poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot() - 90F));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getXRot()));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(-45F));
 		poseStack.translate(-0.5F, -0.5F, -0.5F);
