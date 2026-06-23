@@ -40,7 +40,10 @@ public abstract class OldSwordProjectileEntity extends ThrowableItemProjectile {
 	protected OldSwordProjectileEntity(EntityType<? extends OldSwordProjectileEntity> entityType, Level level, LivingEntity owner) {
 		super(entityType, owner, level);
 		this.setNoGravity(true);
-		this.attackBonus = (float) Math.max(0D, owner.getAttributeValue(Attributes.ATTACK_DAMAGE) - RELIC_BASE_ATTACK_DAMAGE);
+		// 只让玩家投掷时吃外部增伤;怪物/赫尔谢尔投掷保持原固定伤害,避免误增强 Boss。
+		this.attackBonus = owner instanceof Player
+				? (float) Math.max(0D, owner.getAttributeValue(Attributes.ATTACK_DAMAGE) - RELIC_BASE_ATTACK_DAMAGE)
+				: 0F;
 	}
 
 	@Override
