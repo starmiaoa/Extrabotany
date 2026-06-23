@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -14,27 +15,33 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 
-import net.neoforged.neoforge.client.ClientHooks;
-
-import io.github.lounode.extrabotany.client.core.ExtraBotanyModels;
 import io.github.lounode.extrabotany.common.entity.OldSwordProjectileEntity;
 
+/**
+ * 老剑投射物(真泰拉/真影刃/波涌)的渲染器。
+ *
+ * <p>原本通过 {@code ExtraBotanyModels} 的 {@code standalone} 烘焙模型渲染,但部分客户端下这些 standalone
+ * 模型没有被烘焙({@code getBakedModel} 返回 null)→ 整把剑不可见,只剩拖尾粒子(泰拉=绿、波涌=蓝、暗影≈黑)。
+ * 改为直接渲染**对应 relic 物品**的烘焙模型({@link net.minecraft.client.renderer.ItemModelShaper#getItemModel}):
+ * 物品模型走核心物品管线、必定烘焙,且投射物模型本就是 {@code item/generated + 同贴图},视觉一致。与 1.20.1 版一致。
+ */
 public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> extends EntityRenderer<T> {
 	private static final int FULLBRIGHT = 0xF000F0;
 	private static final int COLOR = 0xFFFFFF | ((int) (0.9F * 255F) << 24);
-	private final ResourceLocation modelLocation;
+	private final Item item;
 
-	public OldSwordProjectileRenderer(EntityRendererProvider.Context context, ResourceLocation modelLocation) {
+	public OldSwordProjectileRenderer(EntityRendererProvider.Context context, Item item) {
 		super(context);
-		this.modelLocation = modelLocation;
+		this.item = item;
 	}
 
 	@Override
 	public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
-		BakedModel model = ExtraBotanyModels.INSTANCE.getBakedModel(this.modelLocation);
+		BakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(this.item);
 		if (model == null) {
 			return;
 		}
@@ -47,7 +54,6 @@ public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> exte
 		poseStack.mulPose(Axis.YP.rotationDegrees(entity.getYRot() - 90F));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getXRot()));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(-45F));
-		model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 		poseStack.translate(-0.5F, -0.5F, -0.5F);
 		renderModel(model, poseStack, buffer.getBuffer(Sheets.translucentItemSheet()));
 		poseStack.popPose();
@@ -76,6 +82,6 @@ public class OldSwordProjectileRenderer<T extends OldSwordProjectileEntity> exte
 
 	@Override
 	public ResourceLocation getTextureLocation(T entity) {
-		return this.modelLocation;
+		return InventoryMenu.BLOCK_ATLAS;
 	}
 }
