@@ -34,7 +34,7 @@ import java.util.List;
 public final class HUD {
 	public static HUD INSTANCE;
 	private static final ResourceLocation manaBar = ResourceLocation.tryParse("botania:textures/gui/mana_hud.png");
-	private static final ResourceLocation motorHud = ResourceLocation.tryBuild("extrabotany", "textures/gui/motorhud.png");
+
 
 	private final Minecraft minecraft;
 	private final ColorfulBossBarOverlay bossOverlay;
@@ -85,15 +85,24 @@ public final class HUD {
 		if (!(minecraft.player.getVehicle() instanceof MotorEntity motor)) {
 			return;
 		}
-		int x = minecraft.getWindow().getGuiScaledWidth() / 2 - 32;
-		int y = minecraft.getWindow().getGuiScaledHeight() - 68;
-		int width = (int) (64D * motor.getTectonicEnergy() / 800D);
-		RenderSystem.enableBlend();
-		gui.blit(motorHud, x, y, 0, 0, 64, 6, 64, 12);
-		if (width > 0) {
-			gui.blit(motorHud, x, y, 0, 6, width, 6, 64, 12);
+		int energy = motor.getTectonicEnergy();
+		int barW = 82;
+		int barH = 5;
+		int cx = minecraft.getWindow().getGuiScaledWidth() / 2;
+		int x = cx - barW / 2;
+		int y = minecraft.getWindow().getGuiScaledHeight() - 56;
+
+		int fillW = (int) (barW * energy / 800.0D);
+		int fillColor = energy >= 400 ? 0xFF00E5FF : energy >= 200 ? 0xFF00ACC1 : 0xFF00838F;
+
+		gui.fill(x - 1, y - 1, x + barW + 1, y + barH + 1, 0xA0000000);
+		if (fillW > 0) {
+			gui.fill(x, y, x + fillW, y + barH, fillColor);
 		}
-		RenderSystem.disableBlend();
+
+		String text = energy + " / 800";
+		int tw = minecraft.font.width(text);
+		gui.drawString(minecraft.font, text, cx - tw / 2, y - 10, 0xFFFFFFFF, true);
 	}
 
 	private void renderManaBar(GuiGraphics gui, float partialTicks) {

@@ -17,7 +17,7 @@ public final class MotorInputHandler {
 	private MotorInputHandler() {}
 
 	public static void tick(Minecraft minecraft) {
-		if (minecraft.player == null || !(minecraft.player.getVehicle() instanceof MotorEntity)) {
+		if (minecraft.player == null || !(minecraft.player.getVehicle() instanceof MotorEntity motor)) {
 			reset();
 			return;
 		}
@@ -28,6 +28,8 @@ public final class MotorInputHandler {
 		boolean right = options.keyRight.isDown();
 		boolean jump = options.keyJump.isDown();
 		boolean cyclonePressed = options.keySprint.consumeClick();
+
+		motor.updateInput(forward, back, left, right, jump, false);
 
 		if (forward != lastForward || back != lastBack || left != lastLeft || right != lastRight
 				|| jump != lastJump || cyclonePressed) {

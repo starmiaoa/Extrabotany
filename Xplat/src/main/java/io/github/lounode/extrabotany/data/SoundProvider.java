@@ -146,6 +146,12 @@ public class SoundProvider extends SoundDefinitionsProvider {
 				)
 		);
 
+		take(soundEvents, MOTOR_CYCLONE);
+		this.add(MOTOR_CYCLONE, SoundDefinitionsProvider.definition()
+				.subtitle(title(MOTOR_CYCLONE))
+				.with(SoundDefinitionsProvider.sound(new ResourceLocation(LibMisc.MOD_ID, "cyclone")))
+		);
+
 		for (SoundEvent soundEvent : soundEvents) {
 			this.add(soundEvent, defaultDefinition(soundEvent));
 		}

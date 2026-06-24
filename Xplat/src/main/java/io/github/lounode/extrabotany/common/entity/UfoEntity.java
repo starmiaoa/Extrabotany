@@ -34,6 +34,13 @@ public class UfoEntity extends Entity {
 	private static final String TAG_DAMAGE_TAKEN = "DamageTaken";
 	private static final String TAG_ACCESSORY_MOUNT = "AccessoryMount";
 
+	private int lerpSteps;
+	private double lerpX;
+	private double lerpY;
+	private double lerpZ;
+	private double lerpYRot;
+	private double lerpXRot;
+
 	private boolean forwardInputDown;
 	private boolean backInputDown;
 	private boolean leftInputDown;
@@ -63,9 +70,38 @@ public class UfoEntity extends Entity {
 	}
 
 	@Override
+	public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps, boolean teleport) {
+		this.lerpX = x;
+		this.lerpY = y;
+		this.lerpZ = z;
+		this.lerpYRot = yRot;
+		this.lerpXRot = xRot;
+		this.lerpSteps = 10;
+	}
+
+	private void tickLerp() {
+		if (this.isControlledByLocalInstance()) {
+			this.lerpSteps = 0;
+			this.syncPacketPositionCodec(this.getX(), this.getY(), this.getZ());
+		}
+		if (this.lerpSteps > 0) {
+			double d0 = this.getX() + (this.lerpX - this.getX()) / (double) this.lerpSteps;
+			double d1 = this.getY() + (this.lerpY - this.getY()) / (double) this.lerpSteps;
+			double d2 = this.getZ() + (this.lerpZ - this.getZ()) / (double) this.lerpSteps;
+			double d3 = Mth.wrapDegrees(this.lerpYRot - (double) this.getYRot());
+			this.setYRot(this.getYRot() + (float) d3 / (float) this.lerpSteps);
+			this.setXRot(this.getXRot() + (float) (this.lerpXRot - (double) this.getXRot()) / (float) this.lerpSteps);
+			this.lerpSteps--;
+			this.setPos(d0, d1, d2);
+			this.setRot(this.getYRot(), this.getXRot());
+		}
+	}
+
+	@Override
 	public void tick() {
 		this.setNoGravity(true);
 		super.tick();
+		this.tickLerp();
 		Entity passenger = getControllingPassenger();
 		if (!this.level().isClientSide()) {
 			if (passenger instanceof Player player) {
