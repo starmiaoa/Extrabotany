@@ -65,6 +65,7 @@ import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyBrews;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.brew.effect.EternityMobEffect;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 import io.github.lounode.extrabotany.common.crafting.ExtraBotanyRecipeTypes;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyEntityType;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyMemoryType;
@@ -234,6 +235,7 @@ public class ForgeCommonInitializer {
 
 	private void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
+			HerrscherCombatHelper.sanitizeHealth(event.player);
 			EternityMobEffect.onPlayerTick(event.player);
 			FlamescionWeaponItem.onPlayerTick(event.player);
 			PureDaisyPendantItem.onPlayerTick(event.player);
