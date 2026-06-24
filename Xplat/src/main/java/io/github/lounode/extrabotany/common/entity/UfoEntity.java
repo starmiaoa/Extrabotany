@@ -35,12 +35,18 @@ public class UfoEntity extends Entity {
 	private static final String TAG_DAMAGE_TAKEN = "DamageTaken";
 	private static final String TAG_ACCESSORY_MOUNT = "AccessoryMount";
 
+	private int lerpSteps;
+	private double lerpX;
+	private double lerpY;
+	private double lerpZ;
+	private double lerpYRot;
+	private double lerpXRot;
+
 	private boolean forwardInputDown;
 	private boolean backInputDown;
 	private boolean leftInputDown;
 	private boolean rightInputDown;
 	private boolean upInputDown;
-	private boolean downInputDown;
 
 	public UfoEntity(EntityType<? extends UfoEntity> entityType, Level level) {
 		super(entityType, level);
@@ -64,54 +70,115 @@ public class UfoEntity extends Entity {
 	}
 
 	@Override
+	public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+		this.lerpX = x;
+		this.lerpY = y;
+		this.lerpZ = z;
+		this.lerpYRot = yRot;
+		this.lerpXRot = xRot;
+		this.lerpSteps = 10;
+	}
+
+	@Override
+	public double lerpTargetX() {
+		return this.lerpSteps > 0 ? this.lerpX : this.getX();
+	}
+
+	@Override
+	public double lerpTargetY() {
+		return this.lerpSteps > 0 ? this.lerpY : this.getY();
+	}
+
+	@Override
+	public double lerpTargetZ() {
+		return this.lerpSteps > 0 ? this.lerpZ : this.getZ();
+	}
+
+	@Override
+	public float lerpTargetXRot() {
+		return this.lerpSteps > 0 ? (float) this.lerpXRot : this.getXRot();
+	}
+
+	@Override
+	public float lerpTargetYRot() {
+		return this.lerpSteps > 0 ? (float) this.lerpYRot : this.getYRot();
+	}
+
+	private void tickLerp() {
+		if (this.isControlledByLocalInstance()) {
+			this.lerpSteps = 0;
+			this.syncPacketPositionCodec(this.getX(), this.getY(), this.getZ());
+		}
+		if (this.lerpSteps > 0) {
+			this.lerpPositionAndRotationStep(this.lerpSteps, this.lerpX, this.lerpY, this.lerpZ, this.lerpYRot, this.lerpXRot);
+			this.lerpSteps--;
+		}
+	}
+
+	@Override
 	public void tick() {
 		this.setNoGravity(true);
 		super.tick();
+		this.tickLerp();
 		Entity passenger = getControllingPassenger();
-		if (!this.level().isClientSide()) {
-			if (passenger instanceof Player player) {
-				this.setYRot(player.getYRot());
-				Vec3 motion = getInputMotion(player);
-				this.setDeltaMovement(motion);
-			} else if (isAccessoryMount() && this.tickCount > 3) {
+		if (passenger instanceof Player player) {
+			this.setYRot(player.getYRot());
+			// 与原版船一致:仅控制端(驾驶玩家所在端,即客户端)计算并 move(),
+			// 再由原版 ServerboundMoveVehiclePacket 把位置同步到服务端。服务端/远端
+			// 绝不能自己 move,否则飞碟一 tick 被移动两次(tick + 那个包)会触发
+			// 「moved wrongly」反作弊,把它弹回上一个 good 位置 —— 下车瞬移回起点正因如此。
+			if (this.isControlledByLocalInstance()) {
+				this.setDeltaMovement(getInputMotion(player));
+				this.move(MoverType.SELF, this.getDeltaMovement());
+				this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
+			} else {
+				this.setDeltaMovement(Vec3.ZERO);
+			}
+		} else {
+			if (!this.level().isClientSide() && isAccessoryMount() && this.tickCount > 3) {
 				this.discard();
 				return;
-			} else {
-				this.setDeltaMovement(this.getDeltaMovement().scale(0.6D));
 			}
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.6D));
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
+		}
+
+		if (!this.level().isClientSide()) {
 			updateCaughtEntity();
 		}
 
-		this.move(MoverType.SELF, this.getDeltaMovement());
-		this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
 		this.fallDistance = 0F;
 	}
 
 	private Vec3 getInputMotion(Player player) {
-		float yaw = player.getYRot() * Mth.DEG_TO_RAD;
-		float pitch = player.getXRot() * Mth.DEG_TO_RAD;
 		double speed = 0.75D;
-		Vec3 forward = new Vec3(-Mth.sin(yaw) * Mth.cos(pitch), 0D, Mth.cos(yaw) * Mth.cos(pitch)).scale(speed);
-		Vec3 left = forward.yRot((float) (Math.PI * 0.5D)).scale(0.75D);
-		Vec3 right = forward.yRot((float) -(Math.PI * 0.5D)).scale(0.75D);
-		Vec3 back = forward.yRot((float) Math.PI).scale(0.6D);
+		Vec3 look = player.getLookAngle();
+		Vec3 flat = new Vec3(look.x, 0D, look.z);
+		flat = flat.lengthSqr() > 1.0E-4D
+				? flat.normalize()
+				: new Vec3(-Mth.sin(player.getYRot() * Mth.DEG_TO_RAD), 0D, Mth.cos(player.getYRot() * Mth.DEG_TO_RAD));
 		Vec3 motion = Vec3.ZERO;
 		if (forwardInputDown) {
-			motion = motion.add(forward);
+			// 前进 = 朝视线方向飞:抬头上升、低头下降
+			motion = motion.add(look.scale(speed));
 		}
 		if (backInputDown) {
-			motion = motion.add(back);
+			motion = motion.add(flat.scale(-0.45D));
 		}
 		if (leftInputDown) {
-			motion = motion.add(left);
+			motion = motion.add(flat.yRot((float) (Math.PI * 0.5D)).scale(0.55D));
 		}
 		if (rightInputDown) {
-			motion = motion.add(right);
+			motion = motion.add(flat.yRot((float) -(Math.PI * 0.5D)).scale(0.55D));
 		}
 		if (upInputDown) {
-			motion = motion.add(0D, 0.35D, 0D);
-		} else if (downInputDown) {
-			motion = motion.add(0D, -0.35D, 0D);
+			// 空格纯垂直上升,保证贴地也能起飞
+			motion = motion.add(0D, 0.4D, 0D);
+		}
+		// 贴地时禁止净向下:防止低头按前进把飞碟摁在地上起不来
+		if (this.onGround() && motion.y < 0D) {
+			motion = new Vec3(motion.x, 0D, motion.z);
 		}
 		return motion;
 	}
@@ -132,19 +199,16 @@ public class UfoEntity extends Entity {
 		}
 		if (upInputDown) {
 			caught.setPos(caught.getX(), caught.getY() + 0.33D, caught.getZ());
-		} else if (downInputDown) {
-			caught.setPos(caught.getX(), caught.getY() - 0.37D, caught.getZ());
 		}
 		caught.fallDistance = 0F;
 	}
 
-	public void updateInput(boolean forward, boolean back, boolean left, boolean right, boolean up, boolean down, boolean catchPressed) {
+	public void updateInput(boolean forward, boolean back, boolean left, boolean right, boolean up, boolean catchPressed) {
 		this.forwardInputDown = forward;
 		this.backInputDown = back;
 		this.leftInputDown = left;
 		this.rightInputDown = right;
 		this.upInputDown = up;
-		this.downInputDown = down;
 		if (catchPressed) {
 			toggleCaughtEntity();
 		}

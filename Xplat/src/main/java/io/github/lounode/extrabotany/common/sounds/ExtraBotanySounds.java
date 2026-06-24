@@ -33,6 +33,7 @@ public class ExtraBotanySounds {
 	public static final SoundEvent ARMOR_EQUIP_GOBLIN = makeSoundEvent("item.armor.equip_goblin");
 	public static final SoundEvent ARMOR_EQUIP_WARRIOR = makeSoundEvent("item.armor.equip_warrior");
 	public static final SoundEvent BELL_FLOWER_RING = makeSoundEvent("block.bellflower.ring");
+	public static final SoundEvent MOTOR_CYCLONE = makeSoundEvent("entity.motor.cyclone");
 
 	private static SoundEvent makeSoundEvent(String name) {
 		SoundEvent event = SoundEvent.createVariableRangeEvent(prefix(name));

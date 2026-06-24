@@ -5,6 +5,12 @@
     ],
     "subtitle": "subtitles.extrabotany:block.bellflower.ring"
   },
+  "entity.motor.cyclone": {
+    "sounds": [
+      "extrabotany:cyclone"
+    ],
+    "subtitle": "subtitles.extrabotany:entity.motor.cyclone"
+  },
   "entity.player.hurt_backfire": {
     "sounds": [
       {

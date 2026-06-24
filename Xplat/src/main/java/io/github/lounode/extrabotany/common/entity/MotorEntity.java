@@ -1,11 +1,13 @@
 package io.github.lounode.extrabotany.common.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,6 +28,7 @@ import net.minecraft.world.phys.Vec3;
 
 import io.github.lounode.extrabotany.common.handler.DamageHandler;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
+import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +53,13 @@ public class MotorEntity extends Entity {
 	private static final String TAG_PITCH = "Pitch";
 	private static final String TAG_OWNER = "Owner";
 	private static final String TAG_ACCESSORY_MOUNT = "AccessoryMount";
+
+	private int lerpSteps;
+	private double lerpX;
+	private double lerpY;
+	private double lerpZ;
+	private double lerpYRot;
+	private double lerpXRot;
 
 	private boolean forwardInputDown;
 	private boolean backInputDown;
@@ -84,34 +94,118 @@ public class MotorEntity extends Entity {
 	}
 
 	@Override
+	public void lerpTo(double x, double y, double z, float yRot, float xRot, int steps) {
+		this.lerpX = x;
+		this.lerpY = y;
+		this.lerpZ = z;
+		this.lerpYRot = yRot;
+		this.lerpXRot = xRot;
+		this.lerpSteps = 10;
+	}
+
+	@Override
+	public double lerpTargetX() {
+		return this.lerpSteps > 0 ? this.lerpX : this.getX();
+	}
+
+	@Override
+	public double lerpTargetY() {
+		return this.lerpSteps > 0 ? this.lerpY : this.getY();
+	}
+
+	@Override
+	public double lerpTargetZ() {
+		return this.lerpSteps > 0 ? this.lerpZ : this.getZ();
+	}
+
+	@Override
+	public float lerpTargetXRot() {
+		return this.lerpSteps > 0 ? (float) this.lerpXRot : this.getXRot();
+	}
+
+	@Override
+	public float lerpTargetYRot() {
+		return this.lerpSteps > 0 ? (float) this.lerpYRot : this.getYRot();
+	}
+
+	private void tickLerp() {
+		if (this.isControlledByLocalInstance()) {
+			this.lerpSteps = 0;
+			this.syncPacketPositionCodec(this.getX(), this.getY(), this.getZ());
+		}
+		if (this.lerpSteps > 0) {
+			this.lerpPositionAndRotationStep(this.lerpSteps, this.lerpX, this.lerpY, this.lerpZ, this.lerpYRot, this.lerpXRot);
+			this.lerpSteps--;
+		}
+	}
+
+	@Override
 	public void tick() {
 		super.tick();
+		this.tickLerp();
 		this.setNoGravity(false);
-		if (!this.level().isClientSide()) {
-			if (getControllingPassenger() instanceof Player player) {
-				tickControlled(player);
-			} else if (isAccessoryMount() && this.tickCount > 3) {
-				this.discard();
-				return;
+
+		if (getControllingPassenger() instanceof Player player) {
+			this.setYRot(player.getYRot());
+			this.ridingTicks++;
+
+			if (this.isControlledByLocalInstance()) {
+				Vec3 motion = calculateGroundMotion(player);
+				if (forwardInputDown && this.horizontalCollision) {
+					motion = motion.add(0D, 0.08D, 0D);
+				}
+				if (ridingTicks >= 120 && jumpInputDown && getTectonicEnergy() >= 200) {
+					Vec3 boost = forwardVector(player, 1.65D);
+					motion = motion.add(boost.x, 0.04D, boost.z);
+				}
+				if (!this.onGround() && !this.isInWater()) {
+					motion = motion.add(0D, -0.04D, 0D);
+				}
+				this.setDeltaMovement(motion);
+				this.move(MoverType.SELF, this.getDeltaMovement());
+				this.setDeltaMovement(this.getDeltaMovement().multiply(0.9D, 0.98D, 0.9D));
 			} else {
-				this.ridingTicks = 0;
+				this.setDeltaMovement(Vec3.ZERO);
+			}
+
+			if (!this.level().isClientSide()) {
+				tickServerEffects(player);
+			}
+
+			if (this.level().isClientSide() && forwardInputDown) {
+				Vec3 fwd = forwardVector(player, 1.0D);
+				this.level().addParticle(ParticleTypes.FLAME,
+					this.getX(), this.getY(), this.getZ(),
+					-fwd.x * 0.5D, 0.15D, -fwd.z * 0.5D);
+			}
+		} else {
+			this.ridingTicks = 0;
+			if (!this.level().isClientSide()) {
+				if (isAccessoryMount() && this.tickCount > 3) {
+					this.discard();
+					return;
+				}
 				setLean(0F);
 				setPitch(0F);
-				this.setDeltaMovement(this.getDeltaMovement().multiply(0.85D, 1D, 0.85D));
 			}
+			if (!this.onGround() && !this.isInWater()) {
+				this.setDeltaMovement(this.getDeltaMovement().add(0D, -0.04D, 0D));
+			}
+			this.setDeltaMovement(this.getDeltaMovement().multiply(0.85D, 1D, 0.85D));
+			this.move(MoverType.SELF, this.getDeltaMovement());
+			this.setDeltaMovement(this.getDeltaMovement().multiply(0.9D, 0.98D, 0.9D));
 		}
 
-		if (!this.onGround() && !this.isInWater()) {
-			this.setDeltaMovement(this.getDeltaMovement().add(0D, -0.04D, 0D));
+		List<Entity> nearby = this.level().getEntities(this, this.getBoundingBox().inflate(0.2F, -0.01F, 0.2F),
+			entity -> entity.isPushable() && !this.hasPassenger(entity));
+		for (Entity entity : nearby) {
+			this.push(entity);
 		}
-		this.move(MoverType.SELF, this.getDeltaMovement());
-		this.setDeltaMovement(this.getDeltaMovement().multiply(0.9D, 0.98D, 0.9D));
+
 		this.fallDistance = 0F;
 	}
 
-	private void tickControlled(Player player) {
-		this.setYRot(player.getYRot());
-		this.ridingTicks++;
+	private void tickServerEffects(Player player) {
 		if (leftInputDown) {
 			setLean(5F);
 		} else if (rightInputDown) {
@@ -120,17 +214,10 @@ public class MotorEntity extends Entity {
 			setLean(0F);
 		}
 
-		Vec3 motion = calculateGroundMotion(player);
-		if (forwardInputDown && this.horizontalCollision) {
-			motion = motion.add(0D, 0.08D, 0D);
-		}
-
 		if (ridingTicks >= 120) {
 			setTectonicEnergy(Math.min(800, getTectonicEnergy() + 2));
 			if (jumpInputDown && getTectonicEnergy() >= 200) {
 				setTectonicEnergy(Math.max(0, getTectonicEnergy() - 6));
-				Vec3 boost = forwardVector(player, 1.65D);
-				motion = motion.add(boost.x, 0.04D, boost.z);
 				setPitch(-5F);
 			} else {
 				setPitch(0F);
@@ -138,15 +225,16 @@ public class MotorEntity extends Entity {
 			if (cyclonePressed && getCycloneTicks() == 0 && getTectonicEnergy() >= 400) {
 				setCycloneTicks(15);
 				setTectonicEnergy(getTectonicEnergy() - 400);
+				this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
+					ExtraBotanySounds.MOTOR_CYCLONE, SoundSource.PLAYERS, 1.2F, 1.0F);
 			}
 			tickCyclone(player);
-			tickPassiveCombat(player);
 			if (player.getHealth() < player.getMaxHealth() * 0.5F) {
 				player.heal(0.5F);
 			}
+		} else {
+			setPitch(0F);
 		}
-
-		this.setDeltaMovement(motion);
 	}
 
 	private Vec3 calculateGroundMotion(Player player) {
@@ -184,6 +272,11 @@ public class MotorEntity extends Entity {
 		}
 		setCycloneTicks(ticks - 1);
 		setLean(ticks > 6 ? -12F : -5F);
+		if (this.level() instanceof ServerLevel serverLevel) {
+			serverLevel.sendParticles(ParticleTypes.CLOUD,
+				this.getX(), this.getY() + 0.5D, this.getZ(),
+				6, 2.0D, 0.3D, 2.0D, 0.02D);
+		}
 		if (ticks == 12 || ticks == 6) {
 			for (LivingEntity living : getNearbyLiving(4F)) {
 				if (living == player || this.hasPassenger(living) || !DamageHandler.INSTANCE.checkPassable(living, player)) {
@@ -312,6 +405,11 @@ public class MotorEntity extends Entity {
 	@Override
 	protected boolean canAddPassenger(Entity passenger) {
 		return this.getPassengers().isEmpty();
+	}
+
+	@Override
+	public boolean canBeCollidedWith() {
+		return true;
 	}
 
 	@Override
