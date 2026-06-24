@@ -26,6 +26,7 @@ import vazkii.botania.api.mana.ManaDiscountEvent;
 
 import io.github.lounode.extrabotany.common.block.flower.generating.ResoncundBlockEntity;
 import io.github.lounode.extrabotany.common.brew.effect.EternityMobEffect;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 import io.github.lounode.extrabotany.common.brew.effect.HealReverseMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.LinkMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.ThirrorMobEffect;
@@ -251,6 +252,7 @@ public final class NeoForgeEventBridge {
 	}
 
 	private static void onPlayerTickPost(PlayerTickEvent.Post event) {
+		HerrscherCombatHelper.sanitizeHealth(event.getEntity());
 		CoreOfTheVoidItem.updatePlayerFlyStatus(event.getEntity());
 		FlamescionWeaponItem.onPlayerTick(event.getEntity());
 		EternityMobEffect.onPlayerTick(event.getEntity());
