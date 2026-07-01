@@ -30,13 +30,13 @@ public class FeatherOfJingweiItem extends BaubleItem {
 
 	@SubscribeEventWrapper
 	public static void leftClick(PlayerInteractEventWrapper.LeftClickEmpty event) {
-		Player player = event.getEntity();
-		leftClickBlock(player);
+		leftClickBlock(event.getEntity());
 	}
 
+	// 两处调用:注解的 LeftClickEmpty(仅客户端 fire)+ ForgeCommonInitializer.onLeftClickBlock(客户端与服务端都 fire)。
 	public static void leftClickBlock(Player player) {
 		// sendToServer 是客户端专用(会触发 ExClientXplatAbstractions 加载客户端类);
-		// 目前只从 LeftClickEmpty(仅客户端)调用,加守卫防止将来绑到服务端也 fire 的事件时崩。
+		// onLeftClickBlock 在服务端也会 fire,必须在这里挡住,否则专用服务器崩。
 		if (!player.level().isClientSide) {
 			return;
 		}
