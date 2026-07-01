@@ -35,6 +35,11 @@ public class FeatherOfJingweiItem extends BaubleItem {
 	}
 
 	public static void leftClickBlock(Player player) {
+		// sendToServer 是客户端专用(会触发 ExClientXplatAbstractions 加载客户端类);
+		// 目前只从 LeftClickEmpty(仅客户端)调用,加守卫防止将来绑到服务端也 fire 的事件时崩。
+		if (!player.level().isClientSide) {
+			return;
+		}
 		if (!player.getMainHandItem().isEmpty()) {
 			return;
 		}
