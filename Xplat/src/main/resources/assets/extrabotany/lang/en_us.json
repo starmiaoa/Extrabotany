@@ -693,7 +693,7 @@
   "extrabotany.multiblock.nature_pedestal_tier1": "Nature Pedestal",
   "extrabotany.multiblock.nature_pedestal_tier2": "Advance Pedestal",
   "extrabotany.entry.mana_cocktail": "Mana Cocktail",
-  "extrabotany.page.mana_cocktail0": "After overworking, have a glass of $(item)Mana Cocktail$() to refresh your mind and never feel tired.$(br2)Use a $(item)Managlass Bottle$() use on a $(item)Mana Pool$()$(t: 25,000 mana) to fill a small cup.",
+  "extrabotany.page.mana_cocktail0": "Use a $(item)Managlass Bottle$() on a $(item)Mana Pool$()$(t: 25,000 mana) to fill it with a $(item)Mana Drink$(). Combine the drink with a $(thing)Brew Flask$() to make a $(item)Mana Cocktail$() carrying that brew.",
   "extrabotany.page.mana_cocktail1": "$(o)$(m)Made In China",
   "extrabotany.page.mana_cocktail2": "$(o)$(m)This product is not a substitute for medicine. Please ensure compliance with the laws and regulations of your country/region before use.$(br2)$(o)$(m)By agreeing to the user agreement: I confirm that Steve is of legal age.",
   "extrabotany.page.mana_cocktail3": "Of course, you can also use different kinds of $(thing)Flask$() to change its brew.",

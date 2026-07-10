@@ -825,7 +825,7 @@ public class CraftingRecipeProvider extends ExtraBotanyRecipeProvider {
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.TERRASTEEL_INGOT))
 				.save(consumer);
 		wrapShapeless(consumer, ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ExtraBotanyItems.manaCocktail)
-				.requires(ExtraBotanyItems.manaCocktail)
+				.requires(ExtraBotanyItems.manaDrink)
 				.requires(BotaniaItems.BREW_FLASK)
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.BREW_FLASK)),
 				prefix("mana_cocktail_change_brew"), CopyBrewFormFlaskRecipe::new);

@@ -1,7 +1,8 @@
 {
   "category": "botania:extrabotanies",
   "extra_recipe_mappings": {
-    "extrabotany:mana_cocktail": 2
+    "extrabotany:mana_cocktail": 2,
+    "extrabotany:mana_drink": 0
   },
   "icon": "extrabotany:mana_cocktail[custom_data={brewKey:\"extrabotany:mana_cocktail\",swigsLeft:1}]",
   "name": "extrabotany.entry.mana_cocktail",
@@ -23,7 +24,7 @@
     },
     {
       "type": "extrabotany:craft_manual",
-      "input1": "extrabotany:mana_cocktail[custom_data={brewKey:\"extrabotany:mana_cocktail\",swigsLeft:1}]",
+      "input1": "extrabotany:mana_drink",
       "input2": "botania:brew_flask[botania:brew=\"botania:strength\"]",
       "output": "extrabotany:mana_cocktail[custom_data={brewKey:\"botania:strength\"}]",
       "shapeless": true,

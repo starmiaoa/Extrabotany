@@ -695,7 +695,7 @@
   "extrabotany.multiblock.nature_pedestal_tier1": "自然祭坛",
   "extrabotany.multiblock.nature_pedestal_tier2": "自然祭坛（高级）",
   "extrabotany.entry.mana_cocktail": "魔力鸡尾酒",
-  "extrabotany.page.mana_cocktail0": "过度劳累后，来一杯$(item)魔力鸡尾酒$()吧，提神醒脑，永不疲劳。$(br2)使用$(item)魔法玻璃空瓶$()$(k:use)$(item)魔力池$()$(t: 25,000魔力)盛取一小杯。",
+  "extrabotany.page.mana_cocktail0": "使用$(item)魔力玻璃瓶$()$(k:use)$(item)魔力池$()$(t: 25,000魔力)可盛取一瓶$(item)魔力饮品$()；再将其与$(thing)精酿烧瓶$()无序合成，即可获得带有对应精酿效果的$(item)魔力鸡尾酒$()。",
   "extrabotany.page.mana_cocktail1": "$(o)$(m)不能长生不老",
   "extrabotany.page.mana_cocktail2": "$(o)$(m)本品不能替代药品，使用前请确保符合所在的国家/地区有关法律法规。$(br2)$(o)$(m)并同意用户协议：我确认史蒂夫已成年。",
   "extrabotany.page.mana_cocktail3": "当然你也可以用不同的$(thing)精酿$()来更改其药水效果。",

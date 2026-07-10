@@ -19,6 +19,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import vazkii.botania.api.mana.ManaReceiver;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 
+import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 
 public class ManaGlassBottleItem extends Item implements CustomCreativeTabContents {
@@ -61,8 +62,8 @@ public class ManaGlassBottleItem extends Item implements CustomCreativeTabConten
 		level.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL, SoundSource.NEUTRAL, 1.0F, 1.0F);
 		level.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
 
-		ItemStack defaultCocktail = ManaCocktailItem.getDefaultCocktail();
-		var emptyResult = turnBottleIntoItem(stack, player, defaultCocktail);
+		ItemStack manaDrink = new ItemStack(ExtraBotanyItems.manaDrink);
+		var emptyResult = turnBottleIntoItem(stack, player, manaDrink);
 
 		if (stack.isEmpty()) {
 			if (!player.getInventory().add(emptyResult)) {

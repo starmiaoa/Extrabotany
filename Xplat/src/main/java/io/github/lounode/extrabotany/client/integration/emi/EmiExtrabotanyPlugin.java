@@ -122,12 +122,12 @@ public class EmiExtrabotanyPlugin implements EmiPlugin {
 			ItemStack flask = BotaniaItems.BREW_FLASK.getDefaultInstance();
 			BrewUtil.setBrew(flask, brew);
 
-			// mana cocktail: re-bind a base cocktail to this brew (skip the cocktail brew itself)
+			// mana cocktail: combine a mana drink with this brew (skip the cocktail brew itself)
 			if (brew != ExtraBotanyBrews.manaCocktail) {
 				ItemStack cocktailResult = ExtraBotanyItems.manaCocktail.getDefaultInstance();
 				BrewUtil.setBrew(cocktailResult, brew);
 				registry.addRecipe(new EmiCraftingRecipe(
-						List.of(EmiStack.of(ManaCocktailItem.getDefaultCocktail()), EmiStack.of(flask)),
+						List.of(EmiStack.of(ExtraBotanyItems.manaDrink), EmiStack.of(flask)),
 						EmiStack.of(cocktailResult),
 						syntheticBrewRecipeId("mana_cocktail_change_brew", brew),
 						true));
