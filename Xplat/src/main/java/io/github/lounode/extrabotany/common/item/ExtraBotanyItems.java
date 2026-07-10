@@ -307,6 +307,10 @@ public final class ExtraBotanyItems {
 	public static final Item foxEar = make(prefix(LibItemNames.FOX_EAR), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.FOX_EAR, unstackable()));
 	public static final Item foxMask = make(prefix(LibItemNames.FOX_MASK), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.FOX_MASK, unstackable()));
 	public static final Item pylon = make(prefix(LibItemNames.PYLON), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.PYLON, unstackable()));
+	public static final Item goggleJungle = make(prefix(LibItemNames.GOGGLE_JUNGLE), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GOGGLE, unstackable()));
+	public static final Item goggleOcean = make(prefix(LibItemNames.GOGGLE_OCEAN), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GOGGLE, unstackable()));
+	public static final Item goggleSnowfield = make(prefix(LibItemNames.GOGGLE_SNOWFIELD), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GOGGLE, unstackable()));
+	public static final Item goggleStandard = make(prefix(LibItemNames.GOGGLE_STANDARD), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.GOGGLE, unstackable()));
 	public static final Item blackGlasses = make(prefix(LibItemNames.BLACK_GLASSES), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.BLACK_GLASSES, unstackable()));
 	public static final Item thugLife = make(prefix(LibItemNames.THUG_LIFE), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.THUG_LIFE, unstackable()));
 	public static final Item redScarf = make(prefix(LibItemNames.RED_SCARF), new CosmeticBaubleItem(CosmeticBaubleItem.Variant.RED_SCARF, unstackable()));
@@ -395,7 +399,7 @@ public final class ExtraBotanyItems {
 	};
 
 	public static final Item[] HEAD = {
-			foxEar, foxMask, pylon, blackGlasses, thugLife, superCrown, mask, potatoChips
+			foxEar, foxMask, pylon, goggleJungle, goggleOcean, goggleSnowfield, goggleStandard, blackGlasses, thugLife, superCrown, mask, potatoChips
 	};
 
 	public static final Item[] NECKLACES = {

@@ -13,6 +13,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import vazkii.botania.api.block_entity.SpecialFlowerBlockEntity;
 import vazkii.botania.common.block.FloatingSpecialFlowerBlock;
 
+import io.github.lounode.extrabotany.common.item.equipment.tool.BinderItem;
+
 import java.util.function.Supplier;
 
 public class FloatingStardustLotusBlock extends FloatingSpecialFlowerBlock {
@@ -24,6 +26,9 @@ public class FloatingStardustLotusBlock extends FloatingSpecialFlowerBlock {
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		ItemStack stack = player.getItemInHand(hand);
+		if (!(stack.getItem() instanceof BinderItem)) {
+			return super.use(state, level, pos, player, hand, hit);
+		}
 		InteractionResult result = StardustLotusBlockEntity.bindTarget(stack, level, pos, player);
 		return result.consumesAction() ? result : super.use(state, level, pos, player, hand, hit);
 	}

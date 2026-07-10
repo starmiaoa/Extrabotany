@@ -379,6 +379,10 @@ public class CraftingRecipeProvider extends vazkii.botania.data.recipes.Crafting
 		registerCosmeticBauble(consumer, ExtraBotanyItems.foxEar, DyeColor.PINK);
 		registerCosmeticBauble(consumer, ExtraBotanyItems.foxMask, DyeColor.WHITE);
 		registerCosmeticBauble(consumer, ExtraBotanyItems.pylon, DyeColor.GREEN);
+		registerCosmeticBauble(consumer, ExtraBotanyItems.goggleJungle, DyeColor.LIME);
+		registerCosmeticBauble(consumer, ExtraBotanyItems.goggleOcean, DyeColor.CYAN);
+		registerCosmeticBauble(consumer, ExtraBotanyItems.goggleSnowfield, DyeColor.WHITE);
+		registerCosmeticBauble(consumer, ExtraBotanyItems.goggleStandard, DyeColor.LIGHT_GRAY);
 		registerCosmeticBauble(consumer, ExtraBotanyItems.blackGlasses, DyeColor.BLACK);
 		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ExtraBotanyItems.thugLife)
 				.define('P', BotaniaTags.Items.getPetalTag(DyeColor.BLACK))
@@ -830,7 +834,7 @@ public class CraftingRecipeProvider extends vazkii.botania.data.recipes.Crafting
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.terrasteel))
 				.save(consumer);
 		ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ExtraBotanyItems.manaCocktail)
-				.requires(ExtraBotanyItems.manaCocktail)
+				.requires(ExtraBotanyItems.manaDrink)
 				.requires(BotaniaItems.brewFlask)
 				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.brewFlask))
 				.save(WrapperResult.ofType(CopyBrewFormFlaskRecipe.SERIALIZER, consumer), prefix("mana_cocktail_change_brew"));

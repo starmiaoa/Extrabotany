@@ -63,7 +63,7 @@ public class InfiniteWineItem extends BaseBrewItem {
 			for (MobEffectInstance effect : getBrew(stack).getPotionEffects(stack)) {
 				MobEffectInstance newEffect = new MobEffectInstance(effect.getEffect(), (int) ((float) effect.getDuration() * (1.0 + getDurationMultiplier())), effect.getAmplifier() + getAmplifierAddition(), true, true);
 				if (effect.getEffect().isInstantenous()) {
-					effect.getEffect().applyInstantenousEffect(living, living, living, newEffect.getAmplifier() + getAmplifierAddition(), 1F);
+					effect.getEffect().applyInstantenousEffect(living, living, living, newEffect.getAmplifier(), 1F);
 				} else {
 					living.addEffect(newEffect);
 				}

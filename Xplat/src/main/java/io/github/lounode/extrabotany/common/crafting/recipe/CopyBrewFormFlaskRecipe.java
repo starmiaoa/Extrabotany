@@ -17,8 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import vazkii.botania.common.item.BotaniaItems;
 
 import io.github.lounode.extrabotany.common.brew.BrewUtil;
-import io.github.lounode.extrabotany.common.brew.ExtraBotanyBrews;
-import io.github.lounode.extrabotany.common.item.brew.ManaCocktailItem;
+import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,11 +66,7 @@ public final class CopyBrewFormFlaskRecipe extends CopyBrewRecipe {
 			return ItemStack.EMPTY;
 		}
 
-		if (!(input.getItem() instanceof ManaCocktailItem cocktail)) {
-			return ItemStack.EMPTY;
-		}
-
-		if (cocktail.getBrew(input) != ExtraBotanyBrews.manaCocktail || cocktail.getSwigsLeft(input) != 1) {
+		if (!input.is(ExtraBotanyItems.manaDrink)) {
 			return ItemStack.EMPTY;
 		}
 

@@ -152,13 +152,13 @@ public class JEIExtraBotanyPlugin implements IModPlugin {
 				continue;
 			}
 
-			ItemStack cocktail = ManaCocktailItem.getDefaultCocktail();
+			ItemStack manaDrink = ExtraBotanyItems.manaDrink.getDefaultInstance();
 			ItemStack flask = BotaniaItems.brewFlask.getDefaultInstance();
 			BrewUtil.setBrew(flask, brew);
 
 			ResourceLocation id = prefix("mana_cocktail_change_brew");
 			var ingredients = NonNullList.of(Ingredient.EMPTY,
-					Ingredient.of(cocktail),
+					Ingredient.of(manaDrink),
 					Ingredient.of(flask)
 			);
 			ItemStack result = ExtraBotanyItems.manaCocktail.getDefaultInstance();

@@ -116,7 +116,7 @@ public class ItemModelProvider implements DataProvider {
 		).forEach(i -> ModelTemplates.FLAT_HANDHELD_ITEM.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(i), consumer));
 
 		takeAll(items, recordHerrscherOfTheVoid)
-				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/music_disc_gaia3")), consumer));
+				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(i), consumer));
 
 		takeAll(items, voidCaller)
 				.forEach(i -> GENERATED_0.create(ModelLocationUtils.getModelLocation(i), TextureMapping.layer0(prefix("item/voidcaller")), consumer));

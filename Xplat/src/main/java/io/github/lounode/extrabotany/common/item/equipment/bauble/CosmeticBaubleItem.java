@@ -56,6 +56,7 @@ public class CosmeticBaubleItem extends SimpleBaubleItem {
 		FOX_EAR(true, 0F, -0.8F, -0.1F, 0.8F, -0.8F, -0.8F),
 		FOX_MASK(true, 0.02F, -0.3F, -0.3F, 0.66F, -0.65F, -0.65F),
 		PYLON(true, 0F, -0.8F, -0.1F, 0.5F, -0.5F, -0.5F),
+		GOGGLE(true, 0F, -0.2F, -0.3F, 0.55F, -0.55F, -0.55F),
 		BLACK_GLASSES(true, 0F, -0.2F, -0.3F, 0.55F, 0.55F, -0.55F),
 		THUG_LIFE(true, 0F, -0.2F, -0.3F, 0.7F, -0.7F, -0.7F),
 		SUPER_CROWN(true, 0F, -0.7F, -0.1F, 0.65F, -0.65F, -0.65F),

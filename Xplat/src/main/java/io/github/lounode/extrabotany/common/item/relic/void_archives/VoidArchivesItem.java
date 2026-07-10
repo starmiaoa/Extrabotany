@@ -64,7 +64,7 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 
 		if (player.isShiftKeyDown()) {
 			switchVariant(stack);
-			return super.use(level, player, usedHand);
+			return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
 		}
 
 		return getVariant(stack).use(level, player, usedHand);
@@ -75,6 +75,11 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 		RelicImpl.addDefaultTooltip(stack, tooltipComponents);
 		getVariant(stack).appendHoverText(stack, level, tooltipComponents, isAdvanced);
+	}
+
+	@Override
+	public Component getName(ItemStack stack) {
+		return getVariant(stack).getName(stack);
 	}
 
 	@Override

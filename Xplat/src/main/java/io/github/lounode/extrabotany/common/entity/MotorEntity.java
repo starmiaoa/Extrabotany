@@ -161,6 +161,7 @@ public class MotorEntity extends Entity {
 		} else {
 			this.ridingTicks = 0;
 			if (!this.level().isClientSide()) {
+				cyclonePressed = false;
 				if (isAccessoryMount() && this.tickCount > 3) {
 					this.discard();
 					return;
@@ -186,6 +187,9 @@ public class MotorEntity extends Entity {
 	}
 
 	private void tickServerEffects(Player player) {
+		boolean activateCyclone = cyclonePressed;
+		cyclonePressed = false;
+
 		if (leftInputDown) {
 			setLean(5F);
 		} else if (rightInputDown) {
@@ -202,7 +206,7 @@ public class MotorEntity extends Entity {
 			} else {
 				setPitch(0F);
 			}
-			if (cyclonePressed && getCycloneTicks() == 0 && getTectonicEnergy() >= 400) {
+			if (activateCyclone && getCycloneTicks() == 0 && getTectonicEnergy() >= 400) {
 				setCycloneTicks(15);
 				setTectonicEnergy(getTectonicEnergy() - 400);
 				this.level().playSound(null, this.getX(), this.getY(), this.getZ(),
