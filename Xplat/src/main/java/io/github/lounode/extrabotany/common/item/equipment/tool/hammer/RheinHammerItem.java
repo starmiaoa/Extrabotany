@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -101,21 +100,12 @@ public class RheinHammerItem extends TerrasteelHammerItem implements IShadowium,
 
 	@SubscribeEventWrapper
 	public static void onDig(PlayerEventWrapper.BreakSpeed wrapper) {
-		ItemStack _left = wrapper.getEntity().getItemInHand(InteractionHand.OFF_HAND);
-		ItemStack _right = wrapper.getEntity().getItemInHand(InteractionHand.MAIN_HAND);
-		ItemStack stack = ItemStack.EMPTY;
-
-		if (_left.is(ExtraBotanyItems.rheinHammer)) {
-			stack = _left;
-		} else if (_right.is(ExtraBotanyItems.rheinHammer)) {
-			stack = _right;
-		}
-
-		if (stack.isEmpty() || !stack.is(ExtraBotanyItems.rheinHammer)) {
+		ItemStack stack = wrapper.getEntity().getMainHandItem();
+		if (!stack.is(ExtraBotanyItems.rheinHammer)) {
 			return;
 		}
 
-		if (stack.is(ExtraBotanyItems.rheinHammer) && !RheinHammerItem.isEnabled(stack)) {
+		if (!RheinHammerItem.isEnabled(stack)) {
 			wrapper.setNewSpeed(0);
 			wrapper.setCanceled(true);
 		}

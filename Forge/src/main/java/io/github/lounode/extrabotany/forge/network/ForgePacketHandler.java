@@ -90,8 +90,9 @@ public class ForgePacketHandler {
 
 	private static <T> BiConsumer<T, Supplier<NetworkEvent.Context>> makeClientBoundHandler(Consumer<T> consumer) {
 		return (m, ctx) -> {
-			consumer.accept(m);
-			ctx.get().setPacketHandled(true);
+			NetworkEvent.Context context = ctx.get();
+			context.enqueueWork(() -> consumer.accept(m));
+			context.setPacketHandled(true);
 		};
 	}
 }

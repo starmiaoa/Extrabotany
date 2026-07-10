@@ -75,24 +75,24 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 		}
 	}
 
-	public static void trySpawnBurst(Player player, float attackStrength) {
+	public static boolean trySpawnBurst(Player player, float attackStrength) {
 		ItemStack stack = player.getMainHandItem();
 		if (!stack.is(ExtraBotanyItems.excalibur)) {
-			return;
+			return false;
 		}
 		var relic = XplatAbstractions.INSTANCE.findRelic(stack);
 		if (relic == null || !relic.isRightPlayer(player)
 
 		) {
-			return;
+			return false;
 		}
-		trySpawnBurstUnsafe(player, attackStrength);
+		return trySpawnBurstUnsafe(player, attackStrength);
 	}
 
-	public static void trySpawnBurstUnsafe(Player player, float attackStrength) {
+	public static boolean trySpawnBurstUnsafe(Player player, float attackStrength) {
 		if (player.isSpectator() ||
 				attackStrength != 1) {
-			return;
+			return false;
 		}
 
 		ManaBurstEntity burst = getBurst(player, player.getMainHandItem());
@@ -100,6 +100,7 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 
 		player.getMainHandItem().hurtAndBreak(1, player, p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ExtraBotanySounds.EXCALIBUR_ATTACK, SoundSource.PLAYERS, 1F, 1F);
+		return true;
 	}
 
 	@Override
@@ -187,7 +188,8 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 				.filter(ExcaliburItem::canTargetEntity)
 				.filter(living -> living.hurtTime == 0)
 				.filter(living -> living != burstEntity.getOwner())
-				.sorted(Comparator.comparingInt(ExcaliburItem::getEntityPriority))
+				.filter(living -> !(burstEntity.getOwner() instanceof Player player && living instanceof Player other && !player.canHarmPlayer(other)))
+				.sorted(Comparator.comparingInt(ExcaliburItem::getEntityPriority).reversed())
 				.findFirst()
 				.ifPresent(target -> {
 					Vec3 thisVec = VecHelper.fromEntityCenter(burstEntity);
@@ -206,12 +208,12 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 	}
 
 	private static int getEntityPriority(LivingEntity entity) {
-		if (entity instanceof Mob) {
-			return 3;
+		if (entity instanceof Animal) {
+			return 1;
 		} else if (entity instanceof Player) {
 			return 2;
-		} else if (entity instanceof Animal) {
-			return 1;
+		} else if (entity instanceof Mob) {
+			return 3;
 		}
 		return 0;
 	}

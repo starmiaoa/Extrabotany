@@ -34,6 +34,7 @@ import vazkii.botania.common.brew.BotaniaBrews;
 import vazkii.botania.common.helper.ItemNBTHelper;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 
+import io.github.lounode.extrabotany.common.brew.BrewUtil;
 import io.github.lounode.extrabotany.common.entity.HolyWaterGrenadeEntity;
 
 import java.util.ArrayList;
@@ -177,8 +178,7 @@ public class HolyWaterGrenadeItem extends Item implements BrewItem, CustomCreati
 
 	@Override
 	public Brew getBrew(ItemStack stack) {
-		String key = ItemNBTHelper.getString(stack, TAG_BREW_KEY, "");
-		return BotaniaAPI.instance().getBrewRegistry().get(ResourceLocation.tryParse(key));
+		return BrewUtil.getBrew(stack);
 	}
 
 	public static void setBrew(ItemStack stack, @Nullable Brew brew) {

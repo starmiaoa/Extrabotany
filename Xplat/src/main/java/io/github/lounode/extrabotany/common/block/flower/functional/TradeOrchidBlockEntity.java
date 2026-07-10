@@ -92,7 +92,7 @@ public class TradeOrchidBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	public int getCooldown() {
-		return ExtraBotanyConfig.common().tradeOrchidCooldown();
+		return Math.max(1, ExtraBotanyConfig.common().tradeOrchidCooldown());
 	}
 
 	public int getManaPerUse() {

@@ -66,6 +66,9 @@ public class FabricPacketHandler {
 	}
 
 	private static <T> ClientPlayNetworking.PlayChannelHandler makeClientBoundHandler(Function<FriendlyByteBuf, T> decoder, Consumer<T> handler) {
-		return (_client, _handler, buf, _responseSender) -> handler.accept(decoder.apply(buf));
+		return (client, _handler, buf, _responseSender) -> {
+			T packet = decoder.apply(buf);
+			client.execute(() -> handler.accept(packet));
+		};
 	}
 }

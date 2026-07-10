@@ -166,12 +166,18 @@ public class ColorfulBossBarOverlay {
 		packet.dispatch(new GaiaBossEventPacket.Handler() {
 			@Override
 			public void updatePlayerCount(UUID uuid, int playerCount) {
-				ColorfulBossBarOverlay.this.events.get(uuid).setPlayerCount(playerCount);
+				GaiaLerpingBossEvent event = ColorfulBossBarOverlay.this.events.get(uuid);
+				if (event != null) {
+					event.setPlayerCount(playerCount);
+				}
 			}
 
 			@Override
 			public void updateGrainTime(UUID uuid, int time) {
-				ColorfulBossBarOverlay.this.events.get(uuid).setGrainTime(time);
+				GaiaLerpingBossEvent event = ColorfulBossBarOverlay.this.events.get(uuid);
+				if (event != null) {
+					event.setGrainTime(time);
+				}
 			}
 
 			@Override
@@ -186,27 +192,37 @@ public class ColorfulBossBarOverlay {
 
 			@Override
 			public void updateProgress(UUID uuid, float progress) {
-				ColorfulBossBarOverlay.this.events.get(uuid).setProgress(progress);
+				GaiaLerpingBossEvent event = ColorfulBossBarOverlay.this.events.get(uuid);
+				if (event != null) {
+					event.setProgress(progress);
+				}
 			}
 
 			@Override
 			public void updateName(UUID uuid, Component name) {
-				ColorfulBossBarOverlay.this.events.get(uuid).setName(name);
+				GaiaLerpingBossEvent event = ColorfulBossBarOverlay.this.events.get(uuid);
+				if (event != null) {
+					event.setName(name);
+				}
 			}
 
 			@Override
 			public void updateStyle(UUID uuid, BossEvent.BossBarColor bossBarColor, BossEvent.BossBarOverlay overlay) {
-				LerpingBossEvent lerpingbossevent = ColorfulBossBarOverlay.this.events.get(uuid);
-				lerpingbossevent.setColor(bossBarColor);
-				lerpingbossevent.setOverlay(overlay);
+				LerpingBossEvent event = ColorfulBossBarOverlay.this.events.get(uuid);
+				if (event != null) {
+					event.setColor(bossBarColor);
+					event.setOverlay(overlay);
+				}
 			}
 
 			@Override
 			public void updateProperties(UUID uuid, boolean darkenScreen, boolean playMusic, boolean createWorldFog) {
-				LerpingBossEvent lerpingbossevent = ColorfulBossBarOverlay.this.events.get(uuid);
-				lerpingbossevent.setDarkenScreen(darkenScreen);
-				lerpingbossevent.setPlayBossMusic(playMusic);
-				lerpingbossevent.setCreateWorldFog(createWorldFog);
+				LerpingBossEvent event = ColorfulBossBarOverlay.this.events.get(uuid);
+				if (event != null) {
+					event.setDarkenScreen(darkenScreen);
+					event.setPlayBossMusic(playMusic);
+					event.setCreateWorldFog(createWorldFog);
+				}
 			}
 		});
 	}
