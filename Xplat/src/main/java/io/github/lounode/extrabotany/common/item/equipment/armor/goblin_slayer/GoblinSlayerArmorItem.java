@@ -60,7 +60,10 @@ public class GoblinSlayerArmorItem extends StarryIdolArmorItem implements IPhoto
 		if ((living.getItemBySlot(type.getSlot()) != stack)) {
 			return;
 		}
-		if (living.tickCount % (3 * 20) == 0) {
+		if (living.tickCount % (3 * 20) != 0) {
+			return;
+		}
+		if (!isDay(level) || !isOutCave(level, entity.blockPosition())) {
 			return;
 		}
 
@@ -69,9 +72,7 @@ public class GoblinSlayerArmorItem extends StarryIdolArmorItem implements IPhoto
 			return;
 		}
 
-		if (isDay(level) && isOutCave(level, entity.blockPosition())) {
-			living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5 * 20, 1));
-		}
+		living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5 * 20, 1));
 	}
 
 	@Override

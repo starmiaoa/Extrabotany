@@ -79,10 +79,13 @@ public class PureDaisyPendantItem extends BaubleItem {
 			if (output.is(state.getBlock())) {
 				return;
 			}
-			if (!ManaItemHandler.instance().requestManaExactForTool(stack, serverPlayer, TRANSFORM_MANA, true)) {
+			if (!ManaItemHandler.instance().requestManaExactForTool(stack, serverPlayer, TRANSFORM_MANA, false)) {
 				return;
 			}
 			if (PlayerUtil.tryBreakBlock(serverPlayer, ItemStack.EMPTY, level, pos)) {
+				if (!ManaItemHandler.instance().requestManaExactForTool(stack, serverPlayer, TRANSFORM_MANA, true)) {
+					return;
+				}
 				level.setBlockAndUpdate(pos, output.getBlock().withPropertiesOf(state));
 				level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(output));
 				level.gameEvent(null, GameEvent.BLOCK_CHANGE, pos);

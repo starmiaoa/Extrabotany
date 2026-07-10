@@ -63,6 +63,9 @@ public class EnchanterBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 
 		if (!hasLotus) {
 			consumeNearbyBlackLotus();
+			if (!hasLotus) {
+				return;
+			}
 		}
 
 		if (hasLotus && consumedMana < getTransformCost()) {

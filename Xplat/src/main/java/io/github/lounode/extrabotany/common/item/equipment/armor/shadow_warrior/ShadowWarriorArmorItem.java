@@ -79,7 +79,10 @@ public class ShadowWarriorArmorItem extends StarryIdolArmorItem implements IShad
 		if ((living.getItemBySlot(type.getSlot()) != stack)) {
 			return;
 		}
-		if (living.tickCount % (5 * 20) == 0) {
+		if (living.tickCount % (5 * 20) != 0) {
+			return;
+		}
+		if (!isNight(level) && !isInCave(level, entity.blockPosition())) {
 			return;
 		}
 
@@ -88,9 +91,7 @@ public class ShadowWarriorArmorItem extends StarryIdolArmorItem implements IShad
 			return;
 		}
 
-		if (isNight(level) || isInCave(level, entity.blockPosition())) {
-			living.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 20));
-		}
+		living.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 20));
 	}
 
 	@Override

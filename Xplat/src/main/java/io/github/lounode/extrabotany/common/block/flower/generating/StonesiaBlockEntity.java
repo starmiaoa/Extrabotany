@@ -51,9 +51,8 @@ public class StonesiaBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 		BlockPos eatPos = getRadomBlockPos();
 
 		int mana = getManaFormBlock(getLevel().getBlockState(eatPos));
-		if (mana > 0) {
+		if (mana > 0 && getLevel().destroyBlock(eatPos, false)) {
 			setCooldown(getAfterWorkCooldown());
-			getLevel().destroyBlock(eatPos, false);
 			addMana(mana);
 			sync();
 			getLevel().playSound(null, getEffectivePos(), SoundEvents.GENERIC_DRINK, SoundSource.BLOCKS, 0.01F, 0.5F + (float) Math.random() * 0.5F);

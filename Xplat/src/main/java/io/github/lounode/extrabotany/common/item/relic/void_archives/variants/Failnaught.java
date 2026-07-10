@@ -2,7 +2,7 @@ package io.github.lounode.extrabotany.common.item.relic.void_archives.variants;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
@@ -20,7 +20,6 @@ import net.minecraft.world.level.Level;
 
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.entity.ManaBurstEntity;
-import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 
 import io.github.lounode.extrabotany.api.item.VoidArchivesVariant;
 import io.github.lounode.extrabotany.common.entity.MagicArrowEntity;
@@ -53,15 +52,17 @@ public class Failnaught implements VoidArchivesVariant {
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		int multiShoutLevel = enchantmentLevel(level, Enchantments.MULTISHOT, itemstack);
+		int quickChargeLevel = enchantmentLevel(level, Enchantments.QUICK_CHARGE, itemstack);
 		float chargeProgress = getChargeProcess(itemstack, player);
+		int projectileCount = multiShoutLevel > 0 ? 3 : 1;
+		int manaCost = getManaForUse(chargeProgress) * projectileCount + 100 * quickChargeLevel;
 
 		boolean flag = false;
 
 		var relic = EXplatAbstractions.INSTANCE.findRelic(itemstack);
 		if (relic != null &&
 				relic.isRightPlayer(player) &&
-				ManaItemHandler.instance().requestManaExactForTool(itemstack, player,
-						getManaForUse(chargeProgress) * (multiShoutLevel > 1 ? 3 : 1), false)
+				ManaItemHandler.instance().requestManaExactForTool(itemstack, player, manaCost, false)
 
 		) {
 			flag = true;
@@ -82,29 +83,25 @@ public class Failnaught implements VoidArchivesVariant {
 		}
 		if (livingEntity instanceof Player player) {
 			float chargeProgress = getChargeProcess(stack, player);
-
-			int quickChargeLevel = enchantmentLevel(level, Enchantments.QUICK_CHARGE, stack);
-			if (quickChargeLevel > 0) {
-				ManaItemHandler.instance().requestManaExactForTool(stack, player, 100 * quickChargeLevel, true);
-			}
-
 			if (chargeProgress < MINIMUM_SHOOT_PROCESS) {
 				return;
 			}
 
+			int quickChargeLevel = enchantmentLevel(level, Enchantments.QUICK_CHARGE, stack);
 			int multiShoutLevel = enchantmentLevel(level, Enchantments.MULTISHOT, stack);
+			int projectileCount = multiShoutLevel > 0 ? 3 : 1;
+			int manaInBurst = getManaForUse(chargeProgress);
+			int manaCost = manaInBurst * projectileCount + 100 * quickChargeLevel;
 			var relic = EXplatAbstractions.INSTANCE.findRelic(stack);
 			if (relic != null &&
 					relic.isRightPlayer(player) &&
 					(player.getAbilities().instabuild
 							||
-							ManaItemHandler.instance().requestManaExactForTool(stack, player,
-									getManaForUse(chargeProgress) * (multiShoutLevel > 1 ? 3 : 1), true))) {
-				int manaInBurst = getManaForUse(chargeProgress) * (multiShoutLevel > 1 ? 3 : 1);
+							ManaItemHandler.instance().requestManaExactForTool(stack, player, manaCost, true))) {
 
 				float spreadAngle = 10.0f;
 
-				for (int i = 0; i < (multiShoutLevel > 0 ? 3 : 1); i++) {
+				for (int i = 0; i < projectileCount; i++) {
 					ManaBurstEntity burst = getBurst(player, stack, manaInBurst, getTier(chargeProgress));
 
 					if (multiShoutLevel > 0 && i > 0) {
@@ -133,9 +130,9 @@ public class Failnaught implements VoidArchivesVariant {
 		burst.setDeltaMovement(burst.getDeltaMovement().scale(motionModifier));
 
 		ItemStack lens = new ItemStack(ExtraBotanyItems.failnaught);
-		ListTag enchants = ItemStackDataHelper.getList(stack, "Enchantments", ListTag.TAG_COMPOUND, true);
+		var enchants = stack.get(DataComponents.ENCHANTMENTS);
 		if (enchants != null) {
-			ItemStackDataHelper.setList(lens, "Enchantments", enchants.copy());
+			lens.set(DataComponents.ENCHANTMENTS, enchants);
 		}
 
 		burst.setSourceLens(lens);

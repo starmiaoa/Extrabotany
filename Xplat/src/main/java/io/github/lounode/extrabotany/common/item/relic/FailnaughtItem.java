@@ -82,15 +82,17 @@ public class FailnaughtItem extends LivingwoodBowItem implements LensEffectItem,
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		int multiShoutLevel = enchantmentLevel(world, Enchantments.MULTISHOT, itemstack);
+		int quickChargeLevel = enchantmentLevel(world, Enchantments.QUICK_CHARGE, itemstack);
 		float chargeProgress = getChargeProcess(itemstack, player);
+		int projectileCount = multiShoutLevel > 0 ? 3 : 1;
+		int manaCost = getManaForUse(chargeProgress) * projectileCount + 100 * quickChargeLevel;
 
 		boolean flag = false;
 
 		var relic = EXplatAbstractions.INSTANCE.findRelic(itemstack);
 		if (relic != null &&
 				relic.isRightPlayer(player) &&
-				ManaItemHandler.instance().requestManaExactForTool(itemstack, player,
-						getManaForUse(chargeProgress) * (multiShoutLevel > 1 ? 3 : 1), false)
+				ManaItemHandler.instance().requestManaExactForTool(itemstack, player, manaCost, false)
 
 		) {
 			flag = true;
@@ -117,29 +119,25 @@ public class FailnaughtItem extends LivingwoodBowItem implements LensEffectItem,
 		}
 		if (livingEntity instanceof Player player) {
 			float chargeProgress = getChargeProcess(stack, player);
-
-			int quickChargeLevel = enchantmentLevel(world, Enchantments.QUICK_CHARGE, stack);
-			if (quickChargeLevel > 0) {
-				ManaItemHandler.instance().requestManaExactForTool(stack, player, 100 * quickChargeLevel, true);
-			}
-
 			if (chargeProgress < MINIMUM_SHOOT_PROCESS) {
 				return;
 			}
 
+			int quickChargeLevel = enchantmentLevel(world, Enchantments.QUICK_CHARGE, stack);
 			int multiShoutLevel = enchantmentLevel(world, Enchantments.MULTISHOT, stack);
+			int projectileCount = multiShoutLevel > 0 ? 3 : 1;
+			int manaInBurst = getManaForUse(chargeProgress);
+			int manaCost = manaInBurst * projectileCount + 100 * quickChargeLevel;
 			var relic = EXplatAbstractions.INSTANCE.findRelic(stack);
 			if (relic != null &&
 					relic.isRightPlayer(player) &&
 					(player.getAbilities().instabuild
 							||
-							ManaItemHandler.instance().requestManaExactForTool(stack, player,
-									getManaForUse(chargeProgress) * (multiShoutLevel > 1 ? 3 : 1), true))) {
-				int manaInBurst = getManaForUse(chargeProgress) * (multiShoutLevel > 1 ? 3 : 1);
+							ManaItemHandler.instance().requestManaExactForTool(stack, player, manaCost, true))) {
 
 				float spreadAngle = 10.0f;
 
-				for (int i = 0; i < (multiShoutLevel > 0 ? 3 : 1); i++) {
+				for (int i = 0; i < projectileCount; i++) {
 					ManaBurstEntity burst = getBurst(player, stack, manaInBurst, getTier(chargeProgress));
 
 					if (multiShoutLevel > 0 && i > 0) {

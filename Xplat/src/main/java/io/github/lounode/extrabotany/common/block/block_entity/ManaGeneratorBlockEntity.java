@@ -79,16 +79,17 @@ public class ManaGeneratorBlockEntity extends BlockEntity implements Wandable {
 	}
 
 	private boolean convertEnergy() {
-		if (energy < ENERGY_PER_CONVERSION || mana >= MAX_MANA) {
+		int manaPerConversion = getManaPerConversion();
+		if (energy < ENERGY_PER_CONVERSION || mana >= MAX_MANA || manaPerConversion <= 0) {
 			return false;
 		}
 
-		int conversions = Math.min(energy / ENERGY_PER_CONVERSION, (MAX_MANA - mana + getManaPerConversion() - 1) / getManaPerConversion());
+		int conversions = Math.min(energy / ENERGY_PER_CONVERSION, (MAX_MANA - mana) / manaPerConversion);
 		if (conversions <= 0) {
 			return false;
 		}
 
-		int manaToAdd = Math.min(MAX_MANA - mana, conversions * getManaPerConversion());
+		int manaToAdd = conversions * manaPerConversion;
 		int energyToSpend = conversions * ENERGY_PER_CONVERSION;
 		if (manaToAdd <= 0 || energyToSpend <= 0) {
 			return false;

@@ -47,6 +47,7 @@ import io.github.lounode.extrabotany.api.block.Pedestal;
 import io.github.lounode.extrabotany.api.gaia.BlockPatternExtend;
 import io.github.lounode.extrabotany.api.gaia.BlockPatternExtendBuilder;
 import io.github.lounode.extrabotany.api.gaia.BlockTagPredicate;
+import io.github.lounode.extrabotany.api.item.NatureEnergyItem;
 import io.github.lounode.extrabotany.api.recipe.PedestalRecipe;
 import io.github.lounode.extrabotany.common.block.PedestalBlock;
 import io.github.lounode.extrabotany.common.crafting.ExtraBotanyRecipeTypes;
@@ -306,7 +307,9 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		}
 
 		if (!world.isClientSide() && KingGardenItem.addFlower(getItem(), flowerStack)) {
-			flowerStack.shrink(1);
+			if (!player.getAbilities().instabuild) {
+				flowerStack.shrink(1);
+			}
 			setStrikes(0);
 			markUpdated();
 			world.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F,
@@ -464,9 +467,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 				self.updateTier();
 			}
 
-			int chargeAmount = self.getChargeAmount();
-			if (chargeAmount > 0) {
-				natureItem.addEnergy(chargeAmount);
+			if (self.chargeNatureItem(natureItem)) {
 				WispParticleData data = WispParticleData.wisp(0.5F, 0.15F, 0.8F, 0.15F);
 				((ServerLevel) level).sendParticles(data, pos.getX() + 0.5F, pos.getY() + 1.1F, pos.getZ() + 0.5, 1, 0, 0, 0, 0);
 			}
@@ -502,24 +503,34 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		self.tickCount++;
 	}
 
-	public int getChargeAmount() {
-		int amount = 0;
-
-		if (getTier() >= 1) {
-			amount += 4;
+	public boolean chargeNatureItem(NatureEnergyItem natureItem) {
+		long remaining = Math.max(0, natureItem.getMaxEnergy() - natureItem.getEnergy());
+		int freeCharge = getTier() >= 2 ? 9 : getTier() >= 1 ? 4 : 0;
+		int amount = (int) Math.min(remaining, freeCharge);
+		boolean charged = amount > 0 && natureItem.addEnergy(amount);
+		if (amount > 0 && !charged) {
+			return false;
 		}
+		remaining -= amount;
+
 		if (getTier() >= 2) {
-			amount += 5;
 			for (BlockPos pos : POOL_LOCATIONS) {
+				int poolCharge = (int) Math.min(remaining, 2);
+				if (poolCharge <= 0) {
+					break;
+				}
+				int manaCost = poolCharge * 5;
 				BlockEntity tile = getLevel().getBlockEntity(getBlockPos().offset(pos.getX(), pos.getY(), pos.getZ()));
-				if (tile instanceof ManaPoolBlockEntity pool && pool.getCurrentMana() >= 10) {
-					pool.receiveMana(-10);
-					amount += 2;
+				if (tile instanceof ManaPoolBlockEntity pool && pool.getCurrentMana() >= manaCost
+						&& natureItem.addEnergy(poolCharge)) {
+					pool.receiveMana(-manaCost);
+					remaining -= poolCharge;
+					charged = true;
 				}
 			}
 		}
 
-		return amount;
+		return charged;
 	}
 
 	public void updateTier() {

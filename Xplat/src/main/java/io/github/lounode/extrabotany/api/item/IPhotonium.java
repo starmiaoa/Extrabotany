@@ -22,7 +22,10 @@ public interface IPhotonium {
 		if ((living.getItemInHand(InteractionHand.MAIN_HAND) != stack) && (living.getItemInHand(InteractionHand.OFF_HAND) != stack)) {
 			return;
 		}
-		if (living.tickCount % (3 * 20) == 0) {
+		if (living.tickCount % (3 * 20) != 0) {
+			return;
+		}
+		if (!isDay(level) || !isOutCave(level, entity.blockPosition())) {
 			return;
 		}
 
@@ -31,9 +34,7 @@ public interface IPhotonium {
 			return;
 		}
 
-		if (isDay(level) && isOutCave(level, entity.blockPosition())) {
-			living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5 * 20, 1));
-		}
+		living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 5 * 20, 1));
 	}
 
 	default boolean isDay(Level level) {

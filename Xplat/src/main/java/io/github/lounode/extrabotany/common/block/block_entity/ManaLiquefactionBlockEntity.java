@@ -81,46 +81,99 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 	}
 
 	private boolean pullFluid(BlockPos sourcePos, Direction sourceSide) {
-		if (level == null || isFull()) {
+		int energyPerOperation = getStorageDrain();
+		int fluidPerOperation = getStorageDrainContainer();
+		int space = getMaxEnergy() - energy;
+		if (level == null || space <= 0 || energyPerOperation <= 0 || fluidPerOperation <= 0) {
 			return false;
 		}
+		int divisor = gcd(energyPerOperation, fluidPerOperation);
+		int energyUnit = energyPerOperation / divisor;
+		int fluidUnit = fluidPerOperation / divisor;
+		int units = Math.min(divisor, space / energyUnit);
+		if (units <= 0) {
+			return false;
+		}
+		int request = units * fluidUnit;
+		int available = EXplatAbstractions.INSTANCE.drainFluid(level, sourcePos, sourceSide, fluidedMana(), request, true);
+		units = Math.min(units, available / fluidUnit);
+		if (units <= 0) {
+			return false;
+		}
+		int fluidToDrain = units * fluidUnit;
 		int drained = EXplatAbstractions.INSTANCE.drainFluid(level, sourcePos, sourceSide, fluidedMana(),
-				getStorageDrainContainer(), false);
-		if (drained <= 0) {
+				fluidToDrain, false);
+		int committedUnits = Math.min(units, drained / fluidUnit);
+		if (committedUnits <= 0) {
 			return false;
 		}
-		energy = Mth.clamp(energy + getStorageDrain(), 0, getMaxEnergy());
+		energy += committedUnits * energyUnit;
 		return true;
 	}
 
 	private boolean pushFluid(BlockPos targetPos, Direction targetSide) {
-		if (level == null || energy < getStoragePump()) {
+		int energyPerOperation = getStoragePump();
+		int fluidPerOperation = getStoragePumpContainer();
+		if (level == null || energy <= 0 || energyPerOperation <= 0 || fluidPerOperation <= 0) {
 			return false;
 		}
-		int filled = EXplatAbstractions.INSTANCE.fillFluid(level, targetPos, targetSide, fluidedMana(),
-				getStoragePumpContainer(), false);
-		if (filled <= 0) {
+		int divisor = gcd(energyPerOperation, fluidPerOperation);
+		int energyUnit = energyPerOperation / divisor;
+		int fluidUnit = fluidPerOperation / divisor;
+		int units = Math.min(divisor, energy / energyUnit);
+		if (units <= 0) {
 			return false;
 		}
-		energy = Math.max(0, energy - getStoragePump());
+		int request = units * fluidUnit;
+		int accepted = EXplatAbstractions.INSTANCE.fillFluid(level, targetPos, targetSide, fluidedMana(), request, true);
+		units = Math.min(units, accepted / fluidUnit);
+		if (units <= 0) {
+			return false;
+		}
+		int filled = EXplatAbstractions.INSTANCE.fillFluid(level, targetPos, targetSide, fluidedMana(), units * fluidUnit, false);
+		int committedUnits = Math.min(units, filled / fluidUnit);
+		if (committedUnits <= 0) {
+			return false;
+		}
+		energy -= committedUnits * energyUnit;
 		return true;
 	}
 
 	private boolean convertFluidEnergyToMana() {
-		if (energy <= 0 || getCurrentMana() > getMaxMana() - getManaReceive()) {
+		int manaPerOperation = getManaReceive();
+		int energyPerOperation = getEnergyLoss();
+		int manaSpace = getMaxMana() - getCurrentMana();
+		if (energy <= 0 || manaSpace <= 0 || manaPerOperation <= 0 || energyPerOperation <= 0) {
 			return false;
 		}
-		receiveMana(getManaReceive());
-		energy = Mth.clamp(energy - getEnergyLoss(), 0, getMaxEnergy());
+		int divisor = gcd(energyPerOperation, manaPerOperation);
+		int energyUnit = energyPerOperation / divisor;
+		int manaUnit = manaPerOperation / divisor;
+		int units = Math.min(divisor, Math.min(energy / energyUnit, manaSpace / manaUnit));
+		if (units <= 0) {
+			return false;
+		}
+		receiveMana(units * manaUnit);
+		energy -= units * energyUnit;
 		return true;
 	}
 
 	private boolean convertManaToFluidEnergy() {
-		if (getCurrentMana() < getManaGive()) {
+		int manaPerOperation = getManaGive();
+		int energyPerOperation = getEnergyGain();
+		int energySpace = getMaxEnergy() - energy;
+		if (getCurrentMana() <= 0 || energySpace <= 0 || manaPerOperation <= 0 || energyPerOperation <= 0) {
 			return false;
 		}
-		receiveMana(-getManaGive());
-		energy = Mth.clamp(energy + getEnergyGain(), 0, getMaxEnergy());
+		int divisor = gcd(manaPerOperation, energyPerOperation);
+		int manaUnit = manaPerOperation / divisor;
+		int energyUnit = energyPerOperation / divisor;
+		int units = Math.min(divisor, Math.min(getCurrentMana() / manaUnit, energySpace / energyUnit));
+		if (units <= 0) {
+			return false;
+		}
+		receiveMana(-units * manaUnit);
+		energy += units * energyUnit;
 		return true;
 	}
 
@@ -144,6 +197,15 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 
 	private Fluid fluidedMana() {
 		return ExtraBotanyFluids.fluidedMana();
+	}
+
+	private static int gcd(int first, int second) {
+		while (second != 0) {
+			int remainder = first % second;
+			first = second;
+			second = remainder;
+		}
+		return first;
 	}
 
 	private boolean isEnabled() {

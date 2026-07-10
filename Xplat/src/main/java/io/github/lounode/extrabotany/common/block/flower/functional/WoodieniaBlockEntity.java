@@ -80,7 +80,9 @@ public class WoodieniaBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 			player = PlayerUtil.createFakePlayer((ServerLevel) getLevel(), getOwnerUUID().get());
 		}
 
-		breakBlock(getLevel(), breakCoords, player);
+		if (!breakBlock(getLevel(), breakCoords, player)) {
+			return;
+		}
 		setCooldown(getAfterEatCooldown());
 		addMana(-getManaPerUse());
 		sync();
@@ -117,19 +119,25 @@ public class WoodieniaBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 		return breakCoords;
 	}
 
-	protected static void breakBlock(Level level, BlockPos pos, @Nullable Player player) {
+	protected static boolean breakBlock(Level level, BlockPos pos, @Nullable Player player) {
 		BlockState state = level.getBlockState(pos);
+		boolean removed;
 
 		if (player != null) {
 			ToolCommons.removeBlockWithDrops(player, ItemStack.EMPTY, level, pos, (b) -> true);
+			removed = !level.getBlockState(pos).equals(state);
 		} else {
-			level.destroyBlock(pos, true);
+			removed = level.destroyBlock(pos, true);
+		}
+		if (!removed) {
+			return false;
 		}
 
 		if (BotaniaConfig.common().blockBreakParticles()) {
 			level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
 		}
 		level.gameEvent(null, GameEvent.BLOCK_DESTROY, pos);
+		return true;
 	}
 
 	@Override

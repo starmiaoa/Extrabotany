@@ -16,7 +16,6 @@ import net.minecraft.world.phys.Vec3;
 
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.handler.BotaniaSounds;
-import vazkii.botania.common.item.equipment.tool.ToolCommons;
 
 import io.github.lounode.extrabotany.common.entity.PhantomSwordEntity;
 import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
@@ -43,11 +42,14 @@ public class FirstFractalItem extends OldExbotanyRelicSwordItem {
 
 	@Override
 	protected void useSword(Player player, Entity target) {
+		if (!player.getAbilities().instabuild && !ManaItemHandler.instance()
+				.requestManaExactForTool(player.getMainHandItem(), player, MANA_PER_DAMAGE * 4, true)) {
+			return;
+		}
 		Vec3 targetPos = resolveTargetPos(player, target, 80D);
 		double angle = -Math.PI + 2 * Math.PI * player.level().random.nextDouble();
 
 		for (int i = 0; i < 3; i++) {
-			ToolCommons.damageItemIfPossible(player.getMainHandItem(), 1, player, MANA_PER_DAMAGE);
 			Vec3 start = randomStart(player, targetPos, angle);
 			player.level().addFreshEntity(new PhantomSwordEntity(player.level(), player, start, targetPos, 5 + 5 * i));
 			angle += 2 * Math.PI * player.level().random.nextDouble() * 0.08D + 2 * Math.PI * 0.17D;

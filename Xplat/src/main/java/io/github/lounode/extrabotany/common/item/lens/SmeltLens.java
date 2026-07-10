@@ -100,14 +100,23 @@ public class SmeltLens extends Lens {
 
 					if (world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS)) {
 						for (ItemStack stack_ : items) {
+							long outputCount = stack_.getCount();
 							var recipe = world.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack_), world).orElse(null);
 							if (recipe != null && !recipe.value().getResultItem(world.registryAccess()).isEmpty()) {
+								int inputCount = stack_.getCount();
 								stack_ = recipe.value().getResultItem(world.registryAccess()).copy();
+								outputCount = (long) stack_.getCount() * inputCount;
 							}
 
-							ItemEntity itemEntity = new ItemEntity(world, dropPosition.x, dropPosition.y, dropPosition.z, stack_);
-							itemEntity.setDefaultPickUpDelay();
-							world.addFreshEntity(itemEntity);
+							while (outputCount > 0) {
+								ItemStack output = stack_.copy();
+								int count = (int) Math.min(outputCount, output.getMaxStackSize());
+								output.setCount(count);
+								ItemEntity itemEntity = new ItemEntity(world, dropPosition.x, dropPosition.y, dropPosition.z, output);
+								itemEntity.setDefaultPickUpDelay();
+								world.addFreshEntity(itemEntity);
+								outputCount -= count;
+							}
 						}
 					}
 

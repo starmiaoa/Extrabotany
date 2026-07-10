@@ -13,14 +13,20 @@ public final class UfoInputHandler {
 	private static boolean lastLeft;
 	private static boolean lastRight;
 	private static boolean lastUp;
+	private static boolean wasRiding;
 
 	private UfoInputHandler() {}
 
 	public static void tick(Minecraft minecraft) {
 		if (minecraft.player == null || !(minecraft.player.getVehicle() instanceof UfoEntity ufo)) {
+			if (wasRiding && minecraft.player != null) {
+				ExClientXplatAbstractions.INSTANCE.sendToServer(new UfoInputPacket(false, false, false, false, false, false));
+			}
+			wasRiding = false;
 			reset();
 			return;
 		}
+		wasRiding = true;
 		Options options = minecraft.options;
 		boolean forward = options.keyUp.isDown();
 		boolean back = options.keyDown.isDown();
