@@ -7,9 +7,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import vazkii.botania.api.BotaniaAPI;
 import vazkii.botania.api.item.SortableTool;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.item.equipment.CustomDamageItem;
@@ -43,6 +45,23 @@ public class ManasteelHammerItem extends PickaxeItem implements CustomDamageItem
 
 	@Override
 	public int getSortingPriority(ItemStack stack, BlockState state) {
-		return ToolCommons.getToolPriority(stack);
+		Tier tier = getTier();
+		int tierPriority = 0;
+		if (tier == BotaniaAPI.instance().getManasteelItemTier()) {
+			tierPriority = 10;
+		} else if (tier == BotaniaAPI.instance().getElementiumItemTier()) {
+			tierPriority = 11;
+		} else if (tier == BotaniaAPI.instance().getTerrasteelItemTier()) {
+			tierPriority = 20;
+		}
+
+		int efficiency = 0;
+		for (var entry : stack.getEnchantments().entrySet()) {
+			if (entry.getKey().is(Enchantments.EFFICIENCY)) {
+				efficiency = entry.getIntValue();
+				break;
+			}
+		}
+		return tierPriority * 100 + efficiency;
 	}
 }

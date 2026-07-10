@@ -34,7 +34,7 @@ public class LeftClickPacketVoidArchives extends LeftClickPack {
 
 	@Override
 	public void handle(MinecraftServer server, ServerPlayer player) {
-		float scale = player.getAttackStrengthScale(0F);
-		server.execute(() -> Excalibur.INSTANCE.trySpawnBurst(player, scale));
+		executeRateLimited(server, player,
+				() -> Excalibur.INSTANCE.trySpawnBurst(player, player.getAttackStrengthScale(0F)));
 	}
 }

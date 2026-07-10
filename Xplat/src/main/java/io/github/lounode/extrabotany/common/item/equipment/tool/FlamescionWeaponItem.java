@@ -60,7 +60,9 @@ public class FlamescionWeaponItem extends SwordItem {
 
 	public static void onLivingAttack(LivingIncomingDamageEvent event) {
 		Entity source = event.getSource().getEntity();
-		if (!(source instanceof Player player) || !isFlamescionMode(player)) {
+		if (!(source instanceof Player player)
+				|| event.getSource().getDirectEntity() != player
+				|| !isFlamescionMode(player)) {
 			return;
 		}
 		FlamescionSlashEntity slash = new FlamescionSlashEntity(player.level(), player);
@@ -94,16 +96,17 @@ public class FlamescionWeaponItem extends SwordItem {
 		}
 	}
 
-	public static void tryUseFromPacket(ServerPlayer player, float attackStrength) {
+	public static boolean tryUseFromPacket(ServerPlayer player, float attackStrength) {
 		ItemStack stack = player.getMainHandItem();
 		if (stack.is(ExtraBotanyItems.flamescionWeapon)) {
-			tryStrengthenAttack(player, stack, attackStrength);
+			return tryStrengthenAttack(player, stack, attackStrength);
 		}
+		return false;
 	}
 
-	private static void tryStrengthenAttack(Player player, ItemStack stack, float attackStrength) {
+	private static boolean tryStrengthenAttack(Player player, ItemStack stack, float attackStrength) {
 		if (player.isSpectator() || attackStrength != 1F || isOverloaded(stack)) {
-			return;
+			return false;
 		}
 		if (player.hasEffect(ExtraBotanyMobEffects.FLAMESCION)) {
 			for (int i = 0; i < 3; i++) {
@@ -114,13 +117,16 @@ public class FlamescionWeaponItem extends SwordItem {
 				player.level().addFreshEntity(slash);
 			}
 			player.removeEffect(ExtraBotanyMobEffects.FLAMESCION);
+			return true;
 		} else if (isFlamescionMode(player)) {
 			FlamescionSwordEntity sword = new FlamescionSwordEntity(player.level(), player);
 			Vec3 direction = player.getLookAngle().normalize();
 			sword.setPos(player.getX(), player.getY() + 0.5F, player.getZ());
 			sword.setDeltaMovement(direction.scale(1.0D));
 			player.level().addFreshEntity(sword);
+			return true;
 		}
+		return false;
 	}
 
 	@Override

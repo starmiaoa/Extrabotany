@@ -5,6 +5,7 @@ import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.PlayLevelSoundEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
@@ -19,6 +20,7 @@ import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.furnace.FurnaceFuelBurnTimeEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
@@ -56,6 +58,7 @@ import io.github.lounode.extrabotany.common.item.equipment.shield.ManasteelShiel
 import io.github.lounode.extrabotany.common.item.equipment.tool.FlamescionWeaponItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.ShadowKatanaItem;
 import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.RheinHammerItem;
+import io.github.lounode.extrabotany.common.item.equipment.tool.hammer.TerrasteelHammerItem;
 import io.github.lounode.extrabotany.common.item.relic.ExcaliburItem;
 import io.github.lounode.extrabotany.common.item.relic.OldExbotanyRelicSwordItem;
 import io.github.lounode.extrabotany.common.item.relic.SpearOfSubspaceItem;
@@ -87,6 +90,7 @@ public final class NeoForgeEventBridge {
 		bus.addListener(NeoForgeEventBridge::onAttackEntity);
 		bus.addListener(NeoForgeEventBridge::onLeftClickEmpty);
 		bus.addListener(NeoForgeEventBridge::onLeftClickBlock);
+		bus.addListener(EventPriority.LOWEST, NeoForgeEventBridge::onHammerBlockBreak);
 		bus.addListener(NeoForgeEventBridge::onRightClickBlock);
 		bus.addListener(NeoForgeEventBridge::onBreakSpeed);
 		bus.addListener(NeoForgeEventBridge::onPlayerLoggedOut);
@@ -233,6 +237,16 @@ public final class NeoForgeEventBridge {
 	private static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
 		OldExbotanyRelicSwordItem.leftClickBlock(event);
 		FeatherOfJingweiItem.leftClickBlock(event);
+	}
+
+	private static void onHammerBlockBreak(BlockEvent.BreakEvent event) {
+		if (event.isCanceled() || event.getLevel().isClientSide()) {
+			return;
+		}
+		ItemStack stack = event.getPlayer().getMainHandItem();
+		if (stack.getItem() instanceof TerrasteelHammerItem hammer) {
+			hammer.onBlockStartBreak(stack, event.getPos(), event.getPlayer());
+		}
 	}
 
 	private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {

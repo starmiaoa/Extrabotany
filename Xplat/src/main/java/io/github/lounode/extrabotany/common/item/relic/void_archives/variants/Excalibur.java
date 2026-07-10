@@ -58,20 +58,20 @@ public class Excalibur implements VoidArchivesVariant {
 		}
 	}
 
-	public void trySpawnBurst(Player player, float attackStrengthScale) {
+	public boolean trySpawnBurst(Player player, float attackStrengthScale) {
 		ItemStack stack = player.getMainHandItem();
 		if (!(stack.getItem() instanceof VoidArchivesItem)) {
-			return;
+			return false;
 		}
 		if (!isActive(stack)) {
-			return;
+			return false;
 		}
 		if (!isMaster(stack, player)) {
-			return;
+			return false;
 		}
 		if (player.isSpectator() ||
 				attackStrengthScale != 1) {
-			return;
+			return false;
 		}
 
 		ManaBurstEntity burst = getBurst(player, player.getMainHandItem());
@@ -79,6 +79,7 @@ public class Excalibur implements VoidArchivesVariant {
 
 		player.getMainHandItem().hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 		player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ExtraBotanySounds.EXCALIBUR_ATTACK, SoundSource.PLAYERS, 1F, 1F);
+		return true;
 	}
 
 	public ManaBurstEntity getBurst(Player player, ItemStack stack) {

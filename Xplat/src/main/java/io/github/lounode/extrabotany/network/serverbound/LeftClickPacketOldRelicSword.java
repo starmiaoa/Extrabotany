@@ -34,10 +34,10 @@ public class LeftClickPacketOldRelicSword extends LeftClickPack {
 
 	@Override
 	public void handle(MinecraftServer server, ServerPlayer player) {
-		float scale = player.getAttackStrengthScale(0F);
-		server.execute(() -> {
-			OldExbotanyRelicSwordItem.tryUseFromPacket(player, scale);
-			SpearOfSubspaceItem.tryUseFromPacket(player, scale);
+		executeRateLimited(server, player, () -> {
+			float scale = player.getAttackStrengthScale(0F);
+			return OldExbotanyRelicSwordItem.tryUseFromPacket(player, scale)
+					|| SpearOfSubspaceItem.tryUseFromPacket(player, scale);
 		});
 	}
 }

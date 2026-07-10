@@ -301,7 +301,7 @@ public class ForgeExtrabotanyConfig {
 					.comment("""
 							冷却时间(ticks)
 							Cooldown time in ticks""")
-					.defineInRange("cooldown", TradeOrchidBlockEntity.COOLDOWN, 0, Integer.MAX_VALUE);
+					.defineInRange("cooldown", TradeOrchidBlockEntity.COOLDOWN, 1, Integer.MAX_VALUE);
 			tradeOrchidDiscountPercentage = builder
 					.comment("""
 							折扣百分比(仅支持精确到两位小数)

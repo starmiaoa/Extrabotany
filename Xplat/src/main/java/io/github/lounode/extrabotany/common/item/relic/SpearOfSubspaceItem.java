@@ -67,19 +67,20 @@ public class SpearOfSubspaceItem extends SwordItem {
 		}
 	}
 
-	public static void tryUseFromPacket(ServerPlayer player, float attackStrength) {
+	public static boolean tryUseFromPacket(ServerPlayer player, float attackStrength) {
 		if (player.getMainHandItem().getItem() instanceof SpearOfSubspaceItem spear) {
-			spear.trySpawnSpear(player, attackStrength);
+			return spear.trySpawnSpear(player, attackStrength);
 		}
+		return false;
 	}
 
-	private void trySpawnSpear(Player player, float attackStrength) {
+	private boolean trySpawnSpear(Player player, float attackStrength) {
 		ItemStack stack = player.getMainHandItem();
 		if (player.isSpectator() || stack.getItem() != this || attackStrength != 1F || !isRightPlayer(player, stack)) {
-			return;
+			return false;
 		}
 		if (!ManaItemHandler.instance().requestManaExactForTool(stack, player, SPEAR_MANA, true)) {
-			return;
+			return false;
 		}
 
 		Level level = player.level();
@@ -89,6 +90,7 @@ public class SpearOfSubspaceItem extends SwordItem {
 		subspace.setPos(player.getX(), player.getY() + 2.5F + level.random.nextFloat() * 0.2F, player.getZ());
 		subspace.setYRot(player.getYRot());
 		level.addFreshEntity(subspace);
+		return true;
 	}
 
 	@Override

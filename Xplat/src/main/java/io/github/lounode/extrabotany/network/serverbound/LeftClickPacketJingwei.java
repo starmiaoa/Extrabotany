@@ -34,8 +34,8 @@ public class LeftClickPacketJingwei extends LeftClickPack {
 
 	@Override
 	public void handle(MinecraftServer server, ServerPlayer player) {
-		float scale = player.getAttackStrengthScale(0F);
-		server.execute(() -> FeatherOfJingweiItem.trySpawnAuraFire(player, scale));
+		executeRateLimited(server, player,
+				() -> FeatherOfJingweiItem.trySpawnAuraFire(player, player.getAttackStrengthScale(0F)));
 	}
 
 }

@@ -56,28 +56,29 @@ public class FeatherOfJingweiItem extends BaubleItem {
 		return InteractionResult.PASS;
 	}
 
-	public static void trySpawnAuraFire(Player player) {
-		trySpawnAuraFire(player, player.getAttackStrengthScale(0F));
+	public static boolean trySpawnAuraFire(Player player) {
+		return trySpawnAuraFire(player, player.getAttackStrengthScale(0F));
 	}
 
-	public static void trySpawnAuraFire(Player player, float attackStrength) {
+	public static boolean trySpawnAuraFire(Player player, float attackStrength) {
 		if (attackStrength != 1 ||
 				player.isSpectator() ||
 				!player.getMainHandItem().isEmpty()) {
-			return;
+			return false;
 		}
 
 		ItemStack jingwei = EquipmentHandler.findOrEmpty(ExtraBotanyItems.featherOfJingwei, player);
 		if (jingwei.isEmpty()) {
-			return;
+			return false;
 		}
 		if (!ManaItemHandler.instance().requestManaExactForTool(jingwei, player, MANA_PER_USE, true)) {
-			return;
+			return false;
 		}
 
 		AuraFireEntity fire = getFire(player);
 		player.level().addFreshEntity(fire);
 		player.playNotifySound(ExtraBotanySounds.FEATHER_OF_JINGWEI_SHOOT, SoundSource.PLAYERS, 1f, SoundEventUtil.randomPitch(player.level()));
+		return true;
 	}
 
 	public static AuraFireEntity getFire(Player player) {

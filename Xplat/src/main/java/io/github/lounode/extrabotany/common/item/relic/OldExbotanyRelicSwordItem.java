@@ -79,34 +79,36 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 		}
 	}
 
-	public static void tryUseFromPacket(ServerPlayer player, float attackStrength) {
+	public static boolean tryUseFromPacket(ServerPlayer player, float attackStrength) {
 		if (player.getMainHandItem().getItem() instanceof OldExbotanyRelicSwordItem sword) {
-			sword.tryUse(player, null, attackStrength);
+			return sword.tryUse(player, null, attackStrength);
 		}
+		return false;
 	}
 
-	private void tryUse(Player player, Entity target, float attackStrength) {
+	private boolean tryUse(Player player, Entity target, float attackStrength) {
 		ItemStack stack = player.getMainHandItem();
 		if (player.isSpectator() || stack.getItem() != this || attackStrength != 1F) {
-			return;
+			return false;
 		}
 		if (this.relic) {
 			Relic relic = EXplatAbstractions.INSTANCE.findRelic(stack);
 			if (relic == null || !relic.isRightPlayer(player)) {
-				return;
+				return false;
 			}
 		}
 		ResourceLocation required = getRequiredAdvancement();
 		if (required != null && player instanceof ServerPlayer serverPlayer
 				&& !hasAdvancement(serverPlayer, required)) {
 			player.displayClientMessage(Component.translatable("extrabotany.message.advancement_required").withStyle(ChatFormatting.RED), true);
-			return;
+			return false;
 		}
 		if (this.manaPerUse > 0 && !ManaItemHandler.instance().requestManaExactForTool(stack, player, this.manaPerUse, true)) {
-			return;
+			return false;
 		}
 
 		useSword(player, target);
+		return true;
 	}
 
 	private static boolean hasAdvancement(ServerPlayer player, ResourceLocation id) {

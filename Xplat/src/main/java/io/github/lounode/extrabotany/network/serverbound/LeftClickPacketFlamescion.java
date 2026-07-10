@@ -33,7 +33,7 @@ public class LeftClickPacketFlamescion extends LeftClickPack {
 
 	@Override
 	public void handle(MinecraftServer server, ServerPlayer player) {
-		float scale = player.getAttackStrengthScale(0F);
-		server.execute(() -> FlamescionWeaponItem.tryUseFromPacket(player, scale));
+		executeRateLimited(server, player,
+				() -> FlamescionWeaponItem.tryUseFromPacket(player, player.getAttackStrengthScale(0F)));
 	}
 }
