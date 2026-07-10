@@ -20,7 +20,7 @@ public interface IAerialite {
 		if ((living.getItemInHand(InteractionHand.MAIN_HAND) != stack) && (living.getItemInHand(InteractionHand.OFF_HAND) != stack)) {
 			return;
 		}
-		if (living.tickCount % (3 * 20) == 0) {
+		if (living.tickCount % (3 * 20) != 0) {
 			return;
 		}
 

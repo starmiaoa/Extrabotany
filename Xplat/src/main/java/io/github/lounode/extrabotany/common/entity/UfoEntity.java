@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -25,12 +26,13 @@ import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UfoEntity extends Entity {
 	private static final EntityDataAccessor<Integer> CAUGHT_ID = SynchedEntityData.defineId(UfoEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(UfoEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> ACCESSORY_MOUNT = SynchedEntityData.defineId(UfoEntity.class, EntityDataSerializers.BOOLEAN);
-	private static final String TAG_CAUGHT_ID = "CaughtId";
+	private static final String TAG_CAUGHT_UUID = "CaughtUuid";
 	private static final String TAG_DAMAGE_TAKEN = "DamageTaken";
 	private static final String TAG_ACCESSORY_MOUNT = "AccessoryMount";
 
@@ -47,6 +49,8 @@ public class UfoEntity extends Entity {
 	private boolean rightInputDown;
 	private boolean upInputDown;
 	private boolean downInputDown;
+	@Nullable
+	private UUID caughtUuid;
 
 	public UfoEntity(EntityType<? extends UfoEntity> entityType, Level level) {
 		super(entityType, level);
@@ -111,6 +115,7 @@ public class UfoEntity extends Entity {
 				this.discard();
 				return;
 			} else {
+				clearInput();
 				this.setDeltaMovement(this.getDeltaMovement().scale(0.6D));
 			}
 			updateCaughtEntity();
@@ -152,13 +157,23 @@ public class UfoEntity extends Entity {
 
 	private void updateCaughtEntity() {
 		int id = getCaughtId();
-		if (id == -1) {
+		if (id == -1 && caughtUuid == null) {
 			return;
 		}
-		Entity caught = this.level().getEntity(id);
-		if (!(caught instanceof LivingEntity living) || !living.isAlive() || living.distanceTo(this) >= 16F || caught.isPassenger()) {
+		Entity caught = caughtUuid != null && this.level() instanceof ServerLevel serverLevel
+				? serverLevel.getEntity(caughtUuid)
+				: this.level().getEntity(id);
+		if (caught == null) {
 			setCaughtId(-1);
 			return;
+		}
+		if (!(caught instanceof LivingEntity living) || !living.isAlive() || living.distanceTo(this) >= 16F || caught.isPassenger()) {
+			clearCaughtEntity();
+			return;
+		}
+		caughtUuid = caught.getUUID();
+		if (id != caught.getId()) {
+			setCaughtId(caught.getId());
 		}
 		Vec3 target = new Vec3(this.getX() - caught.getX(), this.getY() - 2F - caught.getY(), this.getZ() - caught.getZ());
 		if (target.lengthSqr() > 0.0001D) {
@@ -184,17 +199,26 @@ public class UfoEntity extends Entity {
 		}
 	}
 
+	private void clearInput() {
+		this.forwardInputDown = false;
+		this.backInputDown = false;
+		this.leftInputDown = false;
+		this.rightInputDown = false;
+		this.upInputDown = false;
+		this.downInputDown = false;
+	}
+
 	private void toggleCaughtEntity() {
 		if (this.level().isClientSide()) {
 			return;
 		}
-		if (getCaughtId() != -1) {
-			setCaughtId(-1);
+		if (getCaughtId() != -1 || caughtUuid != null) {
+			clearCaughtEntity();
 			return;
 		}
 		for (LivingEntity living : getEntitiesBelow(this.blockPosition(), this.level())) {
 			if (living.isAlive() && living != getControllingPassenger() && !living.isPassenger()) {
-				setCaughtId(living.getId());
+				setCaughtEntity(living);
 				return;
 			}
 		}
@@ -274,14 +298,17 @@ public class UfoEntity extends Entity {
 
 	@Override
 	protected void addAdditionalSaveData(CompoundTag tag) {
-		tag.putInt(TAG_CAUGHT_ID, getCaughtId());
+		if (caughtUuid != null) {
+			tag.putUUID(TAG_CAUGHT_UUID, caughtUuid);
+		}
 		tag.putFloat(TAG_DAMAGE_TAKEN, getDamageTaken());
 		tag.putBoolean(TAG_ACCESSORY_MOUNT, isAccessoryMount());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag tag) {
-		setCaughtId(tag.getInt(TAG_CAUGHT_ID));
+		caughtUuid = tag.hasUUID(TAG_CAUGHT_UUID) ? tag.getUUID(TAG_CAUGHT_UUID) : null;
+		setCaughtId(-1);
 		setDamageTaken(tag.getFloat(TAG_DAMAGE_TAKEN));
 		setAccessoryMount(tag.getBoolean(TAG_ACCESSORY_MOUNT));
 	}
@@ -292,6 +319,16 @@ public class UfoEntity extends Entity {
 
 	public void setCaughtId(int id) {
 		this.entityData.set(CAUGHT_ID, id);
+	}
+
+	private void setCaughtEntity(Entity entity) {
+		caughtUuid = entity.getUUID();
+		setCaughtId(entity.getId());
+	}
+
+	private void clearCaughtEntity() {
+		caughtUuid = null;
+		setCaughtId(-1);
 	}
 
 	private float getDamageTaken() {

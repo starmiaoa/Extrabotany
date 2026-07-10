@@ -81,7 +81,7 @@ public class AnnoyingFlowerBlockEntity extends FunctionalFlowerBlockEntity {
 			setCooldown(getCooldown() - 1);
 			return;
 		}
-		if (getMaxMana() - getFishingCost() < 0) {
+		if (getMana() < getFishingCost()) {
 			return;
 		}
 		if (!hasWater()) {
@@ -89,12 +89,11 @@ public class AnnoyingFlowerBlockEntity extends FunctionalFlowerBlockEntity {
 		}
 
 		boolean boosted = getBoostLeft() > 0;
-		if (boosted) {
-			setBoostLeft(getBoostLeft() - 1);
-		}
-
 		RandomSource rand = getLevel().getRandom();
 		ItemStack reward = getFishingLoot(boosted);
+		if (reward.isEmpty()) {
+			return;
+		}
 		int bound = RANGE * 2 + 1;
 
 		ItemEntity entity = new ItemEntity(getLevel(),
@@ -104,13 +103,18 @@ public class AnnoyingFlowerBlockEntity extends FunctionalFlowerBlockEntity {
 				reward
 		);
 
+		if (!getLevel().addFreshEntity(entity)) {
+			return;
+		}
+		if (boosted) {
+			setBoostLeft(getBoostLeft() - 1);
+		}
 		addMana(-getFishingCost());
 		int cooldown = getCooldownAfterWork();
 		if (boosted) {
 			cooldown = (int) (cooldown * getFoodBoostCooldownMultiplier());
 		}
 		setCooldown(cooldown);
-		getLevel().addFreshEntity(entity);
 		getLevel().playSound(null, getEffectivePos(), SoundEvents.FISHING_BOBBER_SPLASH, SoundSource.BLOCKS, 1F, 1F);
 		sync();
 
@@ -126,6 +130,9 @@ public class AnnoyingFlowerBlockEntity extends FunctionalFlowerBlockEntity {
 	}
 
 	public void tryEatChicken() {
+		if (getBoostLeft() >= getFoodBoostMax()) {
+			return;
+		}
 		for (ItemEntity item : getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(getEffectivePos().offset(-RANGE, -RANGE, -RANGE), getEffectivePos().offset(RANGE + 1, RANGE + 1, RANGE + 1)))) {
 			if (DelayHelper.canInteractWith(this, item)) {
 				ItemStack stack = item.getItem();

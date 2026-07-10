@@ -22,7 +22,10 @@ public interface IShadowium {
 		if ((living.getItemInHand(InteractionHand.MAIN_HAND) != stack) && (living.getItemInHand(InteractionHand.OFF_HAND) != stack)) {
 			return;
 		}
-		if (living.tickCount % (5 * 20) == 0) {
+		if (living.tickCount % (5 * 20) != 0) {
+			return;
+		}
+		if (!isNight(level) && !isInCave(level, entity.blockPosition())) {
 			return;
 		}
 
@@ -31,9 +34,7 @@ public interface IShadowium {
 			return;
 		}
 
-		if (isNight(level) || isInCave(level, entity.blockPosition())) {
-			living.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 20));
-		}
+		living.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20 * 20));
 	}
 
 	default boolean isNight(Level level) {

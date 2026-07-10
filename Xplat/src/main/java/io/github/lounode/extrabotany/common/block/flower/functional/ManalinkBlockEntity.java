@@ -177,7 +177,14 @@ public class ManalinkBlockEntity extends FunctionalFlowerBlockEntity implements 
 	}
 
 	public void setLinkPos(GlobalPos pos) {
+		if (pos.equals(this.linkPos)) {
+			return;
+		}
 		this.linkPos = pos;
+		setChanged();
+		if (level != null && !level.isClientSide()) {
+			sync();
+		}
 	}
 
 	@Override
@@ -197,7 +204,7 @@ public class ManalinkBlockEntity extends FunctionalFlowerBlockEntity implements 
 
 		GlobalPos.CODEC.parse(NbtOps.INSTANCE, cmp.get(TAG_LINK_POS))
 				.resultOrPartial(LOGGER::error)
-				.ifPresent(this::setLinkPos);
+				.ifPresent(pos -> this.linkPos = pos);
 	}
 
 	@Override
