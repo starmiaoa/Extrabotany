@@ -115,7 +115,7 @@ public class EmiExtrabotanyPlugin implements EmiPlugin {
 
 	private void registerBrewCraftingRecipes(EmiRegistry registry) {
 		for (var brew : BotaniaAPI.instance().getBrewRegistry()) {
-			if (brew == BotaniaBrews.fallbackBrew) {
+			if (brew == BotaniaBrews.FALLBACK) {
 				continue;
 			}
 

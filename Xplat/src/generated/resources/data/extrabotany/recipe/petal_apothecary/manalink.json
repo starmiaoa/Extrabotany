@@ -17,13 +17,13 @@
       "tag": "botania:petals/light_blue"
     },
     {
-      "item": "botania:rune_sloth"
+      "item": "botania:rune_of_sloth"
     },
     {
-      "item": "botania:rune_lust"
+      "item": "botania:rune_of_lust"
     },
     {
-      "item": "botania:life_essence"
+      "item": "botania:gaia_spirit"
     }
   ],
   "output": {

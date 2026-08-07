@@ -17,16 +17,16 @@
       "tag": "botania:petals/blue"
     },
     {
-      "item": "botania:rune_pride"
+      "item": "botania:rune_of_pride"
     },
     {
-      "item": "botania:rune_envy"
+      "item": "botania:rune_of_envy"
     },
     {
-      "item": "botania:rune_sloth"
+      "item": "botania:rune_of_sloth"
     },
     {
-      "item": "botania:life_essence"
+      "item": "botania:gaia_spirit"
     }
   ],
   "output": {

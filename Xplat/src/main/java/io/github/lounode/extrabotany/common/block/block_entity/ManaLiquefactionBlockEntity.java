@@ -15,14 +15,14 @@ import net.minecraft.world.level.material.Fluid;
 import vazkii.botania.api.block.Wandable;
 import vazkii.botania.api.mana.ManaSpreader;
 import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.SparkAttachable;
+import vazkii.botania.api.mana.spark.ManaSparkAttachable;
 import vazkii.botania.common.block.block_entity.mana.ManaSpreaderBlockEntity;
 
 import io.github.lounode.extrabotany.common.fluid.ExtraBotanyFluids;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
-public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaReceiver, SparkAttachable, Wandable {
+public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaReceiver, ManaSparkAttachable, Wandable {
 	public static final int DEFAULT_MAX_MANA = 1_000_000;
 	public static final int DEFAULT_MAX_ENERGY = 16_000;
 	public static final int DEFAULT_STORAGE_DRAIN = 1;

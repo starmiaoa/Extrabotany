@@ -37,11 +37,11 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 
 import org.slf4j.Logger;
 
-import vazkii.botania.api.BotaniaForgeCapabilities;
+import vazkii.botania.api.neoforge.BotaniaNeoForgeCapabilities;
 import vazkii.botania.api.BotaniaRegistries;
 import vazkii.botania.api.block.Wandable;
 import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.SparkAttachable;
+import vazkii.botania.api.mana.spark.ManaSparkAttachable;
 import vazkii.botania.api.item.Relic;
 import vazkii.botania.api.mana.ManaItem;
 import vazkii.botania.common.handler.EquipmentHandler;
@@ -208,14 +208,14 @@ public class ForgeCommonInitializer {
 
 	private void attachBlockCaps(RegisterCapabilitiesEvent e) {
 		e.registerBlockEntity(blockApi(ManaReceiver.LOOKUP), ExtraBotanyBlockEntities.MANA_BUFFER, (be, direction) -> be);
-		e.registerBlockEntity(blockApi(SparkAttachable.LOOKUP), ExtraBotanyBlockEntities.MANA_BUFFER, (be, ignored) -> be);
+		e.registerBlockEntity(blockApi(ManaSparkAttachable.LOOKUP), ExtraBotanyBlockEntities.MANA_BUFFER, (be, ignored) -> be);
 		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.MANA_BUFFER, (be, direction) -> be);
 		e.registerBlockEntity(blockApi(ManaReceiver.LOOKUP), ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, (be, direction) -> be);
-		e.registerBlockEntity(blockApi(SparkAttachable.LOOKUP), ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, (be, ignored) -> be);
+		e.registerBlockEntity(blockApi(ManaSparkAttachable.LOOKUP), ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, (be, ignored) -> be);
 		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.QUANTUM_MANA_BUFFER, (be, direction) -> be);
 		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.MANA_GENERATOR, (be, direction) -> be);
 		e.registerBlockEntity(blockApi(ManaReceiver.LOOKUP), ExtraBotanyBlockEntities.MANA_LIQUEFACTION, (be, direction) -> be);
-		e.registerBlockEntity(blockApi(SparkAttachable.LOOKUP), ExtraBotanyBlockEntities.MANA_LIQUEFACTION, (be, ignored) -> be);
+		e.registerBlockEntity(blockApi(ManaSparkAttachable.LOOKUP), ExtraBotanyBlockEntities.MANA_LIQUEFACTION, (be, ignored) -> be);
 		e.registerBlockEntity(blockApi(Wandable.LOOKUP), ExtraBotanyBlockEntities.MANA_LIQUEFACTION, (be, direction) -> be);
 		e.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ExtraBotanyBlockEntities.LIVINGROCK_BARREL,
 				(LivingrockBarrelBlockEntity be, Direction direction) -> new LivingrockBarrelFluidHandler(be));
@@ -229,9 +229,9 @@ public class ForgeCommonInitializer {
 			ci.initCapability(e, baubleItems);
 		}
 
-		attachMappedItemCaps(e, BotaniaForgeCapabilities.getItemApiLookupById(ManaItem.LOOKUP), MANA_ITEM.get());
+		attachMappedItemCaps(e, BotaniaNeoForgeCapabilities.getItemApiLookupById(ManaItem.LOOKUP), MANA_ITEM.get());
 		attachMappedItemCaps(e, ExtrabotanyForgeCapabilities.NATURE_ENERGY_ITEM, NATURE_ENERGY_ITEM.get());
-		attachMappedItemCaps(e, BotaniaForgeCapabilities.getItemApiLookupById(Relic.LOOKUP), RELIC.get());
+		attachMappedItemCaps(e, BotaniaNeoForgeCapabilities.getItemApiLookupById(Relic.LOOKUP), RELIC.get());
 	}
 
 	private static <T> void attachMappedItemCaps(RegisterCapabilitiesEvent e, ItemCapability<T, Void> capability,

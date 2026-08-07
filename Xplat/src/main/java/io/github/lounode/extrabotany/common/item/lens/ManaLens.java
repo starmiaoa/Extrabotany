@@ -3,6 +3,7 @@ package io.github.lounode.extrabotany.common.item.lens;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,7 +33,7 @@ public class ManaLens extends Lens {
 
 	@Override
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		if (burstEntity.level().isClientSide()) {
 			return;
 		}
@@ -69,7 +70,7 @@ public class ManaLens extends Lens {
 	}
 
 	public AABB getAABB(ManaBurst burst) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		return new AABB(burstEntity.getX(), burstEntity.getY(), burstEntity.getZ(),
 				burstEntity.xOld, burstEntity.yOld, burstEntity.zOld).inflate(1);
 	}

@@ -18,7 +18,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 
-import vazkii.botania.api.BotaniaForgeCapabilities;
+import vazkii.botania.api.neoforge.BotaniaNeoForgeCapabilities;
 import vazkii.botania.api.block.WandHUD;
 import vazkii.patchouli.api.PatchouliAPI;
 
@@ -98,7 +98,7 @@ public class ForgeClientInitializer {
 	@SubscribeEvent
 	private static void attachClientCapabilities(RegisterCapabilitiesEvent e) {
 		BlockCapability<WandHUD, Void> wandHudBlockCap =
-				BotaniaForgeCapabilities.getBlockApiLookupById(WandHUD.BLOCK_LOOKUP);
+				BotaniaNeoForgeCapabilities.getBlockApiLookupById(WandHUD.BLOCK_LOOKUP);
 		ExtrabotanyFlowerBlocks.registerWandHudCaps((factory, types) -> Stream.of(types).forEach(
 				blockEntityType -> e.registerBlockEntity(wandHudBlockCap,
 						blockEntityType, (blockEntity, context) -> factory.apply(blockEntity)

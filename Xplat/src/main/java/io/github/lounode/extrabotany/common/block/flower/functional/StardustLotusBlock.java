@@ -17,13 +17,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import vazkii.botania.api.block_entity.SpecialFlowerBlockEntity;
-import vazkii.botania.common.block.flower.SpecialFlowerBlock;
+import vazkii.botania.common.block.flower.PoweredSpecialFlowerBlock;
 
 import io.github.lounode.extrabotany.common.item.equipment.tool.BinderItem;
 
 import java.util.function.Supplier;
 
-public class StardustLotusBlock extends SpecialFlowerBlock {
+public class StardustLotusBlock extends PoweredSpecialFlowerBlock {
 	public StardustLotusBlock(Holder<MobEffect> effect, int effectDuration, Properties properties,
 			Supplier<BlockEntityType<? extends SpecialFlowerBlockEntity>> blockEntityType) {
 		super(effect, effectDuration, properties, blockEntityType);

@@ -15,10 +15,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import vazkii.botania.api.block.Wandable;
 import vazkii.botania.api.mana.ManaPool;
 import vazkii.botania.api.mana.ManaReceiver;
-import vazkii.botania.api.mana.spark.SparkAttachable;
+import vazkii.botania.api.mana.spark.ManaSparkAttachable;
 import vazkii.botania.common.block.block_entity.mana.ManaPoolBlockEntity;
 
-public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, SparkAttachable, Wandable {
+public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, ManaSparkAttachable, Wandable {
 	public static final int MAX_MANA = 64_000_000;
 	public static final int TRANSFER_SPEED = 1_000;
 	public static final String TAG_MANA = "mana";

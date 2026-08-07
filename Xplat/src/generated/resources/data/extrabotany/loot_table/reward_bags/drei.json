@@ -109,7 +109,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:life_essence",
+          "name": "botania:gaia_spirit",
           "weight": 8
         },
         {

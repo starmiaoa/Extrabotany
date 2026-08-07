@@ -65,7 +65,7 @@ public class ExtraBotanyTelemetry {
 				server
 		);
 
-		getInstance().metrics.addCustomChart(new SimplePie("modLoader", () -> EXplatAbstractions.INSTANCE.isForge() ? "forge" : "fabric"));
+		getInstance().metrics.addCustomChart(new SimplePie("modLoader", () -> EXplatAbstractions.INSTANCE.getModLoader().getSerializedName()));
 		getInstance().metrics.addCustomChart(new SimplePie("serverType", () -> server.isDedicatedServer() ? TelemetryProperty.ServerType.OTHER.getSerializedName() : TelemetryProperty.ServerType.LOCAL.getSerializedName()));
 		//new
 		var metricsNew = getInstance().metricsNew;

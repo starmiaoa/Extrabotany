@@ -12,25 +12,25 @@
       "item": "extrabotany:death_ring"
     },
     {
-      "item": "botania:aura_ring_greater"
+      "item": "botania:greater_band_of_aura"
     },
     {
-      "item": "botania:mining_ring"
+      "item": "botania:ring_of_the_mantle"
     },
     {
-      "item": "botania:pixie_ring"
+      "item": "botania:great_fairy_ring"
     },
     {
-      "item": "botania:swap_ring"
+      "item": "botania:ring_of_correction"
     },
     {
-      "item": "botania:water_ring"
+      "item": "botania:ring_of_chordata"
     },
     {
       "item": "extrabotany:dispersive_ring"
     },
     {
-      "item": "botania:reach_ring"
+      "item": "botania:ring_of_far_reach"
     }
   ],
   "mana": 500000,

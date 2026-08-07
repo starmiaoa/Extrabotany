@@ -12,11 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import vazkii.botania.api.block_entity.SpecialFlowerBlockEntity;
-import vazkii.botania.common.block.flower.FloatingSpecialFlowerBlock;
+import vazkii.botania.common.block.flower.PoweredFloatingSpecialFlowerBlock;
 
 import java.util.function.Supplier;
 
-public class FloatingStardustLotusBlock extends FloatingSpecialFlowerBlock {
+public class FloatingStardustLotusBlock extends PoweredFloatingSpecialFlowerBlock {
 	public FloatingStardustLotusBlock(Properties properties,
 			Supplier<BlockEntityType<? extends SpecialFlowerBlockEntity>> blockEntityType) {
 		super(properties, blockEntityType);

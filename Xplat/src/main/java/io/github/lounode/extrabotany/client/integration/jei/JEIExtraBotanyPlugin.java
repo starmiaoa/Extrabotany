@@ -146,7 +146,7 @@ public class JEIExtraBotanyPlugin implements IModPlugin {
 			if (brew == ExtraBotanyBrews.manaCocktail) {
 				continue;
 			}
-			if (brew == BotaniaBrews.fallbackBrew) {
+			if (brew == BotaniaBrews.FALLBACK) {
 				continue;
 			}
 
@@ -171,7 +171,7 @@ public class JEIExtraBotanyPlugin implements IModPlugin {
 	private void registerInfiniteWineRecipes(IRecipeRegistration registry) {
 		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 		for (var brew : BotaniaAPI.instance().getBrewRegistry()) {
-			if (brew == BotaniaBrews.fallbackBrew) {
+			if (brew == BotaniaBrews.FALLBACK) {
 				continue;
 			}
 
@@ -199,7 +199,7 @@ public class JEIExtraBotanyPlugin implements IModPlugin {
 	private void registerHolyWaterGrenadeRecipes(IRecipeRegistration registry) {
 		List<RecipeHolder<CraftingRecipe>> recipes = new ArrayList<>();
 		for (var brew : BotaniaAPI.instance().getBrewRegistry()) {
-			if (brew == BotaniaBrews.fallbackBrew) {
+			if (brew == BotaniaBrews.FALLBACK) {
 				continue;
 			}
 

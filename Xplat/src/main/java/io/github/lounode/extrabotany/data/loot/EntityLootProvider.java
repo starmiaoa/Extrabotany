@@ -33,6 +33,7 @@ public class EntityLootProvider extends EntityLootSubProviderFix {
 	@Override
 	public void generate() {
 		this.add(ExtraBotanyEntityType.GAIA_LEGACY, LootTable.lootTable());
+		this.add(ExtraBotanyEntityType.EGO_MINION, LootTable.lootTable());
 		this.add(ExtraBotanyEntityType.GAIA_III, LootTable.lootTable()
 				.withPool(LootPool.lootPool()
 						.when(EnableRelics.builder())

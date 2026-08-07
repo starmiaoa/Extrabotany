@@ -22,7 +22,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.network.PacketDistributor;
 
-import vazkii.botania.neoforge.xplat.ForgeXplatImpl;
+import vazkii.botania.neoforge.xplat.NeoForgeXplatImpl;
 
 import io.github.lounode.extrabotany.api.ExtrabotanyForgeCapabilities;
 import io.github.lounode.extrabotany.common.block.block_entity.LivingrockBarrelBlockEntity;
@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExForgeXplatImpl extends ForgeXplatImpl implements EXplatAbstractions {
+public class ExForgeXplatImpl extends NeoForgeXplatImpl implements EXplatAbstractions {
 	@Override
 	public void sendToPlayer(ServerPlayer player, ExtrabotanyPacket packet) {
 		PacketDistributor.sendToPlayer(player, packet);

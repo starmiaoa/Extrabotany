@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import vazkii.botania.api.mana.ManaDiscountEvent;
+import vazkii.botania.api.neoforge.mana.ManaDiscountEvent;
 
 import io.github.lounode.extrabotany.common.block.flower.generating.ResoncundBlockEntity;
 import io.github.lounode.extrabotany.common.brew.effect.EternityMobEffect;

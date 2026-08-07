@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "botania:dice"
+            "items": "botania:dice_of_fate"
           }
         ]
       },

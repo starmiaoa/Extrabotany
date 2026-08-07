@@ -3,6 +3,7 @@ package io.github.lounode.extrabotany.common.item.lens;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -24,14 +25,14 @@ public class PotionLens extends Lens {
 		props.maxMana *= 4;
 		props.manaLossPerTick *= 4;
 		Brew brew = BrewUtil.getBrew(stack);
-		if (brew != BotaniaBrews.fallbackBrew) {
+		if (brew != BotaniaBrews.FALLBACK) {
 			props.color = brew.getColor(stack);
 		}
 	}
 
 	@Override
 	public boolean collideBurst(ManaBurst burst, HitResult pos, boolean isManaBlock, boolean shouldKill, ItemStack stack) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		Level level = burstEntity.level();
 		if (level.isClientSide()) {
 			return false;
@@ -40,7 +41,7 @@ public class PotionLens extends Lens {
 			return shouldKill;
 		}
 		Brew brew = BrewUtil.getBrew(stack);
-		if (brew == BotaniaBrews.fallbackBrew) {
+		if (brew == BotaniaBrews.FALLBACK) {
 			return shouldKill;
 		}
 
@@ -68,7 +69,7 @@ public class PotionLens extends Lens {
 	}
 
 	public AABB getAABB(ManaBurst burst) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		return new AABB(burstEntity.getX(), burstEntity.getY(), burstEntity.getZ(),
 				burstEntity.xOld, burstEntity.yOld, burstEntity.zOld).inflate(1);
 	}

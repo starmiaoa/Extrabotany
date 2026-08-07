@@ -15,6 +15,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -130,7 +131,7 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 
 	@Override
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
-		ManaBurstEntity burstEntity = (ManaBurstEntity) burst.entity();
+		Projectile burstEntity = burst.entity();
 		Entity thrower = burstEntity.getOwner();
 
 		if (!(thrower instanceof Player player) || !thrower.isAlive()) {
@@ -169,7 +170,7 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 		}
 	}
 
-	private void rotateToEnemy(ManaBurstEntity burstEntity) {
+	private void rotateToEnemy(Projectile burstEntity) {
 		AABB searchBox = new AABB(burstEntity.getX(), burstEntity.getY(), burstEntity.getZ(),
 				burstEntity.xOld, burstEntity.yOld, burstEntity.zOld).inflate(SEARCH_TARGET_RADIUS);
 		burstEntity.level().getEntitiesOfClass(LivingEntity.class, searchBox).stream()

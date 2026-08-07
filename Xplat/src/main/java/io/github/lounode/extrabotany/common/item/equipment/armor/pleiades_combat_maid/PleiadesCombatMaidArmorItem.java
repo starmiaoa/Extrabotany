@@ -73,7 +73,7 @@ public class PleiadesCombatMaidArmorItem extends StarryIdolArmorItem {
 			}
 			list.add(Component.empty());
 		}
-		TooltipHandler.addOnShift(list, () -> addInformation(stack, null, list, flags));
+		TooltipHandler.addOnShift(list, flags, () -> addInformation(stack, null, list, flags));
 	}
 
 	@Override

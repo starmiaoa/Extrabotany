@@ -30,13 +30,13 @@ import java.util.Map;
 import java.util.Objects;
 
 public class BrewUtil {
-	public static final Brew EMPTY = BotaniaBrews.fallbackBrew;
+	public static final Brew EMPTY = BotaniaBrews.FALLBACK;
 	public static final String TAG_BREW_KEY = "brewKey";
 
 	public static Brew getBrew(ItemStack stack) {
 		Registry<Brew> registry = BotaniaAPI.instance().getBrewRegistry();
 		if (registry == null) {
-			return BotaniaBrews.fallbackBrew;
+			return BotaniaBrews.FALLBACK;
 		}
 
 		ResourceLocation componentLocation = stack.get(BotaniaDataComponents.BREW);
@@ -50,10 +50,10 @@ public class BrewUtil {
 		String key = ItemStackDataHelper.getString(stack, TAG_BREW_KEY, "");
 		ResourceLocation location = ResourceLocation.tryParse(key);
 		if (location == null) {
-			return BotaniaBrews.fallbackBrew;
+			return BotaniaBrews.FALLBACK;
 		}
 		Brew brew = registry.get(location);
-		return brew != null ? brew : BotaniaBrews.fallbackBrew;
+		return brew != null ? brew : BotaniaBrews.FALLBACK;
 	}
 
 	public static void setBrew(ItemStack stack, Brew brew) {

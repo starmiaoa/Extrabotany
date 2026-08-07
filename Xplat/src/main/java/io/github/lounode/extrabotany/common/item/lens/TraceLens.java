@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -24,7 +25,7 @@ public class TraceLens extends Lens {
 
 	@Override
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		if (burstEntity.tickCount < INIT_TICKS) {
 			return;
 		}
@@ -32,7 +33,7 @@ public class TraceLens extends Lens {
 	}
 
 	public void rotateToEnemy(ManaBurst burst) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		LivingEntity target = findTarget(burst);
 		if (target == null) {
 			return;
@@ -50,7 +51,7 @@ public class TraceLens extends Lens {
 
 	@Nullable
 	public LivingEntity findTarget(ManaBurst burst) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		AABB searchBox = new AABB(burstEntity.getX(), burstEntity.getY(), burstEntity.getZ(),
 				burstEntity.xOld, burstEntity.yOld, burstEntity.zOld).inflate(SEARCH_TARGET_RADIUS);
 		return burstEntity.level().getEntitiesOfClass(LivingEntity.class, searchBox).stream()

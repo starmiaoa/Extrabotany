@@ -76,7 +76,7 @@ public final class PotionLensChangePotionRecipe extends CustomRecipe {
 
 		Brew brewFromCocktail = BrewUtil.getBrew(cocktailItem);
 
-		if (brewFromCocktail == BotaniaBrews.fallbackBrew) {
+		if (brewFromCocktail == BotaniaBrews.FALLBACK) {
 			return ItemStack.EMPTY;
 		}
 

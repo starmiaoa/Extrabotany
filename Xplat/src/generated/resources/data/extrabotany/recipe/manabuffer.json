@@ -6,10 +6,10 @@
       "item": "botania:gaia_ingot"
     },
     "K": {
-      "item": "botania:fabulous_pool"
+      "item": "botania:fabulous_mana_pool"
     },
     "M": {
-      "item": "botania:lens_normal"
+      "item": "botania:mana_lens"
     }
   },
   "pattern": [

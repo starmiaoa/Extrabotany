@@ -11,13 +11,13 @@
       "tag": "botania:petals/black"
     },
     {
-      "item": "botania:life_essence"
+      "item": "botania:gaia_spirit"
     },
     {
-      "item": "botania:rune_autumn"
+      "item": "botania:rune_of_autumn"
     },
     {
-      "item": "botania:rune_gluttony"
+      "item": "botania:rune_of_gluttony"
     }
   ],
   "output": {

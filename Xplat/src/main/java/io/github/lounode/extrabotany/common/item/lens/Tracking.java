@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +27,7 @@ public class Tracking extends Lens {
 
 	@Override
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
-		ManaBurstEntity burstEntity = (ManaBurstEntity) burst.entity();
+		Projectile burstEntity = burst.entity();
 		Entity thrower = burstEntity.getOwner();
 
 		if (!(thrower instanceof Player player) || !thrower.isAlive()) {
@@ -64,7 +65,7 @@ public class Tracking extends Lens {
 		}
 	}
 
-	private void rotateToEnemy(ManaBurstEntity burstEntity) {
+	private void rotateToEnemy(Projectile burstEntity) {
 		AABB searchBox = new AABB(burstEntity.getX(), burstEntity.getY(), burstEntity.getZ(),
 				burstEntity.xOld, burstEntity.yOld, burstEntity.zOld).inflate(SEARCH_TARGET_RADIUS);
 		burstEntity.level().getEntitiesOfClass(LivingEntity.class, searchBox).stream()

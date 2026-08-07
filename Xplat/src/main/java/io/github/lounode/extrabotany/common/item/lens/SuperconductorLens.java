@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.item.lens;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -24,7 +25,7 @@ public class SuperconductorLens extends Lens {
 
 	@Override
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		Level level = burstEntity.level();
 		if (level.isClientSide()) {
 			return;

@@ -6,13 +6,13 @@
       "tag": "c:ingots/terrasteel"
     },
     "1": {
-      "item": "botania:life_essence"
+      "item": "botania:gaia_spirit"
     },
     "2": {
       "item": "extrabotany:the_origin"
     },
     "3": {
-      "item": "botania:terra_sword"
+      "item": "botania:terra_blade"
     }
   },
   "pattern": [

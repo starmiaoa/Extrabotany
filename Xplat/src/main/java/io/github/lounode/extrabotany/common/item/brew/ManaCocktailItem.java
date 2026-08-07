@@ -28,7 +28,7 @@ public class ManaCocktailItem extends BaseBrewItem {
 	@Override
 	public void addToCreativeTab(Item me, CreativeModeTab.Output output) {
 		for (Brew brew : BotaniaAPI.instance().getBrewRegistry()) {
-			if (brew == BotaniaBrews.fallbackBrew) {
+			if (brew == BotaniaBrews.FALLBACK) {
 				continue;
 			}
 			if (brew == ExtraBotanyBrews.manaCocktail) {

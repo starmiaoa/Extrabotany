@@ -6,19 +6,19 @@
       "item": "extrabotany:the_origin"
     },
     {
-      "item": "botania:knockback_belt"
+      "item": "botania:tectonic_girdle"
     },
     {
-      "item": "botania:super_cloud_pendant"
+      "item": "botania:nimbus_amulet"
     },
     {
-      "item": "botania:super_lava_pendant"
+      "item": "botania:crimson_pendant"
     },
     {
-      "item": "botania:ice_pendant"
+      "item": "botania:snowflake_pendant"
     },
     {
-      "item": "botania:itemfinder"
+      "item": "botania:third_eye"
     }
   ],
   "mana": 500000,

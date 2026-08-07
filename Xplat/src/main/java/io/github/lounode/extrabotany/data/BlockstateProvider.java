@@ -112,7 +112,7 @@ public class BlockstateProvider extends vazkii.botania.data.BlockstateProvider {
 			var pillarModel = ModelTemplates.CUBE_COLUMN.create(pillar,
 					TextureMapping.column(getBlockTexture(pillar, ""), getBlockTexture(pillar, "_top")),
 					this.modelOutput);
-			this.blockstates.add(BlockModelGeneratorsAccessor.botania_createAxisAlignedPillarBlock(pillar, pillarModel));
+			this.blockStateGenerators.add(BlockModelGeneratorsAccessor.botania_createAxisAlignedPillarBlock(pillar, pillarModel));
 
 			ResourceLocation chiseledId = prefix("chiseled_" + variant + "_quartz_block");
 			Block chiseled = BuiltInRegistries.BLOCK.get(chiseledId);
@@ -140,7 +140,7 @@ public class BlockstateProvider extends vazkii.botania.data.BlockstateProvider {
 
 		takeAll(remainingBlocks, b -> b instanceof StairBlock).forEach(b -> {
 			String name = BuiltInRegistries.BLOCK.getKey(b).getPath();
-			String baseName = name.substring(0, name.length() - vazkii.botania.common.lib.LibBlockNames.STAIR_SUFFIX.length());
+			String baseName = name.substring(0, name.length() - vazkii.botania.common.lib.LibBlockNames.STAIRS_SUFFIX.length());
 			boolean quartz = name.contains("quartz");
 			if (quartz) {
 				baseName = baseName + "_block";
@@ -217,7 +217,7 @@ public class BlockstateProvider extends vazkii.botania.data.BlockstateProvider {
 
 	private void trophy(Set<Block> remainingBlocks) {
 		ResourceLocation model = getModelLocation(ExtraBotanyBlocks.trophy);
-		this.blockstates.add(MultiVariantGenerator.multiVariant(ExtraBotanyBlocks.trophy)
+		this.blockStateGenerators.add(MultiVariantGenerator.multiVariant(ExtraBotanyBlocks.trophy)
 				.with(PropertyDispatch.property(HorizontalDirectionalBlock.FACING)
 						.select(Direction.SOUTH, Variant.variant().with(VariantProperties.MODEL, model))
 						.select(Direction.WEST, Variant.variant().with(VariantProperties.MODEL, model).with(VariantProperties.Y_ROT, VariantProperties.Rotation.R90))

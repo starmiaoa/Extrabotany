@@ -34,7 +34,7 @@ public class CraftingRecipeOverrideProvider implements DataProvider {
 
 		JsonObject key = new JsonObject();
 		key.add("C", item("extrabotany:the_chaos"));
-		key.add("M", item("botania:mana_gun"));
+		key.add("M", item("botania:mana_blaster"));
 		key.add("P", tag("c:ingots/photonium"));
 		key.add("S", tag("c:ingots/manasteel"));
 		root.add("key", key);

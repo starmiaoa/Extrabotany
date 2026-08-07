@@ -735,13 +735,13 @@ public class CraftingRecipeProvider extends ExtraBotanyRecipeProvider {
 
 	protected void registerForQuartz(RecipeOutput consumer, String variant, ItemLike baseItem) {
 		Block block = getBlockOrThrow(prefix(variant + "_block"));
-		Block stairs = getBlockOrThrow(prefix(variant + LibBlockNames.STAIR_SUFFIX));
+		Block stairs = getBlockOrThrow(prefix(variant + LibBlockNames.STAIRS_SUFFIX));
 		Block slab = getBlockOrThrow(prefix(variant + LibBlockNames.SLAB_SUFFIX));
 		Block chiseled = getBlockOrThrow(prefix("chiseled_" + variant + "_block"));
 		Block bricks = getBlockOrThrow(prefix(variant + "_bricks"));
 		Block pillar = getBlockOrThrow(prefix(variant + "_pillar"));
 		Block smooth = getBlockOrThrow(prefix("smooth_" + variant));
-		Block smoothStairs = getBlockOrThrow(prefix("smooth_" + variant + LibBlockNames.STAIR_SUFFIX));
+		Block smoothStairs = getBlockOrThrow(prefix("smooth_" + variant + LibBlockNames.STAIRS_SUFFIX));
 		Block smoothSlab = getBlockOrThrow(prefix("smooth_" + variant + LibBlockNames.SLAB_SUFFIX));
 
 		ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, block)
@@ -882,7 +882,7 @@ public class CraftingRecipeProvider extends ExtraBotanyRecipeProvider {
 		// Core of God — reset back to the default (Herrscher) variant.
 		ShapelessRecipeBuilder.shapeless(RecipeCategory.COMBAT, ExtraBotanyItems.coreOfTheVoid)
 				.requires(ExtraBotanyItems.coreOfTheVoid)
-				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.FLUEGEL_TIARA))
+				.unlockedBy("has_item", conditionsFromItem(BotaniaItems.FLUGEL_TIARA))
 				.save(consumer, prefix("core_of_the_void_reset"));
 	}
 

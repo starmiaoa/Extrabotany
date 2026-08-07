@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.item.lens;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public class PushLens extends Lens {
 	@Override
 	public void updateBurst(ManaBurst burst, ItemStack stack) {
-		ThrowableProjectile burstEntity = burst.entity();
+		Projectile burstEntity = burst.entity();
 		List<LivingEntity> entities = burstEntity.level().getEntitiesOfClass(LivingEntity.class, getPushAABB(burst));
 
 		if (burst.isFake()) {
@@ -26,7 +27,7 @@ public class PushLens extends Lens {
 	}
 
 	public AABB getPushAABB(ManaBurst burst) {
-		ThrowableProjectile entity = burst.entity();
+		Projectile entity = burst.entity();
 		return new AABB(
 				entity.getX(), entity.getY(), entity.getZ(),
 				entity.xOld, entity.yOld, entity.zOld

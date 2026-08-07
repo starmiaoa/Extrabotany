@@ -39,7 +39,7 @@ public class ColorHandler {
 			}
 
 			Brew brew = BrewUtil.getBrew(s);
-			if (brew == BotaniaBrews.fallbackBrew) {
+			if (brew == BotaniaBrews.FALLBACK) {
 				return 0xFF000000 | (s.getItem() instanceof TaintedBloodPendantItem ? 0xC6000E : 0x989898);
 			}
 

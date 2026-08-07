@@ -77,7 +77,7 @@ public class StarryIdolArmorItem extends ArmorItem implements CustomCreativeTabC
 
 	@Override
 	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> list, TooltipFlag flags) {
-		TooltipHandler.addOnShift(list, () -> addInformation(stack, null, list, flags));
+		TooltipHandler.addOnShift(list, flags, () -> addInformation(stack, null, list, flags));
 	}
 
 	@Override

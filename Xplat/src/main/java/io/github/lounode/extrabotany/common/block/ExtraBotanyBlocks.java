@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 
 import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 import static vazkii.botania.common.lib.LibBlockNames.SLAB_SUFFIX;
-import static vazkii.botania.common.lib.LibBlockNames.STAIR_SUFFIX;
+import static vazkii.botania.common.lib.LibBlockNames.STAIRS_SUFFIX;
 
 public final class ExtraBotanyBlocks {
 
@@ -160,9 +160,9 @@ public final class ExtraBotanyBlocks {
 		r.accept(gaiaQuartzBricks, prefix(LibBlockNames.GAIA_QUARTZ + "_bricks"));
 		r.accept(gaiaQuartzPillar, prefix(LibBlockNames.GAIA_QUARTZ + "_pillar"));
 		r.accept(gaiaQuartzSlab, prefix(LibBlockNames.GAIA_QUARTZ + SLAB_SUFFIX));
-		r.accept(gaiaQuartzStairs, prefix(LibBlockNames.GAIA_QUARTZ + STAIR_SUFFIX));
+		r.accept(gaiaQuartzStairs, prefix(LibBlockNames.GAIA_QUARTZ + STAIRS_SUFFIX));
 		r.accept(smoothGaiaQuartz, prefix("smooth_" + LibBlockNames.GAIA_QUARTZ));
-		r.accept(smoothGaiaQuartzStairs, prefix("smooth_" + LibBlockNames.GAIA_QUARTZ + STAIR_SUFFIX));
+		r.accept(smoothGaiaQuartzStairs, prefix("smooth_" + LibBlockNames.GAIA_QUARTZ + STAIRS_SUFFIX));
 		r.accept(smoothGaiaQuartzSlab, prefix("smooth_" + LibBlockNames.GAIA_QUARTZ + SLAB_SUFFIX));
 
 		r.accept(elementiumQuartzBlock, prefix(LibBlockNames.ELEMENTIUM_QUARTZ + "_block"));
@@ -170,9 +170,9 @@ public final class ExtraBotanyBlocks {
 		r.accept(elementiumQuartzBricks, prefix(LibBlockNames.ELEMENTIUM_QUARTZ + "_bricks"));
 		r.accept(elementiumQuartzPillar, prefix(LibBlockNames.ELEMENTIUM_QUARTZ + "_pillar"));
 		r.accept(elementiumQuartzSlab, prefix(LibBlockNames.ELEMENTIUM_QUARTZ + SLAB_SUFFIX));
-		r.accept(elementiumQuartzStairs, prefix(LibBlockNames.ELEMENTIUM_QUARTZ + STAIR_SUFFIX));
+		r.accept(elementiumQuartzStairs, prefix(LibBlockNames.ELEMENTIUM_QUARTZ + STAIRS_SUFFIX));
 		r.accept(smoothElementiumQuartz, prefix("smooth_" + LibBlockNames.ELEMENTIUM_QUARTZ));
-		r.accept(smoothElementiumQuartzStairs, prefix("smooth_" + LibBlockNames.ELEMENTIUM_QUARTZ + STAIR_SUFFIX));
+		r.accept(smoothElementiumQuartzStairs, prefix("smooth_" + LibBlockNames.ELEMENTIUM_QUARTZ + STAIRS_SUFFIX));
 		r.accept(smoothElementiumQuartzSlab, prefix("smooth_" + LibBlockNames.ELEMENTIUM_QUARTZ + SLAB_SUFFIX));
 
 	}

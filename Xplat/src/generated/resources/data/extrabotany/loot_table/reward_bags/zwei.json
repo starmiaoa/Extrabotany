@@ -13,7 +13,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_water",
+          "name": "botania:rune_of_water",
           "weight": 50
         },
         {
@@ -25,7 +25,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_fire",
+          "name": "botania:rune_of_fire",
           "weight": 50
         },
         {
@@ -37,7 +37,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_earth",
+          "name": "botania:rune_of_earth",
           "weight": 50
         },
         {
@@ -49,7 +49,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_air",
+          "name": "botania:rune_of_air",
           "weight": 50
         },
         {
@@ -61,7 +61,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_spring",
+          "name": "botania:rune_of_spring",
           "weight": 30
         },
         {
@@ -73,7 +73,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_summer",
+          "name": "botania:rune_of_summer",
           "weight": 30
         },
         {
@@ -85,7 +85,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_autumn",
+          "name": "botania:rune_of_autumn",
           "weight": 30
         },
         {
@@ -97,7 +97,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_winter",
+          "name": "botania:rune_of_winter",
           "weight": 30
         },
         {
@@ -109,7 +109,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_mana",
+          "name": "botania:rune_of_mana",
           "weight": 10
         },
         {
@@ -121,7 +121,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_lust",
+          "name": "botania:rune_of_lust",
           "weight": 10
         },
         {
@@ -133,7 +133,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_gluttony",
+          "name": "botania:rune_of_gluttony",
           "weight": 10
         },
         {
@@ -145,7 +145,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_greed",
+          "name": "botania:rune_of_greed",
           "weight": 10
         },
         {
@@ -157,7 +157,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_sloth",
+          "name": "botania:rune_of_sloth",
           "weight": 10
         },
         {
@@ -169,7 +169,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_wrath",
+          "name": "botania:rune_of_wrath",
           "weight": 10
         },
         {
@@ -181,7 +181,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_envy",
+          "name": "botania:rune_of_envy",
           "weight": 10
         },
         {
@@ -193,7 +193,7 @@
               "function": "minecraft:set_count"
             }
           ],
-          "name": "botania:rune_pride",
+          "name": "botania:rune_of_pride",
           "weight": 10
         }
       ],
