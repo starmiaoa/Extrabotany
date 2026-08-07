@@ -24,17 +24,19 @@ public abstract class LeftClickPack implements ExtrabotanyPacket {
 	public abstract ResourceLocation getFabricId();
 
 	protected static void executeRateLimited(MinecraftServer server, ServerPlayer player, BooleanSupplier action) {
-		server.execute(() -> {
-			long gameTime = player.level().getGameTime();
-			Long lastUse = LAST_SUCCESSFUL_USE.get(player);
-			if (lastUse != null && gameTime >= lastUse && gameTime - lastUse < MIN_INTERVAL_TICKS) {
-				return;
-			}
-			if (action.getAsBoolean()) {
-				LAST_SUCCESSFUL_USE.put(player, gameTime);
-				player.resetAttackStrengthTicker();
-			}
-		});
+		// NeoForge payload handlers run synchronously on the game thread, so no dispatch is needed.
+		// Delaying via server.execute() pushes the attack-strength check to the next tick, by which
+		// point the client's own START_DIGGING (sent right after the left-click packet) has already
+		// reset the cooldown -- making getAttackStrengthScale(0F) != 1 and the shot fire at random.
+		long gameTime = player.level().getGameTime();
+		Long lastUse = LAST_SUCCESSFUL_USE.get(player);
+		if (lastUse != null && gameTime >= lastUse && gameTime - lastUse < MIN_INTERVAL_TICKS) {
+			return;
+		}
+		if (action.getAsBoolean()) {
+			LAST_SUCCESSFUL_USE.put(player, gameTime);
+			player.resetAttackStrengthTicker();
+		}
 	}
 
 	public abstract void handle(MinecraftServer server, ServerPlayer player);
