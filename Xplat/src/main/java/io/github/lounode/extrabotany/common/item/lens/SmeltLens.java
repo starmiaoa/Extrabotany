@@ -20,7 +20,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import vazkii.botania.api.block.Bound;
 import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.block.block_entity.mana.ManaSpreaderBlockEntity;
@@ -84,15 +83,9 @@ public class SmeltLens extends Lens {
 					Vec3 dropPosition;
 					if (doWarp && world.getBlockEntity(source.get().pos()) instanceof ManaSpreaderBlockEntity spreader) {
 						Vec3 sourceVec = Vec3.atCenterOf(source.get().pos());
-						/* NB: this looks backwards but it's right. spreaders take rotX/rotY to respectively mean
-						* "rotation *parallel* to the X and Y axes", while vanilla's methods take XRot/YRot
-						* to respectively mean "rotation *around* the X and Y axes".
-						* See also the ManaBurstEntity constructor.
-						* TODO consider renaming our versions to match vanilla
-						*/
-						float xRot = spreader.getRotationY();
-						float yRot = -(spreader.getRotationX() + 90F);
-						Vec3 inverseSpreaderDirection = ManaBurstEntity.calculateBurstVelocity(xRot, yRot).normalize().reverse();
+						float xRot = spreader.getXRot();
+						float yRot = spreader.getYRot();
+						Vec3 inverseSpreaderDirection = ManaBurstEntity.calculateBurstVelocity(yRot, xRot, -1.0F);
 						dropPosition = sourceVec.add(inverseSpreaderDirection);
 					} else {
 						dropPosition = Vec3.atCenterOf(collidePos);

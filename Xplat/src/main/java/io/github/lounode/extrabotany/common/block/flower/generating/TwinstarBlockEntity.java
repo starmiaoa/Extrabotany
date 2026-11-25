@@ -82,7 +82,7 @@ public class TwinstarBlockEntity extends ExtraGeneratingFlowerBlockEntity implem
 			return 0;
 		}
 
-		return Math.min(getTemperatureMax(), tempMax) - Math.min(getTemperatureMin(), tempMin);
+		return Math.max(0, Math.min(getTemperatureMax(), tempMax) - Math.max(getTemperatureMin(), tempMin));
 	}
 
 	public int getTemperatureMax() {

@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,12 +21,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.Nullable;
 
-import vazkii.botania.common.block.BotaniaWaterloggedBlock;
+import vazkii.botania.common.block.BotaniaWaterloggedEntityBlock;
 
 import io.github.lounode.extrabotany.common.block.block_entity.CocoonOfDesireBlockEntity;
 import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockEntities;
 
-public class CocoonOfDesireBlock extends BotaniaWaterloggedBlock implements EntityBlock {
+public class CocoonOfDesireBlock extends BotaniaWaterloggedEntityBlock {
 	private static final VoxelShape SHAPE = box(3.0D, 0.0D, 3.0D, 13.0D, 14.0D, 13.0D);
 
 	public CocoonOfDesireBlock(Properties properties) {

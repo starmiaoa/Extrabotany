@@ -40,7 +40,7 @@ public class GaiaSpawnMissile<E extends Gaia> extends Behavior<E> {
 				gaia.getZ() + (Math.random() - 0.5 * 0.1)
 		);
 		if (missile.findTarget()) {
-			gaia.playSound(BotaniaSounds.missile, 1F, 0.8F + (float) Math.random() * 0.2F);
+			gaia.playSound(BotaniaSounds.MISSILE, 1F, 0.8F + (float) Math.random() * 0.2F);
 			gaia.level().addFreshEntity(missile);
 		}
 	}

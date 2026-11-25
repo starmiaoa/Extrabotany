@@ -78,7 +78,7 @@ public final class EgoWeaponFire {
 		}
 		Vec3 start = phantomStart(targetPos, angle, rand);
 		shooter.level().addFreshEntity(new PhantomSwordEntity(shooter.level(), shooter, start, targetPos, 0, 9));
-		shooter.playSound(BotaniaSounds.terraBlade, 0.4F, 1.4F);
+		shooter.playSound(BotaniaSounds.TERRABLADE, 0.4F, 1.4F);
 	}
 
 	private static Vec3 phantomStart(Vec3 targetPos, double angle, RandomSource rand) {

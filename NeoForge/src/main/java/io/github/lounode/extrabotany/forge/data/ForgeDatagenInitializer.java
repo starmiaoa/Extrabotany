@@ -100,12 +100,12 @@ public class ForgeDatagenInitializer {
 		generator.addProvider(evt.includeServer(), new StonesiaProvider(output).withLookupProvider(evt.getLookupProvider()));
 		generator.addProvider(evt.includeServer(), new EdelweissRecipeProvider(output).withLookupProvider(evt.getLookupProvider()));
 		generator.addProvider(evt.includeServer(), new OmnivioletProvider(output).withLookupProvider(evt.getLookupProvider()));
+		generator.addProvider(evt.includeServer(), AdvancementProvider.create(output, evt.getLookupProvider()));
 
 		generator.addProvider(evt.includeClient(), new BlockstateProvider(output));
 		generator.addProvider(evt.includeClient(), new FloatingFlowerModelProvider(output));
 		generator.addProvider(evt.includeClient(), new ItemModelProvider(output));
 		generator.addProvider(evt.includeClient(), new PottedPlantModelProvider(output));
-		generator.addProvider(evt.includeClient(), AdvancementProvider.create(output, evt.getLookupProvider()));
 		generator.addProvider(evt.includeClient(), new SoundProvider(output, LibMisc.MOD_ID));
 		generator.addProvider(evt.includeClient(), new PatchouliBookProvider(output));
 	}

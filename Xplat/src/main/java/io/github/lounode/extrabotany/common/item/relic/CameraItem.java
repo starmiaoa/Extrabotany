@@ -75,7 +75,7 @@ public class CameraItem extends RelicItem implements IShadowium {
 
 	@Override
 	public void releaseUsing(ItemStack stack, Level world, LivingEntity entity, int timeLeft) {
-		if (!(entity instanceof Player player)) {
+		if (world.isClientSide() || !(entity instanceof Player player)) {
 			return;
 		}
 
@@ -136,6 +136,9 @@ public class CameraItem extends RelicItem implements IShadowium {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, selected);
+		if (world.isClientSide()) {
+			return;
+		}
 		ItemStack usingItem = player.getUseItem();
 
 		if (usingItem.isEmpty() || !(usingItem.getItem() instanceof CameraItem)) {

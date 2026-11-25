@@ -97,8 +97,8 @@ public class GaiaTeleport<E extends Gaia> extends Behavior<E> {
 		setTeleportDelay(gaia, getTeleportDelayBase(gaia));
 
 		//play sound
-		gaia.level().playSound(null, oldX, oldY, oldZ, BotaniaSounds.gaiaTeleport, gaia.getSoundSource(), 1F, 1F);
-		gaia.playSound(BotaniaSounds.gaiaTeleport, 1F, 1F);
+		gaia.level().playSound(null, oldX, oldY, oldZ, BotaniaSounds.GAIA_TELEPORT, gaia.getSoundSource(), 1F, 1F);
+		gaia.playSound(BotaniaSounds.GAIA_TELEPORT, 1F, 1F);
 
 		particles(gaia, new Vec3(oldX, oldY, oldZ), new Vec3(newX, newY, newZ));
 	}

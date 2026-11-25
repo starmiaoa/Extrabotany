@@ -1,18 +1,17 @@
 package io.github.lounode.extrabotany.common.impl;
 
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
-
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
 import net.neoforged.neoforge.event.level.LevelEvent;
+
 import io.github.lounode.extrabotany.api.level.Wind;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WindImpl implements Wind {
 
-	private static final Map<Level, LevelWind> WIND_MAP = new Reference2ReferenceOpenHashMap<>();
+	private static final Map<Level, LevelWind> WIND_MAP = new ConcurrentHashMap<>();
 
 	@Override
 	public double getWindLevel(Level level, Vec3 position) {
@@ -60,10 +59,6 @@ public class WindImpl implements Wind {
 		public double getWindLevel(Vec3 position) {
 			double height = position.y();
 
-			double seaLevel = level.getSeaLevel();
-			double maxHeight = level.getMaxBuildHeight();
-			double range = maxHeight - seaLevel;
-
 			double delta = height - peakHeight;
 			double sigma = 20.0;
 
@@ -85,14 +80,16 @@ public class WindImpl implements Wind {
 
 	public static class EventHandler {
 
-			public static void onLevelLoad(LevelEvent.Load event) {
-			Level level = (Level) event.getLevel();
-			WIND_MAP.computeIfAbsent(level, LevelWind::new);
+		public static void onLevelLoad(LevelEvent.Load event) {
+			if (event.getLevel() instanceof Level level) {
+				WIND_MAP.computeIfAbsent(level, LevelWind::new);
+			}
 		}
 
-			public static void onLevelUnLoad(LevelEvent.Unload event) {
-			Level level = (Level) event.getLevel();
-			WIND_MAP.remove(level);
+		public static void onLevelUnLoad(LevelEvent.Unload event) {
+			if (event.getLevel() instanceof Level level) {
+				WIND_MAP.remove(level);
+			}
 		}
 
 		public static void onLevelTick(Level level) {

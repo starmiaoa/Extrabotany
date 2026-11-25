@@ -226,7 +226,7 @@ public class CraftingRecipeProvider extends ExtraBotanyRecipeProvider {
 		ShapedRecipeBuilder.shaped(RecipeCategory.TOOLS, ExtraBotanyItems.cosmicCarKey)
 				.define('M', ConventionalBotaniaTags.Items.MANASTEEL_INGOTS)
 				.define('T', ExtraBotanyItems.theOrigin)
-				.define('E', BotaniaItems.ENDER_AIR_BOTTLE)
+				.define('E', BotaniaTags.Items.ENDER_ESSENCES)
 				.define('P', Items.ENDER_EYE)
 				.pattern("EPE")
 				.pattern("MTM")

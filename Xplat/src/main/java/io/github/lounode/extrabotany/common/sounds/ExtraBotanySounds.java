@@ -23,6 +23,7 @@ public class ExtraBotanySounds {
 	public static final SoundEvent WALKING_CANE_USE = makeSoundEvent("item.walking_cane.use");
 	public static final SoundEvent SPEAR_OF_SUBSPACE_USE = makeSoundEvent("item.spear_of_subspace.use");
 	public static final SoundEvent FLAMESCION_ULT = makeSoundEvent("item.flamescion_weapon.ult");
+	public static final SoundEvent FLAMESCION_SLASH = makeSoundEvent("item.flamescion_weapon.slash");
 
 	public static final SoundEvent MUSIC_GAIA3 = makeSoundEvent("music.gaia3");
 	public static final SoundEvent MUSIC_HERRSCHER = makeSoundEvent("music.herrscher");
@@ -34,6 +35,8 @@ public class ExtraBotanySounds {
 	public static final SoundEvent ARMOR_EQUIP_WARRIOR = makeSoundEvent("item.armor.equip_warrior");
 	public static final SoundEvent BELL_FLOWER_RING = makeSoundEvent("block.bellflower.ring");
 	public static final SoundEvent MOTOR_CYCLONE = makeSoundEvent("entity.motor.cyclone");
+	public static final SoundEvent MOTOR_RIDEON = makeSoundEvent("entity.motor.rideon");
+	public static final SoundEvent MOTOR_SHOOT = makeSoundEvent("entity.motor.shoot");
 
 	private static SoundEvent makeSoundEvent(String name) {
 		SoundEvent event = SoundEvent.createVariableRangeEvent(prefix(name));

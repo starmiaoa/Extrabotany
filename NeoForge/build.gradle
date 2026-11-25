@@ -224,7 +224,7 @@ task apiJar(type: Jar, dependsOn: classes) {
     from(sourceSets.main.allJava)
     from(sourceSets.main.output)
 
-    include 'java/io/github/lounode/extrabotany/api/**'
+    include 'io/github/lounode/extrabotany/api/**'
 
     archiveClassifier = 'api'
 }

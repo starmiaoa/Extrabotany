@@ -67,7 +67,7 @@ public class ModelVoidHerrscher extends HumanoidModel<VoidHerrscher> {
 				PartPose.offsetAndRotation(4.0F, -15.8F, 5.0F, 0.0F, 0.0F, 0.1745329F));
 		for (int i = 1; i <= 3; i++) {
 			root.addOrReplaceChild("shield" + i, CubeListBuilder.create()
-							.texOffs(0, 113).addBox(-6.0F, -1.0F, 9.0F, 12.0F, 11.0F, 0.0F),
+							.texOffs(0, 113).addBox(-6.0F, -1.0F, 10.5F, 12.0F, 11.0F, 0.0F),
 					PartPose.ZERO);
 		}
 		return LayerDefinition.create(mesh, 128, 128);
@@ -76,11 +76,58 @@ public class ModelVoidHerrscher extends HumanoidModel<VoidHerrscher> {
 	@Override
 	public void setupAnim(VoidHerrscher entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		copyProperties();
 
 		boolean rankII = entity.isRankIIRenderState();
-		leftWing.visible = rankII;
-		rightWing.visible = rankII;
+		boolean rankIII = entity.isRankIIIRenderState();
+		boolean transitioning = entity.isTransitioning();
+		int castState = entity.getCastState();
+
+		// Sovereign levitation & casting stances
+		if (transitioning || castState == VoidHerrscher.CAST_JUDGE) {
+			float sway = Mth.sin(ageInTicks * 0.2F) * 0.08F;
+			rightArm.xRot = -2.35F + sway;
+			rightArm.zRot = 0.48F;
+			leftArm.xRot = -2.35F - sway;
+			leftArm.zRot = -0.48F;
+			rightLeg.xRot = 0.18F + sway * 0.5F;
+			leftLeg.xRot = 0.08F - sway * 0.5F;
+			rightLeg.zRot = 0.04F;
+			leftLeg.zRot = -0.04F;
+		} else if (castState == VoidHerrscher.CAST_BARRAGE || castState == VoidHerrscher.CAST_COLLAPSE) {
+			rightArm.xRot = -1.65F + Mth.sin(ageInTicks * 0.35F) * 0.12F;
+			rightArm.zRot = 0.18F;
+			leftArm.xRot = -0.45F;
+			leftArm.zRot = -0.32F;
+		} else if (rankII) {
+			// Hovering Empress posture
+			float breath = Mth.sin(ageInTicks * 0.10F);
+			rightArm.xRot = -0.22F + breath * 0.06F;
+			rightArm.zRot = 0.24F + breath * 0.05F;
+			leftArm.xRot = -0.22F - breath * 0.06F;
+			leftArm.zRot = -0.24F - breath * 0.05F;
+			rightLeg.xRot = 0.16F + breath * 0.05F;
+			leftLeg.xRot = 0.06F - breath * 0.04F;
+			rightLeg.zRot = 0.03F;
+			leftLeg.zRot = -0.03F;
+		}
+
+		copyProperties();
+
+		boolean showWings = rankII || (transitioning && entity.getTransitionTargetRank() >= 2 && entity.getTransitionProgress(0.0F) > 0.35F);
+		leftWing.visible = showWings;
+		rightWing.visible = showWings;
+		if (showWings) {
+			float flapSpeed = rankIII ? 0.14F : 0.10F;
+			float flap = Mth.sin(ageInTicks * flapSpeed) * (rankIII ? 0.16F : 0.11F);
+			float unfold = transitioning && !rankII
+					? Mth.clamp((entity.getTransitionProgress(0.0F) - 0.35F) / 0.55F, 0.0F, 1.0F)
+					: 1.0F;
+			float sweep = Mth.lerp(unfold, 0.85F, 0.22F);
+			leftWing.yRot = sweep + flap;
+			rightWing.yRot = -(sweep + flap);
+			leftWing.zRot = -0.1745329F - flap * 0.35F;
+			rightWing.zRot = 0.1745329F + flap * 0.35F;
+		}
 
 		int shields = entity.getRotatingShieldsRenderState();
 		shield1.visible = shields > 0;
@@ -88,10 +135,13 @@ public class ModelVoidHerrscher extends HumanoidModel<VoidHerrscher> {
 		shield3.visible = shields > 2;
 		if (shields > 0) {
 			float divisor = Math.max(1, shields);
-			float base = Mth.sin(ageInTicks * 0.1F);
-			shield1.yRot = base + Mth.TWO_PI / divisor;
-			shield2.yRot = base + Mth.TWO_PI / divisor * 2.0F;
-			shield3.yRot = base + Mth.TWO_PI / divisor * 3.0F;
+			float orbit = ageInTicks * 0.085F;
+			shield1.yRot = orbit + Mth.TWO_PI / divisor;
+			shield2.yRot = orbit + Mth.TWO_PI / divisor * 2.0F;
+			shield3.yRot = orbit + Mth.TWO_PI / divisor * 3.0F;
+			shield1.y = Mth.sin(ageInTicks * 0.12F) * 1.4F;
+			shield2.y = Mth.sin(ageInTicks * 0.12F + 2.094F) * 1.4F;
+			shield3.y = Mth.sin(ageInTicks * 0.12F + 4.188F) * 1.4F;
 		}
 	}
 

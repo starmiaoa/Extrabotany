@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 public class PatchouliTemplateXModMixinBuilder {
 	@Inject(method = "getTemplate", at = @At("RETURN"), remap = false, cancellable = true)
 	private void getTemplate(ResourceLocation id, CallbackInfoReturnable<Supplier<BookTemplate>> cir) {
-		if (cir.getReturnValue() == null) {
+		if (cir.getReturnValue() == null && PatchouliUtil.INSTANCE != null) {
 			cir.setReturnValue(PatchouliUtil.INSTANCE.getTemplate(id));
 		}
 	}

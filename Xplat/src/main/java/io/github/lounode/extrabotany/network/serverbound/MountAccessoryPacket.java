@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import vazkii.botania.common.handler.EquipmentHandler;
 
+import io.github.lounode.extrabotany.common.entity.MotorEntity;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.MountAccessoryItem;
 import io.github.lounode.extrabotany.network.ExtrabotanyPacket;
 
@@ -40,7 +41,7 @@ public record MountAccessoryPacket() implements ExtrabotanyPacket {
 
 	public static void handle(MountAccessoryPacket packet, MinecraftServer server, ServerPlayer player) {
 		server.execute(() -> {
-			if (player.getVehicle() != null) {
+			if (!player.isAlive() || player.isSpectator() || player.isShiftKeyDown() || player.getVehicle() != null) {
 				return;
 			}
 			ItemStack stack = EquipmentHandler.findOrEmpty(s -> s.getItem() instanceof MountAccessoryItem, player);
@@ -48,10 +49,15 @@ public record MountAccessoryPacket() implements ExtrabotanyPacket {
 				return;
 			}
 			Entity mount = accessory.createMount(player.level());
+			if (mount instanceof MotorEntity motor) {
+				motor.setOwner(player.getUUID());
+			}
 			mount.setPos(player.getX(), player.getY() + 0.5D, player.getZ());
 			mount.setYRot(player.getYRot());
 			if (player.level().addFreshEntity(mount)) {
-				player.startRiding(mount);
+				if (!player.startRiding(mount)) {
+					mount.discard();
+				}
 			}
 		});
 	}

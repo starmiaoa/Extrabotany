@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "E": {
-      "item": "botania:ender_air_bottle"
+      "tag": "botania:ender_essences"
     },
     "M": {
       "tag": "c:ingots/manasteel"

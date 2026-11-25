@@ -18,8 +18,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -29,9 +29,10 @@ import vazkii.botania.api.internal.ManaBurst;
 import vazkii.botania.api.item.Relic;
 import vazkii.botania.api.mana.BurstProperties;
 import vazkii.botania.api.mana.LensEffectItem;
+import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.entity.ManaBurstEntity;
 import vazkii.botania.common.helper.VecHelper;
-import vazkii.botania.common.item.equipment.tool.manasteel.ManasteelSwordItem;
+import vazkii.botania.common.item.equipment.tool.ToolCommons;
 import vazkii.botania.common.item.relic.RelicImpl;
 
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
@@ -46,23 +47,20 @@ import io.github.lounode.extrabotany.xplat.ExClientXplatAbstractions;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
-public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem {
+public class ExcaliburItem extends SwordItem implements LensEffectItem {
 	private static final int MANA_PER_DAMAGE = 200;
 	public static final double SEARCH_TARGET_RADIUS = 5.0D;
 
 	public ExcaliburItem(Properties props) {
-		super(ItemTiers.EXCALIBUR, 8, -2F, props);
-	}
-
-	@Override
-	public ItemAttributeModifiers getDefaultAttributeModifiers() {
-		return super.getDefaultAttributeModifiers()
-				.withModifierAdded(Attributes.MOVEMENT_SPEED,
-						new AttributeModifier(prefix("excalibur_speed"), 0.3D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
-						EquipmentSlotGroup.bySlot(EquipmentSlot.MAINHAND));
+		super(ItemTiers.EXCALIBUR, props.attributes(
+				SwordItem.createAttributes(ItemTiers.EXCALIBUR, 8, -2F)
+						.withModifierAdded(Attributes.MOVEMENT_SPEED,
+								new AttributeModifier(prefix("excalibur_speed"), 0.3D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL),
+								EquipmentSlotGroup.bySlot(EquipmentSlot.MAINHAND))));
 	}
 
 	public static void leftClick(PlayerInteractEvent.LeftClickEmpty event) {
@@ -220,9 +218,12 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 		return true;
 	}
 
-	@Override
 	public int getManaPerDamage() {
 		return MANA_PER_DAMAGE;
+	}
+
+	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<Item> onBroken) {
+		return ToolCommons.absorbDamageWithMana(stack, amount, entity);
 	}
 
 	public static Relic makeRelic(ItemStack stack) {
@@ -235,6 +236,9 @@ public class ExcaliburItem extends ManasteelSwordItem implements LensEffectItem 
 			var relic = EXplatAbstractions.INSTANCE.findRelic(stack);
 			if (relic != null) {
 				relic.tickBinding(player);
+			}
+			if (stack.getDamageValue() > 0 && ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_DAMAGE * 2, true)) {
+				stack.setDamageValue(stack.getDamageValue() - 1);
 			}
 		}
 		super.inventoryTick(stack, world, entity, slot, selected);

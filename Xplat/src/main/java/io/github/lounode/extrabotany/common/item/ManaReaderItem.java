@@ -43,7 +43,7 @@ public class ManaReaderItem extends Item {
 			return InteractionResult.PASS;
 		}
 		if (world.isClientSide) {
-			player.playSound(BotaniaSounds.ding, 0.6F, 0.1F + world.random.nextFloat() * 0.5F);
+			player.playSound(BotaniaSounds.DING, 0.6F, 0.1F + world.random.nextFloat() * 0.5F);
 			return InteractionResult.SUCCESS;
 		}
 

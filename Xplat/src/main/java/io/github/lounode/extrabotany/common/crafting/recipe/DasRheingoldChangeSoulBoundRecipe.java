@@ -47,6 +47,8 @@ public final class DasRheingoldChangeSoulBoundRecipe extends CustomRecipe {
 					return false;
 				}
 				findRelic = true;
+			} else {
+				return false;
 			}
 		}
 
@@ -80,13 +82,12 @@ public final class DasRheingoldChangeSoulBoundRecipe extends CustomRecipe {
 		}
 
 		ItemStack relicOutput = relic.copy();
-		UUID rheingoldUUID = getSoulbindUUID(rheingold);
-
-		if (rheingoldUUID == null) {
-			ItemStackDataHelper.removeEntry(relicOutput, TAG_SOULBIND_UUID);
-		} else {
-			bindToUUID(relicOutput, rheingoldUUID);
+		var outputRelic = EXplatAbstractions.INSTANCE.findRelic(relicOutput);
+		if (outputRelic == null) {
+			return ItemStack.EMPTY;
 		}
+		UUID rheingoldUUID = getSoulbindUUID(rheingold);
+		outputRelic.bindToUUID(rheingoldUUID);
 
 		return relicOutput;
 	}

@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.item.equipment.bauble;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -37,6 +38,9 @@ public class PureDaisyPendantItem extends BaubleItem {
 	}
 
 	public static void onPlayerTick(Player player) {
+		if (player.level().isClientSide()) {
+			return;
+		}
 		ItemStack stack = EquipmentHandler.findOrEmpty(s -> s.getItem() instanceof PureDaisyPendantItem, player);
 		if (stack.isEmpty()) {
 			return;
@@ -55,7 +59,7 @@ public class PureDaisyPendantItem extends BaubleItem {
 	public static class EventHandler {
 
 		public static void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-			if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
+			if (event.getHand() != InteractionHand.MAIN_HAND || !(event.getEntity() instanceof ServerPlayer serverPlayer)) {
 				return;
 			}
 			if (!serverPlayer.getMainHandItem().isEmpty()) {

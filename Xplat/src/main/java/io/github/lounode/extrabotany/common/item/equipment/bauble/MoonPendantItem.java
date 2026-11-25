@@ -83,6 +83,9 @@ public class MoonPendantItem extends NimbusAmuletItem implements BlockChangedLis
 
 	@Override
 	public void onChangedBlock(ItemStack stack, LivingEntity entity, ServerLevel level, BlockPos pos) {
+		if (!(entity instanceof Player player) || !isRightPlayer(stack, player)) {
+			return;
+		}
 		if (BotaniaItems.SNOWFLAKE_PENDANT instanceof SnowflakePendantItem pendant) {
 			pendant.onChangedBlock(stack, entity, level, pos);
 		}
@@ -118,10 +121,11 @@ public class MoonPendantItem extends NimbusAmuletItem implements BlockChangedLis
 
 	public static class EventHandler {
 		public static void onLivingAttack(LivingIncomingDamageEvent event) {
-			if (!isFireDamage(event.getSource())) {
+			if (!isFireDamage(event.getSource()) || !(event.getEntity() instanceof Player player)) {
 				return;
 			}
-			if (!EquipmentHandler.findOrEmpty(ExtraBotanyItems.moonPendant, event.getEntity()).isEmpty()) {
+			ItemStack stack = EquipmentHandler.findOrEmpty(ExtraBotanyItems.moonPendant, player);
+			if (!stack.isEmpty() && isRightPlayer(stack, player)) {
 				event.setAmount(0);
 				event.setCanceled(true);
 			}

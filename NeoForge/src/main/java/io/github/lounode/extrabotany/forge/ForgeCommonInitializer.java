@@ -29,7 +29,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -77,7 +76,6 @@ import io.github.lounode.extrabotany.common.item.relic.*;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
 import io.github.lounode.extrabotany.common.item.relic.voidcore.CoreOfTheVoidItem;
 import io.github.lounode.extrabotany.common.lib.LibMisc;
-import io.github.lounode.extrabotany.common.loot.RewardBagManager;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.forge.network.ForgePacketHandler;
 import io.github.lounode.extrabotany.forge.event.NeoForgeEventBridge;
@@ -114,11 +112,6 @@ public class ForgeCommonInitializer {
 			ExtraBotanyBlocks.registerFlowerPotPlants(consumer);
 			ExtrabotanyFlowerBlocks.registerFlowerPotPlants(consumer);
 		});
-
-		//Integration
-		if (ModList.get().isLoaded("tconstruc")) {
-			//modEventBus.addListener(this::registerTinkersMaterials);
-		}
 	}
 
 	private void coreInit(ModContainer modContainer) {
@@ -196,8 +189,6 @@ public class ForgeCommonInitializer {
 		bus.addListener((LevelTickEvent.Post event) -> WindImpl.EventHandler.onLevelTick(event.getLevel()));
 		NeoForgeEventBridge.register(bus);
 		bus.addListener((RegisterCommandsEvent event) -> ForgeExtrabotanyCommands.register(event.getDispatcher()));
-
-		RewardBagManager.registerListener();
 	}
 
 	@SubscribeEvent
@@ -224,9 +215,12 @@ public class ForgeCommonInitializer {
 	private void attachItemCaps(RegisterCapabilitiesEvent e) {
 		if (EquipmentHandler.instance instanceof CurioIntegration ci) {
 			Item[] baubleItems = BuiltInRegistries.ITEM.stream()
-					.filter(item -> item instanceof BaubleItem)
+					.filter(item -> item instanceof BaubleItem
+							&& BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(LibMisc.MOD_ID))
 					.toArray(Item[]::new);
-			ci.initCapability(e, baubleItems);
+			if (baubleItems.length > 0) {
+				ci.initCapability(e, baubleItems);
+			}
 		}
 
 		attachMappedItemCaps(e, BotaniaNeoForgeCapabilities.getItemApiLookupById(ManaItem.LOOKUP), MANA_ITEM.get());

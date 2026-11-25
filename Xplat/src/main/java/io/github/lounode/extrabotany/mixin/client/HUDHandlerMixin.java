@@ -25,6 +25,9 @@ public class HUDHandlerMixin {
 	private static void drawManaNumber(GuiGraphics gui, Window window, Font font, int color, int mana, int maxMana, String name, CallbackInfo ci) {
 		Minecraft mc = Minecraft.getInstance();
 		Player player = mc.player;
+		if (player == null) {
+			return;
+		}
 
 		boolean display = false;
 		for (ItemStack stack : player.getHandSlots()) {

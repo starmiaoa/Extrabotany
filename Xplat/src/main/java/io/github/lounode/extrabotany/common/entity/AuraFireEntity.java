@@ -99,6 +99,7 @@ public class AuraFireEntity extends ThrowableProjectile {
 
 		if (getMaxLivingTime() != LONG_LIVING && getTicksExisted() > getMaxLivingTime()) {
 			discard();
+			return;
 		}
 
 		Entity owner = getOwner();

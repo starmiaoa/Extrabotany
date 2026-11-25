@@ -28,7 +28,6 @@ import vazkii.botania.api.neoforge.mana.ManaDiscountEvent;
 
 import io.github.lounode.extrabotany.common.block.flower.generating.ResoncundBlockEntity;
 import io.github.lounode.extrabotany.common.brew.effect.EternityMobEffect;
-import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 import io.github.lounode.extrabotany.common.brew.effect.HealReverseMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.LinkMobEffect;
 import io.github.lounode.extrabotany.common.brew.effect.ThirrorMobEffect;
@@ -125,7 +124,7 @@ public final class NeoForgeEventBridge {
 		ThirrorMobEffect.EventHandler.onLivingAttack(event);
 		MoonPendantItem.EventHandler.onLivingAttack(event);
 		FlamescionWeaponItem.onLivingAttack(event);
-		CoreOfTheVoidItem.onLivingAttack(event);
+		CoreOfTheVoidItem.onLivingIncomingDamage(event);
 		EternityMobEffect.onLivingAttack(event);
 		if (event.isCanceled()) {
 			return;
@@ -138,12 +137,6 @@ public final class NeoForgeEventBridge {
 		PleiadesCombatMaidSuitItem.EventHandler.onPlayerAttacked(event);
 		PeaceAmuletItem.EventHandler.onLivingHurt(event);
 		CosmeticBaubleItem.EventHandler.onLivingHurt(event);
-		CoreOfTheVoidItem.onLivingHurt(event);
-		if (event.isCanceled()) {
-			return;
-		}
-
-		CoreOfTheVoidItem.onLivingDamage(event);
 	}
 
 	private static void onDamagePost(LivingDamageEvent.Post event) {
@@ -250,8 +243,13 @@ public final class NeoForgeEventBridge {
 	}
 
 	private static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+		if (event.isCanceled()) {
+			return;
+		}
 		NatureOrbItem.onPlayerInteract(event);
-		PureDaisyPendantItem.EventHandler.onPlayerInteract(event);
+		if (!event.isCanceled()) {
+			PureDaisyPendantItem.EventHandler.onPlayerInteract(event);
+		}
 		if (event.isCanceled()) {
 			event.setCancellationResult(InteractionResult.SUCCESS);
 		}
@@ -263,10 +261,10 @@ public final class NeoForgeEventBridge {
 
 	private static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
 		CoreOfTheVoidItem.playerLoggedOut(event);
+		SanguinePleiadesCombatMaidSuitItem.onPlayerLoggedOut(event.getEntity());
 	}
 
 	private static void onPlayerTickPost(PlayerTickEvent.Post event) {
-		HerrscherCombatHelper.sanitizeHealth(event.getEntity());
 		CoreOfTheVoidItem.updatePlayerFlyStatus(event.getEntity());
 		FlamescionWeaponItem.onPlayerTick(event.getEntity());
 		EternityMobEffect.onPlayerTick(event.getEntity());

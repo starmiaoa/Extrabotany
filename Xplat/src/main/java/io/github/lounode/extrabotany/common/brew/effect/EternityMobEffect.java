@@ -1,5 +1,6 @@
 package io.github.lounode.extrabotany.common.brew.effect;
 
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.player.Player;
@@ -14,6 +15,9 @@ public class EternityMobEffect extends MobEffect {
 	}
 
 	public static void onLivingAttack(LivingIncomingDamageEvent event) {
+		if (event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+			return;
+		}
 		if (event.getEntity() instanceof Player player && player.hasEffect(ExtraBotanyMobEffects.ETERNITY)) {
 			event.setAmount(0);
 			event.setCanceled(true);

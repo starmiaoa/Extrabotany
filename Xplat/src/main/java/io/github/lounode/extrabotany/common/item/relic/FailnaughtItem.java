@@ -20,6 +20,7 @@ import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -39,7 +40,6 @@ import vazkii.botania.api.mana.LensEffectItem;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.entity.ManaBurstEntity;
 import vazkii.botania.common.helper.PlayerHelper;
-import vazkii.botania.common.item.equipment.tool.bow.LivingwoodBowItem;
 import vazkii.botania.common.item.relic.RelicImpl;
 
 import io.github.lounode.extrabotany.api.entity.EntityNbtHelper;
@@ -55,7 +55,7 @@ import java.util.function.Consumer;
 import static io.github.lounode.extrabotany.common.entity.MagicArrowEntity.TAG_DAMAGE;
 import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
 
-public class FailnaughtItem extends LivingwoodBowItem implements LensEffectItem, ICustomEnchantable {
+public class FailnaughtItem extends BowItem implements LensEffectItem, ICustomEnchantable {
 	private static final float ADVANCEMENT_REQUIRE = 100.0F;
 	private static final float ATTACK_BOX_RADIUS = 2.0F;
 	private static final int HIT_ENTITY_COST = 50;
@@ -313,7 +313,6 @@ public class FailnaughtItem extends LivingwoodBowItem implements LensEffectItem,
 		};
 	}
 
-	@Override
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<Item> onBroken) {
 		return 0;
 	}

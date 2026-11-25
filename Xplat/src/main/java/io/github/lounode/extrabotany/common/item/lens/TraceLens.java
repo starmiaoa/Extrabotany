@@ -58,7 +58,7 @@ public class TraceLens extends Lens {
 				.filter(this::canTargetEntity)
 				.filter(living -> living.hurtTime == 0)
 				.filter(living -> living != burstEntity.getOwner())
-				.min(Comparator.comparingInt(this::getEntityPriority))
+				.max(Comparator.comparingInt(this::getEntityPriority))
 				.orElse(null);
 	}
 
@@ -67,12 +67,12 @@ public class TraceLens extends Lens {
 	}
 
 	public int getEntityPriority(LivingEntity entity) {
-		if (entity instanceof Mob) {
-			return 3;
+		if (entity instanceof Animal) {
+			return 1;
 		} else if (entity instanceof Player) {
 			return 2;
-		} else if (entity instanceof Animal) {
-			return 1;
+		} else if (entity instanceof Mob) {
+			return 3;
 		}
 		return 0;
 	}

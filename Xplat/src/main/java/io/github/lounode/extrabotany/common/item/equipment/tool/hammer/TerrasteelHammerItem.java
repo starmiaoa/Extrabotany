@@ -113,7 +113,7 @@ public class TerrasteelHammerItem extends ManasteelHammerItem implements Sequent
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		super.inventoryTick(stack, world, entity, slot, selected);
-		if (!(entity instanceof Player player)) {
+		if (world.isClientSide() || !(entity instanceof Player player)) {
 			return;
 		}
 		if (!isEnabled(stack)) {

@@ -11,6 +11,18 @@
     ],
     "subtitle": "subtitles.extrabotany:entity.motor.cyclone"
   },
+  "entity.motor.rideon": {
+    "sounds": [
+      "extrabotany:rideon"
+    ],
+    "subtitle": "subtitles.extrabotany:entity.motor.rideon"
+  },
+  "entity.motor.shoot": {
+    "sounds": [
+      "extrabotany:shoot"
+    ],
+    "subtitle": "subtitles.extrabotany:entity.motor.shoot"
+  },
   "entity.player.hurt_backfire": {
     "sounds": [
       {
@@ -154,9 +166,12 @@
   },
   "music.ego": {
     "sounds": [
-      "extrabotany:music/ego"
-    ],
-    "subtitle": "subtitles.extrabotany:music.ego"
+      {
+        "name": "extrabotany:music/swordland",
+        "stream": true,
+        "volume": 1.3
+      }
+    ]
   },
   "music.gaia3": {
     "sounds": [
@@ -175,5 +190,11 @@
         "volume": 1.3
       }
     ]
+  },
+  "item.flamescion_weapon.slash": {
+    "sounds": [
+      "extrabotany:slash"
+    ],
+    "subtitle": "subtitles.extrabotany:item.flamescion_weapon.slash"
   }
 }

@@ -1,5 +1,4 @@
 package io.github.lounode.extrabotany.common.item.relic.voidcore;
-import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -27,33 +26,35 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 
 import vazkii.botania.api.item.Relic;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.client.render.AccessoryRenderRegistry;
 import vazkii.botania.client.render.AccessoryRenderer;
 import vazkii.botania.common.handler.EquipmentHandler;
-import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 import vazkii.botania.common.item.relic.RelicImpl;
 import vazkii.botania.common.proxy.Proxy;
 
-import io.github.lounode.extrabotany.client.core.CoreOfTheVoidClientVariants;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import io.github.lounode.extrabotany.api.ExtraBotanyAPI;
 import io.github.lounode.extrabotany.api.item.ClientCoreOfTheVoidVariant;
 import io.github.lounode.extrabotany.api.item.CoreOfTheVoidVariant;
+import io.github.lounode.extrabotany.client.core.CoreOfTheVoidClientVariants;
 import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
+import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 import io.github.lounode.extrabotany.common.util.SoundEventUtil;
+import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabContents {
 
@@ -64,7 +65,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	private static final int BACKFIRE_THRESHOLD = 100;
 	private static final float BACKFIRE_DAMAGE = 2.0F;
 
-	private static final List<String> playersWithFlight = Collections.synchronizedList(new ArrayList<>());
+	private static final Set<UUID> playersWithFlight = ConcurrentHashMap.newKeySet();
 
 	public CoreOfTheVoidItem(Properties properties) {
 		super(properties);
@@ -101,29 +102,38 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	}
 
 	public static void updatePlayerFlyStatus(Player player) {
+		if (player.level().isClientSide()) {
+			return;
+		}
 		ItemStack tiara = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, player);
+		UUID playerId = player.getUUID();
 
-		if (playersWithFlight.contains(playerStr(player))) {
+		if (playersWithFlight.contains(playerId)) {
 			if (shouldPlayerHaveFlight(player)) {
-				player.getAbilities().mayfly = true;
-				if (player.getAbilities().flying) {
-					if (!player.level().isClientSide) {
-						if (!player.isCreative() && !player.isSpectator()) {
-							ManaItemHandler.instance().requestManaExact(tiara, player, getFlyCost(), true);
-						}
-					}
+				if (!player.getAbilities().mayfly) {
+					player.getAbilities().mayfly = true;
+					player.onUpdateAbilities();
+				}
+				if (player.getAbilities().flying && !player.isCreative() && !player.isSpectator()) {
+					ManaItemHandler.instance().requestManaExact(tiara, player, getFlyCost(), true);
 				}
 			} else {
 				if (!player.isSpectator() && !player.getAbilities().instabuild) {
+					boolean changed = player.getAbilities().mayfly || player.getAbilities().flying;
 					player.getAbilities().mayfly = false;
 					player.getAbilities().flying = false;
-					player.getAbilities().invulnerable = false;
+					if (changed) {
+						player.onUpdateAbilities();
+					}
 				}
-				playersWithFlight.remove(playerStr(player));
+				playersWithFlight.remove(playerId);
 			}
 		} else if (shouldPlayerHaveFlight(player)) {
-			playersWithFlight.add(playerStr(player));
-			player.getAbilities().mayfly = true;
+			playersWithFlight.add(playerId);
+			if (!player.getAbilities().mayfly) {
+				player.getAbilities().mayfly = true;
+				player.onUpdateAbilities();
+			}
 		}
 	}
 
@@ -146,9 +156,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	}
 
 	public static void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-		String username = event.getEntity().getGameProfile().getName();
-		playersWithFlight.remove(username + ":false");
-		playersWithFlight.remove(username + ":true");
+		playersWithFlight.remove(event.getEntity().getUUID());
 	}
 
 	private static boolean shouldPlayerHaveFlight(Player player) {
@@ -165,10 +173,6 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 			return true;
 		}
 		return false;
-	}
-
-	private static String playerStr(Player player) {
-		return player.getGameProfile().getName() + ":" + player.level().isClientSide;
 	}
 
 	public static boolean shouldBackFire(ItemStack stack, LivingEntity entity) {
@@ -204,24 +208,6 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 		return ExtraBotanyDamageTypes.Sources.backfireDamage(access);
 	}
 
-	/*
-	public static FlyManager getFlyManager() {
-		return flyManager;
-	}
-	
-	public static class FlyManager {
-		Map<UUID, Boolean> players = new HashMap<>();
-	
-		public void tick(MinecraftServer server) {
-			List<ServerPlayer> players = server.getPlayerList().getPlayers();
-	
-			for (var player : players) {
-				ItemStack core = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, player);
-	
-			}
-		}
-	}
-	*/
 	@Override
 	public boolean hasRender(ItemStack stack, LivingEntity living) {
 		return super.hasRender(stack, living) && living instanceof Player;
@@ -260,7 +246,6 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	@Override
 	public Multimap<Holder<Attribute>, AttributeModifier> getEquippedAttributeModifiers(ItemStack stack, ResourceLocation slotId) {
 		Multimap<Holder<Attribute>, AttributeModifier> attributes = HashMultimap.create();
-		//TODO 反噬以及无魔力时去除Attribute
 		// Movement/flying speed use Lounode's flat values; attack damage restored from the old Core of God.
 		attributes.put(Attributes.MOVEMENT_SPEED,
 				new AttributeModifier(slotId.withSuffix("_movement_speed"), 0.1F, AttributeModifier.Operation.ADD_VALUE));
@@ -273,49 +258,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	}
 
 	//Projectile immunity
-	public static void onLivingAttack(LivingIncomingDamageEvent event) {
-		LivingEntity owner = event.getEntity();
-		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);
-
-		if (armor.isEmpty()) {
-			return;
-		}
-
-		var relic = EXplatAbstractions.INSTANCE.findRelic(armor);
-		if (relic == null ||
-				!(owner instanceof Player player) ||
-				!relic.isRightPlayer(player) ||
-				shouldBackFire(armor, player)) {
-			return;
-		}
-
-		if (event.getSource().is(DamageTypeTags.IS_PROJECTILE)) {
-			event.setCanceled(true);
-		}
-	}
-
-	public static void onLivingHurt(LivingIncomingDamageEvent event) {
-		LivingEntity owner = event.getEntity();
-		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);
-
-		if (armor.isEmpty()) {
-			return;
-		}
-
-		var relic = EXplatAbstractions.INSTANCE.findRelic(armor);
-		if (relic == null ||
-				!(owner instanceof Player player) ||
-				!relic.isRightPlayer(player) ||
-				shouldBackFire(armor, player)) {
-			return;
-		}
-
-		if (event.getSource().is(DamageTypeTags.IS_PROJECTILE)) {
-			event.setCanceled(true);
-		}
-	}
-
-	public static void onLivingDamage(LivingIncomingDamageEvent event) {
+	public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
 		LivingEntity owner = event.getEntity();
 		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);
 
@@ -338,18 +281,23 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 
 	//Harmful potion remove
 	protected void tryRemoveHarmfulPotion(ItemStack stack, LivingEntity entity) {
+		if (!(entity instanceof Player player)) {
+			return;
+		}
+		var relic = EXplatAbstractions.INSTANCE.findRelic(stack);
+		if (relic == null || !relic.isRightPlayer(player)) {
+			return;
+		}
 		List<MobEffectInstance> effects = entity.getActiveEffects().stream()
 				.filter(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)
 				.toList();
 
 		if (!effects.isEmpty() &&
-				entity instanceof Player player &&
 				ManaItemHandler.instance().requestManaExactForTool(stack, player, getCureCost(), true)) {
 			effects.forEach(e -> entity.removeEffect(e.getEffect()));
 		}
 	}
 
-	//TODO 立即生效药水效果截断
 	public static void onEffectAdd(MobEffectEvent.Applicable event) {
 		LivingEntity owner = event.getEntity();
 		ItemStack armor = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, owner);

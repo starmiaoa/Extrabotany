@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 public class PatchouliUtil {
 	private PatchouliUtil() {}
 
-	public static PatchouliUtil INSTANCE;
+	public static PatchouliUtil INSTANCE = new PatchouliUtil();
 	private final Map<ResourceLocation, Supplier<BookTemplate>> templatesPool = new HashMap<>();
 
 	public static void onPatchouliReload(Map<ResourceLocation, Book> books) {

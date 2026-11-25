@@ -57,7 +57,7 @@ public class StarryIdolArmorItem extends ArmorItem implements CustomCreativeTabC
 
 	@SoftImplement("IForgeItem")
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<Item> onBroken) {
-		return ToolCommons.damageItemIfPossible(stack, amount, entity, getManaPerDamage());
+		return ToolCommons.absorbDamageWithMana(stack, amount, entity);
 	}
 
 	@Override

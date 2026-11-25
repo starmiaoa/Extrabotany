@@ -12,6 +12,7 @@ import net.minecraft.world.level.ItemLike;
 import vazkii.botania.common.block.mana.ManaPoolBlock;
 import vazkii.botania.common.crafting.TerrestrialAgglomerationRecipe;
 import vazkii.botania.common.item.BotaniaItems;
+import vazkii.botania.common.lib.BotaniaTags;
 
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
@@ -31,7 +32,7 @@ public class TerrestrialAgglomerationProvider extends ExtraBotanyRecipeProvider 
 	public void buildRecipes(RecipeOutput recipeOutput) {
 		save(recipeOutput, idFor("aerialite_ingot"), ManaPoolBlock.MAX_MANA / 2,
 				new ItemStack(ExtraBotanyItems.aerialite),
-				Ingredient.of(BotaniaItems.ENDER_AIR_BOTTLE),
+				Ingredient.of(BotaniaTags.Items.ENDER_ESSENCES),
 				Ingredient.of(BotaniaItems.DRAGONSTONE),
 				Ingredient.of(Items.PHANTOM_MEMBRANE));
 		save(recipeOutput, idFor("orichalcos_ingot"), ManaPoolBlock.MAX_MANA / 2,

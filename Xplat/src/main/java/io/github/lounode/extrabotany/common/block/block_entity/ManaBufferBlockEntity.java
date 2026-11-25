@@ -163,7 +163,7 @@ public class ManaBufferBlockEntity extends BlockEntity implements ManaReceiver, 
 	@Override
 	public void receiveMana(int amount) {
 		int oldMana = mana;
-		mana = Mth.clamp(getCurrentMana() + amount, 0, getMaxMana());
+		mana = (int) Math.clamp((long) getCurrentMana() + amount, 0L, (long) getMaxMana());
 		if (oldMana != mana) {
 			setChanged();
 			// Sparks and bursts call this outside serverTick, so the sync flag must live here.

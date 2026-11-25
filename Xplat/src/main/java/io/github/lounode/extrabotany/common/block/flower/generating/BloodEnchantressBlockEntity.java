@@ -82,7 +82,7 @@ public class BloodEnchantressBlockEntity extends ExtraGeneratingFlowerBlockEntit
 			}
 
 			if (entity.hurt(getLevel().damageSources().generic(), 3F)) {
-				addMana((int) (22F * 12F * (1F - 0.04F * entityDamagedTime - 0.02F * inhibitionLevel)));
+				addMana(Math.max(0, (int) (22F * 12F * (1F - 0.04F * entityDamagedTime - 0.02F * inhibitionLevel))));
 				inhibitionEntityMap.put(entity.getUUID(), entityDamagedTime + 1);
 
 				setBurnTime(getBurnTime() + 20);

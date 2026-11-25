@@ -40,18 +40,8 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 
 	@Override
 	protected void addTags(HolderLookup.Provider provider) {
-		tag(BlockTags.RAILS);
 		tag(BlockTags.SLABS).add(getModBlocks(b -> b instanceof SlabBlock));
-		tag(BlockTags.WOODEN_SLABS);
 		tag(BlockTags.STAIRS).add(getModBlocks(b -> b instanceof StairBlock));
-		tag(BlockTags.WOODEN_STAIRS);
-		tag(BlockTags.WALLS).add(getModBlocks(b -> b instanceof WallBlock));
-		tag(BlockTags.FENCES).add(getModBlocks(b -> b instanceof FenceBlock));
-		tag(BlockTags.WOODEN_FENCES);
-		tag(BlockTags.FENCE_GATES).add(getModBlocks(b -> b instanceof FenceGateBlock));
-		tag(BlockTags.DRAGON_IMMUNE);
-		tag(BlockTags.WITHER_IMMUNE);
-		tag(BlockTags.PLANKS);
 
 		tag(BlockTags.BEACON_BASE_BLOCKS).add(
 				aerialiteBlock,
@@ -82,12 +72,6 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.addTag(ExtraBotanyTags.Blocks.MANA_POOLS)
 				.addTag(ExtraBotanyTags.Blocks.MANA_SPREADERS);
 
-		tag(BotaniaTags.Blocks.MUNDANE_FLOATING_FLOWERS);
-		tag(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS);
-		tag(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS);
-		tag(BotaniaTags.Blocks.GLIMMERING_FLOWERS);
-		tag(BotaniaTags.Blocks.TALL_MYSTICAL_FLOWERS);
-		tag(BotaniaTags.Blocks.MISC_SPECIAL_FLOWERS);
 		tag(BotaniaTags.Blocks.SPECIAL_FLOATING_FLOWERS).add(BuiltInRegistries.BLOCK.stream().filter(EXTRABOTANY_BLOCK)
 				.filter(b -> b instanceof FloatingSpecialFlowerBlock)
 				.sorted(Comparator.comparing(BuiltInRegistries.BLOCK::getKey))
@@ -117,12 +101,10 @@ public class BlockTagProvider extends IntrinsicHolderTagsProvider<Block> {
 				.add(generatingSpecialFlowers)
 				.add(functionalSpecialFlowers);
 
-		tag(BotaniaTags.Blocks.MINI_FLOWERS).add(
+		tag(BotaniaTags.Blocks.PETITE_FLOWERS).add(
 				getModBlocks(b -> b instanceof SpecialFlowerBlock
 						&& BuiltInRegistries.BLOCK.getKey(b).getPath().endsWith("_chibi"))
 		);
-
-		tag(BotaniaTags.Blocks.ENCHANTER_FLOWERS);
 
 		tag(BlockTags.FLOWER_POTS)
 

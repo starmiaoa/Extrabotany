@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,7 +25,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import org.jetbrains.annotations.Nullable;
 
-import vazkii.botania.common.block.BotaniaWaterloggedBlock;
+import vazkii.botania.common.block.BotaniaWaterloggedEntityBlock;
 import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 
 import io.github.lounode.extrabotany.api.block.Charger;
@@ -34,7 +33,7 @@ import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockE
 import io.github.lounode.extrabotany.common.block.block_entity.ManaChargerBlockEntity;
 import io.github.lounode.extrabotany.common.lib.ExtraBotanyTags;
 
-public class ManaChargerBlock extends BotaniaWaterloggedBlock implements EntityBlock {
+public class ManaChargerBlock extends BotaniaWaterloggedEntityBlock {
 
 	private static final VoxelShape SHAPE = Shapes.create(
 			(1f / 8) + (1f / 32), (1f / 16) + (1f / 32), (1f / 8) + (1f / 32),

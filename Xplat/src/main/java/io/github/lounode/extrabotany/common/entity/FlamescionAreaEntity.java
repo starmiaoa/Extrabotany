@@ -9,13 +9,13 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.handler.DamageHandler;
 
@@ -73,20 +73,27 @@ public abstract class FlamescionAreaEntity extends Entity {
 
 	protected void damageAround(double range, float damage) {
 		Entity owner = getOwnerEntity();
+		DamageSource source = flameSource(owner);
 		for (LivingEntity target : getTargets(range)) {
 			if (target == owner) {
 				continue;
 			}
 			target.invulnerableTime = 0;
-			target.hurt(flameSource(owner), damage);
+			if (target.hurt(source, damage)) {
+				target.igniteForSeconds(3);
+			}
 		}
 	}
 
 	protected DamageSource flameSource(@Nullable Entity owner) {
 		if (owner != null) {
-			return this.damageSources().indirectMagic(this, owner);
+			return ExtraBotanyDamageTypes.Sources.source(
+					this.level().registryAccess(),
+					ExtraBotanyDamageTypes.FLAMESCION_FLAME_DAMAGE,
+					this,
+					owner);
 		}
-		return this.damageSources().magic();
+		return ExtraBotanyDamageTypes.Sources.flamescionFlameDamage(this.level().registryAccess());
 	}
 
 	@Override

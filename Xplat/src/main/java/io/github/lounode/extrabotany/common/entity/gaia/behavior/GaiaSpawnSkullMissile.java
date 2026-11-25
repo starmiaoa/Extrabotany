@@ -16,7 +16,7 @@ public class GaiaSpawnSkullMissile<E extends Gaia> extends GaiaSpawnMissile<E> {
 		);
 
 		if (missile.findTarget()) {
-			gaia.playSound(BotaniaSounds.missile, 1F, 0.8F + (float) Math.random() * 0.2F);
+			gaia.playSound(BotaniaSounds.MISSILE, 1F, 0.8F + (float) Math.random() * 0.2F);
 			gaia.level().addFreshEntity(missile);
 		}
 	}

@@ -36,7 +36,7 @@ import vazkii.botania.client.fx.SparkleParticleData;
 import vazkii.botania.client.fx.WispParticleData;
 import vazkii.botania.common.block.BotaniaBlocks;
 import vazkii.botania.common.entity.GaiaGuardianEntity;
-import vazkii.botania.common.entity.MagicLandmineEntity;
+import vazkii.botania.common.entity.GaiaTrapEntity;
 import vazkii.botania.common.entity.PixieEntity;
 import vazkii.botania.common.helper.MathHelper;
 import vazkii.botania.common.helper.PlayerHelper;
@@ -202,19 +202,20 @@ public class GaiaArena {
 	public void tick(Gaia gaia) {
 		if (gaia.level().isClientSide()) {
 			particles(gaia);
+			return;
 		}
 
 		List<Player> players = getPlayersAround(gaia.level());
 
 		if (players.isEmpty() && !gaia.level().players().isEmpty()) {
+			cleanup(gaia.level());
 			gaia.discard();
 			ExtraBotanyTelemetry.Event.onGaiaBattleFinish(gaia);
+			return;
 		}
 
-		if (!gaia.level().isClientSide()) {
-			for (Player player : players) {
-				keepInsideArena(player);
-			}
+		for (Player player : players) {
+			keepInsideArena(player);
 		}
 	}
 
@@ -236,7 +237,7 @@ public class GaiaArena {
 			pixie.discard();
 		}
 
-		for (MagicLandmineEntity landmine : level.getEntitiesOfClass(MagicLandmineEntity.class, getArenaBB())) {
+		for (GaiaTrapEntity landmine : level.getEntitiesOfClass(GaiaTrapEntity.class, getArenaBB())) {
 			landmine.discard();
 		}
 

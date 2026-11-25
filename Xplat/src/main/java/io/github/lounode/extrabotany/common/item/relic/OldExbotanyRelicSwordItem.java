@@ -67,6 +67,10 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 	public static void attackEntity(AttackEntityEvent event) {
 		Player player = event.getEntity();
 		if (!player.level().isClientSide && player.getMainHandItem().getItem() instanceof OldExbotanyRelicSwordItem sword) {
+			if (sword.ignoresInvulnerability() && event.getTarget() instanceof LivingEntity living) {
+				living.invulnerableTime = 0;
+				living.hurtTime = 0;
+			}
 			sword.tryUse(player, event.getTarget(), player.getAttackStrengthScale(0F));
 		}
 	}
@@ -88,7 +92,7 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 
 	private boolean tryUse(Player player, Entity target, float attackStrength) {
 		ItemStack stack = player.getMainHandItem();
-		if (player.isSpectator() || stack.getItem() != this || attackStrength != 1F) {
+		if (player.isSpectator() || stack.getItem() != this || attackStrength < getMinAttackStrength()) {
 			return false;
 		}
 		if (this.relic) {
@@ -166,6 +170,14 @@ public abstract class OldExbotanyRelicSwordItem extends SwordItem {
 	}
 
 	protected abstract void useSword(Player player, Entity target);
+
+	protected float getMinAttackStrength() {
+		return 1.0F;
+	}
+
+	protected boolean ignoresInvulnerability() {
+		return false;
+	}
 
 	protected ResourceLocation getRequiredAdvancement() {
 		return null;

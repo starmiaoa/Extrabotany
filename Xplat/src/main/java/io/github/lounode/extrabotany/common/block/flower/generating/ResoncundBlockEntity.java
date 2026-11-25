@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
@@ -23,14 +24,11 @@ import net.neoforged.neoforge.event.PlayLevelSoundEvent;
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
-import java.util.WeakHashMap;
 
 public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 
@@ -43,7 +41,7 @@ public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 
 	public static final int MAX_MANA = 1200;
 	public static final int MANA_LOSS_PER_HEARD = 50;
-	private static final Set<ResoncundBlockEntity> LISTENERS = Collections.newSetFromMap(new WeakHashMap<>());
+	private static final Set<ResoncundBlockEntity> LISTENERS = new CopyOnWriteArraySet<>();
 
 	private final LoadingCache<SoundEvent, Integer> SOUND_HEARD = CacheBuilder.newBuilder()
 			.maximumSize(getCacheSize())
@@ -52,25 +50,42 @@ public class ResoncundBlockEntity extends ExtraGeneratingFlowerBlockEntity {
 
 	public ResoncundBlockEntity(BlockPos pos, BlockState blockState) {
 		super(ExtrabotanyFlowerBlocks.RESONCUND, pos, blockState);
-		register(this);
 	}
 
-	public static List<ResoncundBlockEntity> listeners() {
-		synchronized (LISTENERS) {
-			return new ArrayList<>(LISTENERS);
-		}
+	public static Set<ResoncundBlockEntity> listeners() {
+		return LISTENERS;
 	}
 
 	private static void register(ResoncundBlockEntity listener) {
-		synchronized (LISTENERS) {
-			LISTENERS.add(listener);
-		}
+		LISTENERS.add(listener);
 	}
 
 	private static void unregister(ResoncundBlockEntity listener) {
-		synchronized (LISTENERS) {
-			LISTENERS.remove(listener);
+		LISTENERS.remove(listener);
+	}
+
+	@Override
+	public void setLevel(Level level) {
+		super.setLevel(level);
+		if (level != null && !level.isClientSide()) {
+			register(this);
+		} else {
+			unregister(this);
 		}
+	}
+
+	@Override
+	public void clearRemoved() {
+		super.clearRemoved();
+		if (level != null && !level.isClientSide()) {
+			register(this);
+		}
+	}
+
+	@Override
+	public void setRemoved() {
+		unregister(this);
+		super.setRemoved();
 	}
 
 	@Override

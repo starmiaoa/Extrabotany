@@ -145,7 +145,7 @@ public class ManalinkBlockEntity extends ExtraFunctionalFlowerBlockEntity implem
 
 		ResourceKey<Level> type = pos.dimension();
 		Level world = server.getLevel(type);
-		if (world != null) {
+		if (world != null && world.isLoaded(pos.pos())) {
 			var receiver = ManaReceiver.LOOKUP.find(world, pos.pos(), null);
 			if (receiver instanceof ManaPool pool) {
 				return pool;
@@ -204,9 +204,13 @@ public class ManalinkBlockEntity extends ExtraFunctionalFlowerBlockEntity implem
 	protected void loadAdditional(CompoundTag cmp, HolderLookup.Provider registries) {
 		super.loadAdditional(cmp, registries);
 
-		GlobalPos.CODEC.parse(NbtOps.INSTANCE, cmp.get(TAG_LINK_POS))
-				.resultOrPartial(LOGGER::error)
-				.ifPresent(pos -> this.linkPos = pos);
+		if (cmp.contains(TAG_LINK_POS)) {
+			GlobalPos.CODEC.parse(NbtOps.INSTANCE, cmp.get(TAG_LINK_POS))
+					.resultOrPartial(LOGGER::error)
+					.ifPresentOrElse(pos -> this.linkPos = pos, () -> this.linkPos = null);
+		} else {
+			this.linkPos = null;
+		}
 	}
 
 	@Override

@@ -56,18 +56,22 @@ public abstract class ChargerBlockEntity extends ExposedSimpleInventoryBlockEnti
 			if (!isValidItem(stack)) {
 				return InteractionResult.PASS;
 			}
-			ItemStack put = stack.split(1);
-			setItem(put);
-			return InteractionResult.SUCCESS;
-		} else {
-			ItemStack get = getItem().copy();
-			setItem(ItemStack.EMPTY);
-			if (player.addItem(get)) {
-				playSound();
-			} else {
-				Containers.dropItemStack(world, player.getX(), player.getY(), player.getZ(), get);
+			if (!world.isClientSide()) {
+				ItemStack put = stack.split(1);
+				setItem(put);
 			}
-			return InteractionResult.SUCCESS;
+			return InteractionResult.sidedSuccess(world.isClientSide());
+		} else {
+			if (!world.isClientSide()) {
+				ItemStack get = getItem().copy();
+				setItem(ItemStack.EMPTY);
+				if (player.addItem(get)) {
+					playSound();
+				} else {
+					Containers.dropItemStack(world, player.getX(), player.getY(), player.getZ(), get);
+				}
+			}
+			return InteractionResult.sidedSuccess(world.isClientSide());
 		}
 	}
 
@@ -170,7 +174,7 @@ public abstract class ChargerBlockEntity extends ExposedSimpleInventoryBlockEnti
 	@Override
 	public float getChargeProcess() {
 		var mana = EXplatAbstractions.INSTANCE.findManaItem(getItem());
-		if (mana != null) {
+		if (mana != null && mana.getMaxMana() > 0) {
 			return (float) ((double) mana.getMana() / (double) mana.getMaxMana());
 		}
 		return -1;

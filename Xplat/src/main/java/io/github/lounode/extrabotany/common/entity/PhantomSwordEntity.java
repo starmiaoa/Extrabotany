@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,22 +14,34 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.client.fx.WispParticleData;
 
-import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
+import io.github.lounode.extrabotany.common.handler.DamageHandler;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class PhantomSwordEntity extends OldSwordProjectileEntity {
 	private static final String TAG_DELAY = "Delay";
 	private static final String TAG_LIFE_TICKS = "LifeTicks";
 	private static final String TAG_VARIETY = "Variety";
 	private static final String TAG_FAKE = "Fake";
-	private static final int LIFETIME = 26;
+	private static final String TAG_SNAPSHOT_DAMAGE = "SnapshotDamage";
+	private static final int LIFETIME = 32;
+	private static final double FLIGHT_SPEED = 1.65D;
+
 	private static final EntityDataAccessor<Integer> VARIETY = SynchedEntityData.defineId(PhantomSwordEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Boolean> FAKE = SynchedEntityData.defineId(PhantomSwordEntity.class, EntityDataSerializers.BOOLEAN);
-	// Synced so the renderer can hide swords that have not been launched yet, like the old version did.
 	private static final EntityDataAccessor<Integer> DELAY = SynchedEntityData.defineId(PhantomSwordEntity.class, EntityDataSerializers.INT);
 	private static final float[][] RGB = {
 			{ 0.82F, 0.2F, 0.58F }, { 0F, 0.71F, 0.10F }, { 0.74F, 0.07F, 0.32F },
@@ -38,6 +51,10 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 	};
 
 	private int lifeTicks;
+	private float snapshotDamage = 22.0F;
+	@Nullable
+	private UUID lockedTargetUUID;
+	private final Set<UUID> hitTargets = new HashSet<>();
 
 	public PhantomSwordEntity(EntityType<? extends PhantomSwordEntity> entityType, Level level) {
 		super(entityType, level);
@@ -53,9 +70,14 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		this.setDelay(delay);
 		this.setVariety(variety);
 		this.setTargetPos(targetPos);
+		this.snapshotDamage = computeOwnerDamage(owner);
 		if (delay <= 0) {
-			this.shootAt(targetPos, 1.05D);
+			this.shootAt(targetPos, FLIGHT_SPEED);
 		}
+	}
+
+	public void setLockedTarget(@Nullable LivingEntity target) {
+		this.lockedTargetUUID = target != null ? target.getUUID() : null;
 	}
 
 	@Override
@@ -63,7 +85,8 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		if (!this.level().isClientSide() && this.getDelay() > 0) {
 			this.setDelay(this.getDelay() - 1);
 			if (this.getDelay() == 0) {
-				this.shootAt(this.getTargetPos(), 1.05D);
+				Vec3 aim = resolveLiveTargetPos();
+				this.shootAt(aim, FLIGHT_SPEED);
 			}
 			return;
 		}
@@ -73,7 +96,7 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		super.tick();
 		if (!this.level().isClientSide() && this.getDelay() <= 0) {
 			this.lifeTicks++;
-			if (!this.isFake() && this.lifeTicks % 6 == 0) {
+			if (!this.isFake() && this.lifeTicks % 4 == 0) {
 				PhantomSwordEntity illusion = new PhantomSwordEntity(ExtraBotanyEntityType.PHANTOM_SWORD, this.level());
 				illusion.setOwner(this.getOwner());
 				illusion.setFake(true);
@@ -83,6 +106,40 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 				illusion.setYRot(this.getYRot());
 				illusion.setXRot(this.getXRot());
 				this.level().addFreshEntity(illusion);
+			}
+		}
+	}
+
+	private Vec3 resolveLiveTargetPos() {
+		if (this.lockedTargetUUID != null && this.level() instanceof ServerLevel sl) {
+			Entity e = sl.getEntity(this.lockedTargetUUID);
+			if (e instanceof LivingEntity living && living.isAlive()) {
+				return living.position().add(0.0D, living.getBbHeight() * 0.5D, 0.0D);
+			}
+		}
+		return this.getTargetPos();
+	}
+
+	@Override
+	protected void onHit(HitResult result) {
+		// Spectral phantom blades phase through blocks so terrain/walls never swallow the barrage.
+	}
+
+	@Override
+	protected void hitEntities() {
+		if (isFake()) {
+			return;
+		}
+		AABB axis = new AABB(this.getX(), this.getY(), this.getZ(), this.xOld, this.yOld, this.zOld).inflate(getHitRadius());
+		List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, axis);
+		List<LivingEntity> filtered = DamageHandler.INSTANCE.getFilteredEntities(targets, this.getOwner());
+
+		for (LivingEntity target : filtered) {
+			if (!canHitTarget(target) || !this.hitTargets.add(target.getUUID())) {
+				continue;
+			}
+			if (damageTarget(target)) {
+				onDamagedTarget(target);
 			}
 		}
 	}
@@ -98,6 +155,11 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 	}
 
 	@Override
+	protected double getHitRadius() {
+		return 2.25D;
+	}
+
+	@Override
 	protected int getLifetime() {
 		return LIFETIME;
 	}
@@ -110,7 +172,7 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 	@Override
 	protected void spawnTrailParticles() {
 		float[] rgb = RGB[Math.floorMod(getVariety(), RGB.length)];
-		this.level().addParticle(WispParticleData.wisp(0.25F, rgb[0], rgb[1], rgb[2]),
+		this.level().addParticle(WispParticleData.wisp(0.28F, rgb[0], rgb[1], rgb[2]),
 				this.getX(), this.getY(), this.getZ(), 0.0D, 0.0D, 0.0D);
 	}
 
@@ -129,7 +191,8 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		if (isFake()) {
 			return false;
 		}
-		return !(target instanceof Animal) && target.invulnerableTime <= 5;
+		// Completely ignores invulnerability frames (invulnerableTime).
+		return !(target instanceof Animal) && target.isAlive();
 	}
 
 	@Override
@@ -140,19 +203,38 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		}
 		Entity owner = getOwner();
 		Player player = owner instanceof Player p ? p : null;
-		HerrscherCombatHelper.dealTrueMagicDamage(target, owner, dmg * 0.05F);
-		target.hurt(damageSources().magic(), dmg * 0.3F);
+
+		// Full i-frame bypass across all three damage channels so neither self-channels nor consecutive blades are swallowed.
+		target.invulnerableTime = 0;
+		HerrscherCombatHelper.dealTrueMagicDamage(target, owner, dmg * 0.22F);
+
+		target.invulnerableTime = 0;
+		boolean magicHit = target.hurt(damageSources().magic(), dmg * 0.48F);
+
+		target.invulnerableTime = 0;
 		DamageSource playerDamage = player != null ? damageSources().playerAttack(player)
 				: owner instanceof LivingEntity living ? damageSources().mobAttack(living) : damageSources().generic();
-		return target.hurt(playerDamage, dmg * 0.65F);
+		boolean physHit = target.hurt(playerDamage, dmg * 0.95F);
+
+		// Leave target open for the very next phantom blade or melee swing without i-frame lockout.
+		target.invulnerableTime = 0;
+		return magicHit || physHit;
+	}
+
+	private static float computeOwnerDamage(@Nullable Entity owner) {
+		if (owner instanceof Player player) {
+			double speed = player.getAttributeValue(Attributes.MOVEMENT_SPEED);
+			double atk = Math.max(21.0D, player.getAttributeValue(Attributes.ATTACK_DAMAGE));
+			return (float) (atk * Math.min(1.25D + speed * 1.5D, 2.6D));
+		}
+		return 22.0F;
 	}
 
 	private float calculateDamage() {
 		if (getOwner() instanceof Player player && player.getMainHandItem().is(ExtraBotanyItems.firstFractal)) {
-			double speed = player.getAttributeValue(Attributes.MOVEMENT_SPEED);
-			return (float) (player.getAttributeValue(Attributes.ATTACK_DAMAGE) * Math.min(1D + speed, 2D));
+			return computeOwnerDamage(player);
 		}
-		return 10F;
+		return Math.max(22.0F, this.snapshotDamage);
 	}
 
 	public int getVariety() {
@@ -186,6 +268,7 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		tag.putInt(TAG_LIFE_TICKS, this.lifeTicks);
 		tag.putInt(TAG_VARIETY, this.getVariety());
 		tag.putBoolean(TAG_FAKE, this.isFake());
+		tag.putFloat(TAG_SNAPSHOT_DAMAGE, this.snapshotDamage);
 	}
 
 	@Override
@@ -195,6 +278,9 @@ public class PhantomSwordEntity extends OldSwordProjectileEntity {
 		this.lifeTicks = tag.getInt(TAG_LIFE_TICKS);
 		this.setVariety(tag.getInt(TAG_VARIETY));
 		this.setFake(tag.getBoolean(TAG_FAKE));
+		if (tag.contains(TAG_SNAPSHOT_DAMAGE)) {
+			this.snapshotDamage = tag.getFloat(TAG_SNAPSHOT_DAMAGE);
+		}
 	}
 
 	@Override

@@ -1,10 +1,10 @@
 package io.github.lounode.extrabotany.common.item.relic;
-import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -21,12 +21,13 @@ import net.minecraft.world.level.Level;
 import vazkii.botania.api.item.Relic;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.common.handler.PixieHandler;
-import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
 import vazkii.botania.common.item.BotaniaItems;
 import vazkii.botania.common.item.relic.RelicImpl;
 
 import io.github.lounode.extrabotany.common.item.equipment.shield.ManasteelShieldItem;
 import io.github.lounode.extrabotany.common.item.material.ItemTiers;
+import io.github.lounode.extrabotany.common.util.ItemStackDataHelper;
+import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import java.util.List;
 
@@ -46,6 +47,10 @@ public class AchillesShieldItem extends ManasteelShieldItem {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
+		var relic = EXplatAbstractions.INSTANCE.findRelic(stack);
+		if (relic == null || !relic.isRightPlayer(player)) {
+			return InteractionResultHolder.pass(stack);
+		}
 		if (!isReleased(stack)) {
 			if (hand == InteractionHand.MAIN_HAND &&
 					player.isSecondaryUseActive() &&
@@ -76,8 +81,9 @@ public class AchillesShieldItem extends ManasteelShieldItem {
 			if (isReleased(stack) && player.tickCount % 10 == 0) {
 				if (player.getAbsorptionAmount() <= 0F) {
 					setReleased(stack, false);
+				} else {
+					player.setAbsorptionAmount(Math.max(0F, player.getAbsorptionAmount() - 1F));
 				}
-				player.setAbsorptionAmount(player.getAbsorptionAmount() - 1);
 			}
 		}
 	}
@@ -92,10 +98,15 @@ public class AchillesShieldItem extends ManasteelShieldItem {
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
-		if (isReleased(stack)) {
-			BotaniaItems.THUNDERCALLER.hurtEnemy(stack, target, attacker);
-		} else {
-			attacker.setAbsorptionAmount(Math.min(MAX_ABSORPTION, attacker.getAbsorptionAmount() + 2F));
+		if (attacker instanceof Player player) {
+			var relic = EXplatAbstractions.INSTANCE.findRelic(stack);
+			if (relic != null && relic.isRightPlayer(player)) {
+				if (isReleased(stack)) {
+					BotaniaItems.THUNDERCALLER.hurtEnemy(stack, target, attacker);
+				} else {
+					attacker.setAbsorptionAmount(Math.min(MAX_ABSORPTION, attacker.getAbsorptionAmount() + 2F));
+				}
+			}
 		}
 		return super.hurtEnemy(stack, target, attacker);
 	}
@@ -104,32 +115,17 @@ public class AchillesShieldItem extends ManasteelShieldItem {
 	public void onShieldBlock(ItemStack stack, LivingEntity blocker, DamageSource source, float damage) {
 		super.onShieldBlock(stack, blocker, source, damage);
 		Entity attacker = source.getEntity();
-		if (attacker == null) {
+		if (attacker == null || attacker == blocker || source.is(DamageTypes.THORNS) || damage <= 0F) {
 			return;
 		}
-		/* 不好调，蒜鸟
-		if (source.is(DamageTypeTags.IS_PROJECTILE) && source.getDirectEntity() instanceof Projectile projectile) {
-			Entity target = projectile.getOwner();
-			if (target != null) {
-				Vec3 vec3 = target.getDeltaMovement();
-				double d0 = target.getX() + vec3.x - blocker.getX();
-				double d1 = target.getEyeY() - (double)1.1F - blocker.getY();
-				double d2 = target.getZ() + vec3.z - blocker.getZ();
-				double d3 = Math.sqrt(d0 * d0 + d2 * d2);
-		
-				projectile.setOwner(blocker);
-				projectile.setDeltaMovement(0, 0 ,0);
-				projectile.setXRot(0);
-				projectile.setYRot(0);
-				projectile.setYRot(projectile.getXRot() - -20.0F);
-				projectile.shoot(d0, d1 + d3 * 0.2, d2, 0.75F, 8.0F);
-			}
-		
+		if (!(blocker instanceof Player player)) {
 			return;
 		}
-		*/
-
-		if (blocker instanceof Player player && ManaItemHandler.INSTANCE.requestManaExactForTool(stack, player, 500, true)) {
+		var relic = EXplatAbstractions.INSTANCE.findRelic(stack);
+		if (relic == null || !relic.isRightPlayer(player)) {
+			return;
+		}
+		if (ManaItemHandler.INSTANCE.requestManaExactForTool(stack, player, 500, true)) {
 			attacker.hurt(player.damageSources().thorns(player), damage);
 		}
 	}

@@ -88,7 +88,7 @@ public class OldExbotanyArmorItem extends StarryIdolArmorItem implements ManaDis
 
 	@Override
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<Item> onBroken) {
-		return ToolCommons.damageItemIfPossible(stack, amount, entity, getManaPerDamage());
+		return ToolCommons.absorbDamageWithMana(stack, amount, entity);
 	}
 
 	@Override

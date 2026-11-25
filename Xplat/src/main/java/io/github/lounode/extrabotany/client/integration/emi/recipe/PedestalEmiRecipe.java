@@ -23,7 +23,7 @@ import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.pr
 public class PedestalEmiRecipe extends ExtrabotanyEmiRecipe {
 
 	private static final ResourceLocation TEXTURE = prefixBotania("textures/gui/pure_daisy_overlay.png");
-	private static final EmiIngredient PEDESTAL = EmiIngredient.of(ExtraBotanyTags.Blocks.PEDESTALS);
+	private static final EmiIngredient PEDESTAL = EmiIngredient.of(ExtraBotanyTags.Items.PEDESTALS);
 
 	protected EmiIngredient hammers;
 	private final String smashToolsKey;

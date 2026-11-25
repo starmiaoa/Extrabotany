@@ -225,8 +225,12 @@ public class SkullMissileEntity extends ThrowableProjectile {
 		Vec3 oldPos = new Vec3(lastTickPosX, lastTickPosY, lastTickPosZ);
 
 		Vec3 diff = thisVec.subtract(oldPos);
-		Vec3 step = diff.normalize().scale(0.05);
-		int steps = (int) (diff.length() / step.length());
+		double dist = diff.length();
+		if (dist < 1.0E-4) {
+			return;
+		}
+		int steps = Math.min(64, Math.max(1, (int) (dist / 0.05)));
+		Vec3 step = diff.scale(0.05 / dist);
 		Vec3 particlePos = oldPos;
 
 		SparkleParticleData data = SparkleParticleData.corrupt(0.8F, 1F, 0.0F, 1F, 2);

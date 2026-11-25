@@ -44,7 +44,7 @@ public class SilverBulletItem extends ManaBlasterItem {
 
 		if (!level.isClientSide()) {
 			ManaBurstEntity burst = getFreeBurst(player, stack, hand);
-			level.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.manaBlaster, SoundSource.PLAYERS, 1.0F, 1.0F);
+			level.playSound(null, player.getX(), player.getY(), player.getZ(), BotaniaSounds.MANA_BLASTER, SoundSource.PLAYERS, 1.0F, 1.0F);
 			level.addFreshEntity(burst);
 			if (player instanceof ServerPlayer serverPlayer) {
 				ManaBlasterTrigger.INSTANCE.trigger(serverPlayer, stack);

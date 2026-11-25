@@ -44,6 +44,8 @@ public class WandOfTheForestExtendRecipe extends CustomRecipe {
 					return false;
 				}
 				findReader = true;
+			} else {
+				return false;
 			}
 		}
 

@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
@@ -25,7 +26,6 @@ import vazkii.botania.common.block.flower.FloatingSpecialFlowerBlock;
 import vazkii.botania.common.block.flower.PoweredFloatingSpecialFlowerBlock;
 import vazkii.botania.common.block.flower.PoweredSpecialFlowerBlock;
 import vazkii.botania.common.block.flower.SpecialFlowerBlock;
-import vazkii.botania.common.block.block_entity.BotaniaBlockEntities;
 import vazkii.botania.common.brew.BotaniaMobEffects;
 import vazkii.botania.common.item.CustomCreativeTabContents;
 import vazkii.botania.common.item.block.SpecialFlowerBlockItem;
@@ -37,6 +37,7 @@ import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.lib.LibBlockNames;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ExtrabotanyFlowerBlocks {
@@ -370,7 +371,12 @@ public class ExtrabotanyFlowerBlocks {
 		r.accept(STARDUST_LOTUS, getId(stardustLotus));
 	}
 
-	public static void registerWandHudCaps(BotaniaBlockEntities.BECapConsumer<WandHUD> consumer) {
+	@FunctionalInterface
+	public interface BECapConsumer<T> {
+		void accept(Function<BlockEntity, T> factory, BlockEntityType<?>... types);
+	}
+
+	public static void registerWandHudCaps(BECapConsumer<WandHUD> consumer) {
 		consumer.accept(be -> new BindableSpecialFlowerBlockEntity.BindableFlowerWandHud<>((FunctionalFlowerBlockEntity) be),
 				TRADE_ORCHID, WOODIENIA, SERENITIAN, MIRROWTUNIA, NECROFLEUR, NECROFLEUR_CHIBI
 		);

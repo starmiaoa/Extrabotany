@@ -1,0 +1,25 @@
+{
+  "category": "botania:extrabotanies",
+  "icon": "extrabotany:mana_reader",
+  "name": "extrabotany.entry.mana_reader",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "extrabotany.page.mana_reader0"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "extrabotany:mana_reader",
+      "text": "extrabotany.page.mana_reader1"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "extrabotany.page.mana_reader2"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "extrabotany:wand_of_the_forest_extension",
+      "title": "extrabotany.page.mana_reader3"
+    }
+  ]
+}

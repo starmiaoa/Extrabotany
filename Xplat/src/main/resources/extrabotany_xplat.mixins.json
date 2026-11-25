@@ -16,12 +16,12 @@
     "botania.EquipmentHandlerSimulateBoxBaubles",
     "botania.GaiaGuardianAdditionalSpawnCheck",
     "botania.MagicMissileTargetBypassGaiaIII",
-    "botania.WandOfTheForestExtension",
-    "client.PatchouliTemplateXModMixin",
-    "client.PatchouliTemplateXModMixinBuilder"
+    "botania.WandOfTheForestExtension"
   ],
   "client": [
-    "client.HUDHandlerMixin"
+    "client.HUDHandlerMixin",
+    "client.PatchouliTemplateXModMixin",
+    "client.PatchouliTemplateXModMixinBuilder"
   ],
   "injectors": {
     "defaultRequire": 1

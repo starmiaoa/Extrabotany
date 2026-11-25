@@ -8,7 +8,6 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -17,7 +16,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.Nullable;
 
-import vazkii.botania.common.block.BotaniaBlock;
+import vazkii.botania.common.block.BotaniaEntityBlock;
 import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 
 import io.github.lounode.extrabotany.api.block.Charger;
@@ -26,7 +25,7 @@ import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockE
 import io.github.lounode.extrabotany.common.block.block_entity.ManaChargerBlockEntity;
 import io.github.lounode.extrabotany.common.block.block_entity.PowerFrameBlockEntity;
 
-public class PowerFrameBlock extends BotaniaBlock implements EntityBlock {
+public class PowerFrameBlock extends BotaniaEntityBlock {
 
 	public PowerFrameBlock(Properties builder) {
 		super(builder);

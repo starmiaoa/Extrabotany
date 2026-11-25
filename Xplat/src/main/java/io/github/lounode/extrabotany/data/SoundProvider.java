@@ -35,6 +35,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		take(soundEvents, PLAYER_BACKFIRE);
 		take(soundEvents, MUSIC_GAIA3);
 		take(soundEvents, MUSIC_HERRSCHER);
+		take(soundEvents, MUSIC_EGO);
 		take(soundEvents, REWARD_BAG_OPEN);
 		take(soundEvents, PANDORAS_BOX_OPEN);
 
@@ -55,7 +56,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		this.add(EXCALIBUR_ATTACK, SoundDefinitionsProvider.definition()
 				.subtitle(title(EXCALIBUR_ATTACK))
 				.with(
-						SoundDefinitionsProvider.sound(BotaniaSounds.terraBlade.getLocation())
+						SoundDefinitionsProvider.sound(BotaniaSounds.TERRABLADE.getLocation())
 								.volume(0.4f)
 								.pitch(1.4f)
 				)
@@ -64,7 +65,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		this.add(FAILNAUGHT_SHOOT, SoundDefinitionsProvider.definition()
 				.subtitle(title(FAILNAUGHT_SHOOT))
 				.with(
-						SoundDefinitionsProvider.sound(BotaniaSounds.terraBlade.getLocation())
+						SoundDefinitionsProvider.sound(BotaniaSounds.TERRABLADE.getLocation())
 								.volume(0.4f)
 								.pitch(1.4f)
 				)
@@ -101,6 +102,14 @@ public class SoundProvider extends SoundDefinitionsProvider {
 				)
 		);
 
+		this.add(MUSIC_EGO, SoundDefinitionsProvider.definition()
+				.with(
+						SoundDefinitionsProvider.sound(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "music/swordland"))
+								.stream()
+								.volume(1.3F)
+				)
+		);
+
 		take(soundEvents, WALKING_CANE_USE);
 		this.add(WALKING_CANE_USE, SoundDefinitionsProvider.definition()
 				.subtitle(title(WALKING_CANE_USE))
@@ -119,7 +128,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		this.add(ARMOR_EQUIP_MAID, SoundDefinition.definition()
 				.subtitle(title(ARMOR_EQUIP_MAID))
 				.with(
-						SoundDefinitionsProvider.sound(location(BotaniaSounds.equipManaweave), SoundDefinition.SoundType.EVENT)
+						SoundDefinitionsProvider.sound(location(BotaniaSounds.EQUIP_MANAWEAVE), SoundDefinition.SoundType.EVENT)
 				)
 		);
 
@@ -127,7 +136,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		this.add(ARMOR_EQUIP_IDOL, SoundDefinition.definition()
 				.subtitle(title(ARMOR_EQUIP_IDOL))
 				.with(
-						SoundDefinitionsProvider.sound(location(BotaniaSounds.equipManaweave), SoundDefinition.SoundType.EVENT)
+						SoundDefinitionsProvider.sound(location(BotaniaSounds.EQUIP_MANAWEAVE), SoundDefinition.SoundType.EVENT)
 				)
 		);
 
@@ -135,7 +144,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		this.add(HAMMER_USE, SoundDefinition.definition()
 				.subtitle(title(HAMMER_USE))
 				.with(
-						SoundDefinitionsProvider.sound(BotaniaSounds.terraPickMode.getLocation(), SoundDefinition.SoundType.EVENT)
+						SoundDefinitionsProvider.sound(BotaniaSounds.TERRA_SHATTERER_MODE.getLocation(), SoundDefinition.SoundType.EVENT)
 				)
 		);
 		take(soundEvents, ARMOR_EQUIP_GOBLIN);
@@ -159,6 +168,24 @@ public class SoundProvider extends SoundDefinitionsProvider {
 				.with(SoundDefinitionsProvider.sound(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "cyclone")))
 		);
 
+		take(soundEvents, MOTOR_RIDEON);
+		this.add(MOTOR_RIDEON, SoundDefinitionsProvider.definition()
+				.subtitle(title(MOTOR_RIDEON))
+				.with(SoundDefinitionsProvider.sound(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "rideon")))
+		);
+
+		take(soundEvents, FLAMESCION_SLASH);
+		this.add(FLAMESCION_SLASH, SoundDefinitionsProvider.definition()
+				.subtitle(title(FLAMESCION_SLASH))
+				.with(SoundDefinitionsProvider.sound(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "slash")))
+		);
+
+		take(soundEvents, MOTOR_SHOOT);
+		this.add(MOTOR_SHOOT, SoundDefinitionsProvider.definition()
+				.subtitle(title(MOTOR_SHOOT))
+				.with(SoundDefinitionsProvider.sound(ResourceLocation.fromNamespaceAndPath(LibMisc.MOD_ID, "shoot")))
+		);
+
 		for (SoundEvent soundEvent : soundEvents) {
 			this.add(soundEvent, defaultDefinition(soundEvent));
 		}
@@ -174,7 +201,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 	}
 
 	private static ResourceLocation location(Holder<SoundEvent> soundEvent) {
-		return soundEvent.unwrapKey().orElseThrow().location();
+		return soundEvent.value().getLocation();
 	}
 
 	protected SoundDefinition copyDefinition(SoundEvent soundEvent, SoundEvent... copyFrom) {

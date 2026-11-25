@@ -100,6 +100,9 @@ public class NatureOrbItem extends BaubleItem implements CustomCreativeTabConten
 			if (GaiaIII.spawn(player, finalItem, level, pos)) {
 				if (!level.isClientSide()) {
 					natureItem.addEnergy(-orb.getSpawnGaiaCost());
+					if (finalItem == equipItem) {
+						BaubleBoxSimulatorItem.saveIfSimulated(player, finalItem);
+					}
 					event.setCanceled(true);
 				}
 
@@ -110,7 +113,7 @@ public class NatureOrbItem extends BaubleItem implements CustomCreativeTabConten
 
 	@Override
 	public void onWornTick(ItemStack stack, LivingEntity entity) {
-		if (!(entity instanceof Player player)) {
+		if (!(entity instanceof Player player) || player.level().isClientSide()) {
 			return;
 		}
 		var natureItem = EXplatAbstractions.INSTANCE.findNatureEnergyItem(stack);
@@ -153,9 +156,11 @@ public class NatureOrbItem extends BaubleItem implements CustomCreativeTabConten
 				.withStyle(getTier(stack) >= 3 ? ChatFormatting.RED : ChatFormatting.GRAY));
 		tooltip.add(Component.translatable("tooltip.extrabotany.nature_orb.tier3")
 				.withStyle(getTier(stack) >= 4 ? ChatFormatting.GREEN : ChatFormatting.GRAY));
-		tooltip.add(Component.empty());
-		tooltip.add(Component.translatable("tooltip.extrabotany.nature_orb.energy", natureItem.getEnergy() + "/" + natureItem.getMaxEnergy())
-				.withStyle(ChatFormatting.GRAY));
+		if (natureItem != null) {
+			tooltip.add(Component.empty());
+			tooltip.add(Component.translatable("tooltip.extrabotany.nature_orb.energy", natureItem.getEnergy() + "/" + natureItem.getMaxEnergy())
+					.withStyle(ChatFormatting.GRAY));
+		}
 	}
 
 	public static int getTier(ItemStack stack) {
@@ -202,19 +207,25 @@ public class NatureOrbItem extends BaubleItem implements CustomCreativeTabConten
 	@Override
 	public int getBarColor(ItemStack stack) {
 		var natureItem = EXplatAbstractions.INSTANCE.findNatureEnergyItem(stack);
+		if (natureItem == null || natureItem.getMaxEnergy() <= 0) {
+			return 0;
+		}
 		return Mth.hsvToRgb((natureItem.getEnergy() / (float) natureItem.getMaxEnergy()) / 3.0F, 1.0F, 1.0F);
 	}
 
 	@Override
 	public int getBarWidth(ItemStack stack) {
 		var natureItem = EXplatAbstractions.INSTANCE.findNatureEnergyItem(stack);
+		if (natureItem == null || natureItem.getMaxEnergy() <= 0) {
+			return 0;
+		}
 		return Math.round(13 * (natureItem.getEnergy() / (float) natureItem.getMaxEnergy()));
 	}
 
 	@Override
 	public boolean isBarVisible(ItemStack stack) {
 		var natureItem = EXplatAbstractions.INSTANCE.findNatureEnergyItem(stack);
-		return natureItem.getEnergy() < natureItem.getMaxEnergy();
+		return natureItem != null && natureItem.getMaxEnergy() > 0 && natureItem.getEnergy() < natureItem.getMaxEnergy();
 	}
 
 	public static class NatureEnergyImpl implements NatureEnergyItem {
@@ -237,6 +248,9 @@ public class NatureOrbItem extends BaubleItem implements CustomCreativeTabConten
 
 		@Override
 		public boolean addEnergy(long energy) {
+			if (stack.isEmpty()) {
+				return false;
+			}
 			long current = getEnergy() / stack.getCount();
 			long maxSingle = getMaxEnergy() / stack.getCount();
 

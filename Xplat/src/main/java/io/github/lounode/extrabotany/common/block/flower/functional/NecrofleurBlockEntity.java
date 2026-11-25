@@ -56,7 +56,7 @@ public class NecrofleurBlockEntity extends ExtraFunctionalFlowerBlockEntity {
 				break;
 			}
 			if (entity.getHealth() <= entity.getMaxHealth() * 0.5F) {
-				entity.hurt(entity.damageSources().indirectMagic(entity, entity), getDamage());
+				entity.hurt(entity.damageSources().magic(), getDamage());
 				entity.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.HEAL_REVERSE, 20 * 15));
 
 				addMana(-getDamageCost());

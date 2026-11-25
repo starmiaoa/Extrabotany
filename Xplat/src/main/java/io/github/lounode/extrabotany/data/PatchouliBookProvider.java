@@ -54,8 +54,7 @@ public final class PatchouliBookProvider extends PatchouliProvider {
 						crafting(ExtraBotanyItems.manaReader)
 								.withText("extrabotany.page.mana_reader1"),
 						text("extrabotany.page.mana_reader2"),
-						crafting("extrabotany:twig_wand_extension")
-								.withRecipe2("extrabotany:dreamwood_wand_extension")
+						crafting("extrabotany:wand_of_the_forest_extension")
 								.withTitle("extrabotany.page.mana_reader3")
 				)
 				.save(consumer, id("mana_reader"));
@@ -205,7 +204,6 @@ public final class PatchouliBookProvider extends PatchouliProvider {
 
 				)
 				.extraRecipeMapping(ExtraBotanyItems.coreOfTheVoid, 0)
-				.withAdvancement(mainAdvancement("impossible"))
 				.save(consumer, id("core_of_the_void"));
 		PatchouliBuilder.entry(CATEGORY)
 				.withName("extrabotany.entry.gaia_3rd")
@@ -867,7 +865,7 @@ public final class PatchouliBookProvider extends PatchouliProvider {
 	@Override
 	protected Path getOutputPath(PatchouliEntry entry) {
 		return packOutput.getOutputFolder(PackOutput.Target.RESOURCE_PACK)
-				.resolve("botania/patchouli_books/lexicon/en_us/entries")
+				.resolve("botania/patchouli_books/lexica_botania/en_us/entries")
 				.resolve(entry.getID().getNamespace())
 				.resolve(entry.getID().getPath() + ".json");
 	}

@@ -2,16 +2,23 @@ package io.github.lounode.extrabotany.forge.client;
 import io.github.lounode.extrabotany.xplat.EXplatAbstractions;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
@@ -29,6 +36,7 @@ import io.github.lounode.extrabotany.client.UfoInputHandler;
 import io.github.lounode.extrabotany.client.core.ExtraBotanyModels;
 import io.github.lounode.extrabotany.client.gui.HUD;
 import io.github.lounode.extrabotany.client.hud.ManaBufferWandHud;
+import io.github.lounode.extrabotany.client.model.ArmorModels;
 import io.github.lounode.extrabotany.client.model.ExtrabotanyLayerDefinitions;
 import io.github.lounode.extrabotany.client.renderer.BlockRenderLayers;
 import io.github.lounode.extrabotany.client.renderer.ColorHandler;
@@ -36,6 +44,7 @@ import io.github.lounode.extrabotany.client.renderer.entity.EntityRenderers;
 import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockEntities;
 import io.github.lounode.extrabotany.common.block.block_entity.ManaBufferBlockEntity;
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
+import io.github.lounode.extrabotany.common.item.equipment.armor.starry_idol.StarryIdolArmorItem;
 import io.github.lounode.extrabotany.common.lib.LibMisc;
 import io.github.lounode.extrabotany.common.lib.ResourceLocationHelper;
 import io.github.lounode.extrabotany.forge.fluid.NeoForgeExtraBotanyFluids;
@@ -49,11 +58,13 @@ public class ForgeClientInitializer {
 
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent evt) {
-		BlockRenderLayers.skipPlatformBlocks = true; // platforms can use standard rendering on Forge
-		BlockRenderLayers.init(ItemBlockRenderTypes::setRenderLayer);
+		evt.enqueueWork(() -> {
+			BlockRenderLayers.skipPlatformBlocks = true; // platforms can use standard rendering on Forge
+			BlockRenderLayers.init(ItemBlockRenderTypes::setRenderLayer);
+			hud = new HUD(Minecraft.getInstance());
+		});
 
 		var bus = NeoForge.EVENT_BUS;
-		hud = new HUD(Minecraft.getInstance());
 
 		PatchouliAPI.get().setConfigFlag("otaku_mode", ExtraBotanyConfig.client().otakuMode());
 		/*
@@ -113,7 +124,11 @@ public class ForgeClientInitializer {
 	@SubscribeEvent
 	public static void registerGuiOverlays(RegisterGuiLayersEvent e) {
 		e.registerAbove(VanillaGuiLayers.EXPERIENCE_BAR, ResourceLocationHelper.prefix("hud"),
-				(gui, deltaTracker) -> hud.onDrawScreenPost(gui, deltaTracker.getGameTimeDeltaPartialTick(Minecraft.getInstance().level != null)));
+				(gui, deltaTracker) -> {
+					if (hud != null) {
+						hud.onDrawScreenPost(gui, deltaTracker.getGameTimeDeltaPartialTick(Minecraft.getInstance().level != null));
+					}
+				});
 	}
 
 	@SubscribeEvent
@@ -129,6 +144,19 @@ public class ForgeClientInitializer {
 				return NeoForgeExtraBotanyFluids.flowingTexture();
 			}
 		}, NeoForgeExtraBotanyFluids.fluidedManaType());
+
+		Item[] armorItems = BuiltInRegistries.ITEM.stream()
+				.filter(item -> item instanceof StarryIdolArmorItem)
+				.toArray(Item[]::new);
+		if (armorItems.length > 0) {
+			e.registerItem(new IClientItemExtensions() {
+				@Override
+				public HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel<?> defaultModel) {
+					var model = ArmorModels.get(stack);
+					return model != null ? model : defaultModel;
+				}
+			}, armorItems);
+		}
 	}
 
 	@SubscribeEvent

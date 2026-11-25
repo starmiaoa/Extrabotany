@@ -4,8 +4,7 @@
   "package": "io.github.lounode.extrabotany.forge.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "SimulateDestroyMixinForge",
-    "client.ItemStarryIdolArmorForgeMixin"
+    "SimulateDestroyMixinForge"
   ],
   "client": [
     "client.CameraCooldownFinishMixin",

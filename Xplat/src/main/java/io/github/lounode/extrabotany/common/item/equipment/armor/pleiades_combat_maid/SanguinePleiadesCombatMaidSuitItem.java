@@ -11,17 +11,18 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 
 import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.common.brew.BotaniaMobEffects;
 import vazkii.botania.common.brew.effect.BloodthirstMobEffect;
 
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
 import java.util.Locale;
@@ -65,8 +66,12 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 		return "senketsu".equals(name);
 	}
 
+	public static void onPlayerLoggedOut(Player player) {
+		EventHandler.bloodthirstKilled.remove(player.getUUID());
+	}
+
 	public static class EventHandler {
-			public static void onAttackLiving(LivingDamageEvent.Post event) {
+		public static void onAttackLiving(LivingDamageEvent.Post event) {
 			Entity attacker = event.getSource().getEntity();
 			if (!(attacker instanceof LivingEntity living)) {
 				return;
@@ -82,17 +87,19 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 		//Get Blood Suit
 		private static final Map<UUID, Integer> bloodthirstKilled = new ConcurrentHashMap<>();
 
-			public static void onEffectAdded(MobEffectEvent.Added event) {
+		public static void onEffectAdded(MobEffectEvent.Added event) {
 			if (!(event.getEffectInstance().getEffect().value() instanceof BloodthirstMobEffect)) {
 				return;
 			}
 			if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
 				return;
 			}
-			bloodthirstKilled.put(serverPlayer.getUUID(), 0);
+			if (event.getOldEffectInstance() == null) {
+				bloodthirstKilled.putIfAbsent(serverPlayer.getUUID(), 0);
+			}
 		}
 
-			public static void onKilled(LivingDeathEvent event) {
+		public static void onKilled(LivingDeathEvent event) {
 			if (!(event.getSource().getEntity() instanceof ServerPlayer serverPlayer)) {
 				return;
 			}
@@ -103,13 +110,13 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 			bloodthirstKilled.computeIfPresent(serverPlayer.getUUID(), (uuid, count) -> count + 1);
 		}
 
-			public static void onEffectRemove(MobEffectEvent.Remove event) {
+		public static void onEffectRemove(MobEffectEvent.Remove event) {
 			if (event.getEntity() instanceof ServerPlayer serverPlayer) {
 				onEffectRemovedOrExpired(serverPlayer, event.getEffectInstance());
 			}
 		}
 
-			public static void onEffectExpired(MobEffectEvent.Expired event) {
+		public static void onEffectExpired(MobEffectEvent.Expired event) {
 			if (event.getEntity() instanceof ServerPlayer serverPlayer) {
 				onEffectRemovedOrExpired(serverPlayer, event.getEffectInstance());
 			}
@@ -130,8 +137,10 @@ public class SanguinePleiadesCombatMaidSuitItem extends PleiadesCombatMaidSuitIt
 		}
 
 		private static void replaceArmor(ServerPlayer serverPlayer) {
-			int killed = bloodthirstKilled.get(serverPlayer.getUUID());
-			bloodthirstKilled.remove(serverPlayer.getUUID());
+			Integer killed = bloodthirstKilled.remove(serverPlayer.getUUID());
+			if (killed == null) {
+				return;
+			}
 
 			ItemStack origin = serverPlayer.getItemBySlot(EquipmentSlot.CHEST);
 

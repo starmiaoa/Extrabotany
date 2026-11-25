@@ -98,8 +98,11 @@ public abstract class SkullLandMineEntity extends MagicLandMineEntity {
 		//TODO 真实伤害
 		@Override
 		public void explode() {
-			List<Player> players = getVictimPlayers();
 			super.explode();
+			if (level().isClientSide()) {
+				return;
+			}
+			List<Player> players = getVictimPlayers();
 			for (Player player : players) {
 				if (player.isSpectator() || player.isCreative()) {
 					continue;
@@ -145,6 +148,9 @@ public abstract class SkullLandMineEntity extends MagicLandMineEntity {
 		@Override
 		public void explode() {
 			super.explode();
+			if (level().isClientSide()) {
+				return;
+			}
 			if (ExtraBotanyConfig.common().disableGaiaDisArm()
 					|| !ExtraBotanyConfig.common().guardianItemCheck()) {
 				return;

@@ -55,31 +55,18 @@ public class ItemTagProvider extends ItemTagsProvider {
 		this.tag(ItemTags.SWORDS).add(SWORDS);
 		this.tag(ExtraBotanyTags.Items.HAMMERS).add(HAMMERS);
 
-		this.copy(BlockTags.RAILS, ItemTags.RAILS);
 		this.copy(BlockTags.SLABS, ItemTags.SLABS);
-		this.copy(BlockTags.PLANKS, ItemTags.PLANKS);
-		this.copy(BlockTags.WOODEN_SLABS, ItemTags.WOODEN_SLABS);
 		this.copy(BlockTags.STAIRS, ItemTags.STAIRS);
-		this.copy(BlockTags.WOODEN_STAIRS, ItemTags.WOODEN_STAIRS);
-		this.copy(BlockTags.WALLS, ItemTags.WALLS);
-		this.copy(BlockTags.FENCES, ItemTags.FENCES);
-		this.copy(BlockTags.WOODEN_FENCES, ItemTags.WOODEN_FENCES);
 
-		this.copy(BotaniaTags.Blocks.MUNDANE_FLOATING_FLOWERS, BotaniaTags.Items.MUNDANE_FLOATING_FLOWERS);
 		this.copy(BotaniaTags.Blocks.SPECIAL_FLOATING_FLOWERS, BotaniaTags.Items.SPECIAL_FLOATING_FLOWERS);
 		this.copy(BotaniaTags.Blocks.FLOATING_FLOWERS, BotaniaTags.Items.FLOATING_FLOWERS);
-		this.copy(BotaniaTags.Blocks.TALL_MYSTICAL_FLOWERS, BotaniaTags.Items.TALL_MYSTICAL_FLOWERS);
-		this.copy(BotaniaTags.Blocks.SMALL_MYSTICAL_FLOWERS, BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS);
-		this.copy(BotaniaTags.Blocks.SHIMMERING_MUSHROOMS, BotaniaTags.Items.SHIMMERING_MUSHROOMS);
 
-		this.copy(BotaniaTags.Blocks.MISC_SPECIAL_FLOWERS, BotaniaTags.Items.MISC_SPECIAL_FLOWERS);
 		this.copy(BotaniaTags.Blocks.GENERATING_SPECIAL_FLOWERS, BotaniaTags.Items.GENERATING_SPECIAL_FLOWERS);
 		this.copy(BotaniaTags.Blocks.FUNCTIONAL_SPECIAL_FLOWERS, BotaniaTags.Items.FUNCTIONAL_SPECIAL_FLOWERS);
 		this.copy(BotaniaTags.Blocks.SPECIAL_FLOWERS, BotaniaTags.Items.SPECIAL_FLOWERS);
-		this.copy(BotaniaTags.Blocks.MINI_FLOWERS, BotaniaTags.Items.MINI_FLOWERS);
+		this.copy(BotaniaTags.Blocks.PETITE_FLOWERS, BotaniaTags.Items.PETITE_FLOWERS);
 
-		this.tag(ItemTags.TALL_FLOWERS).addTag(BotaniaTags.Items.TALL_MYSTICAL_FLOWERS);
-		this.tag(ItemTags.SMALL_FLOWERS).addTag(BotaniaTags.Items.SMALL_MYSTICAL_FLOWERS).addTag(BotaniaTags.Items.SPECIAL_FLOWERS);
+		this.tag(ItemTags.SMALL_FLOWERS).addTag(BotaniaTags.Items.SPECIAL_FLOWERS);
 
 		TagsProvider.TagAppender<Item> builder = this.tag(BotaniaTags.Items.LENS);
 		BuiltInRegistries.ITEM.stream().filter(i -> i instanceof LensItem && BuiltInRegistries.ITEM.getKey(i).getNamespace().equals(LibMisc.MOD_ID))

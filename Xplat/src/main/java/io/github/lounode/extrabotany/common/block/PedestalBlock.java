@@ -10,7 +10,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -27,14 +26,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import vazkii.botania.common.block.BotaniaWaterloggedBlock;
+import vazkii.botania.common.block.BotaniaWaterloggedEntityBlock;
 import vazkii.botania.common.block.block_entity.SimpleInventoryBlockEntity;
 
 import io.github.lounode.extrabotany.api.block.PedestalVariant;
 import io.github.lounode.extrabotany.common.block.block_entity.ExtraBotanyBlockEntities;
 import io.github.lounode.extrabotany.common.block.block_entity.PedestalBlockEntity;
 
-public class PedestalBlock extends BotaniaWaterloggedBlock implements EntityBlock {
+public class PedestalBlock extends BotaniaWaterloggedEntityBlock {
 	private static final VoxelShape SHAPE = Shapes.or(
 			// Base layers (0-4 y-level)
 			Block.box(0, 0, 0, 16, 2, 16), // baseBottom

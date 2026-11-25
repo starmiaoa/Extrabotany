@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -30,7 +31,7 @@ import io.github.lounode.extrabotany.common.block.flower.functional.ManalinkBloc
 import io.github.lounode.extrabotany.common.item.WandOfTheForestItemExtension;
 import io.github.lounode.extrabotany.common.proxy.Proxy;
 
-import java.awt.*;
+import java.util.Optional;
 
 @Mixin(value = WandOfTheForestItem.class, remap = false)
 public abstract class WandOfTheForestExtension {
@@ -40,11 +41,16 @@ public abstract class WandOfTheForestExtension {
 		return false;
 	}
 
+	@Shadow
+	public static Optional<GlobalPos> getBindingAttempt(ItemStack stack) {
+		return Optional.empty();
+	}
+
 	@Inject(
 		method = "setBindingAttempt",
 		at = @At("RETURN")
 	)
-	private static void onSetBind(ItemStack stack, GlobalPos pos, Direction side, CallbackInfo ci) {
+	private static void onSetBind(ItemStack stack, GlobalPos pos, Direction side, Block block, CallbackInfo ci) {
 		if (pos == null || Bound.UNBOUND_POS.equals(pos.pos())) {
 			ItemStackDataHelper.removeEntry(stack, WandOfTheForestItemExtension.TAG_EXTEND_BOUND);
 		}
@@ -71,13 +77,16 @@ public abstract class WandOfTheForestExtension {
 		if (player == null || !player.isSecondaryUseActive()) {
 			return;
 		}
+		if (getBindingAttempt(stack).isPresent()) {
+			return;
+		}
 
 		if (tile instanceof ManaPool && getBindMode(stack)) {
 			GlobalPos globalPos = GlobalPos.of(ctx.getLevel().dimension(), pos);
 			WandOfTheForestItemExtension.setBindingAttemptExtend(ctx.getItemInHand(), globalPos);
 
 			if (world.isClientSide) {
-				player.playSound(BotaniaSounds.ding, 0.11F, 1F);
+				player.playSound(BotaniaSounds.DING, 0.11F, 1F);
 				String dimensionKey = world.dimension().location().toString();
 
 				Proxy.INSTANCE.displayClientMessage(Component.translatable("message.extrabotany.actionbar.selected_pos",
@@ -90,7 +99,7 @@ public abstract class WandOfTheForestExtension {
 			WandOfTheForestItemExtension.getBindingAttempt(stack).ifPresent(globalPos -> {
 				manalink.setLinkPos(globalPos);
 				if (world.isClientSide) {
-					player.playSound(BotaniaSounds.ding, 0.11F, 1F);
+					player.playSound(BotaniaSounds.DING, 0.11F, 1F);
 
 					Proxy.INSTANCE.displayClientMessage(Component.translatable("message.extrabotany.actionbar.bind_to_pos",
 							globalPos.dimension().location() +
