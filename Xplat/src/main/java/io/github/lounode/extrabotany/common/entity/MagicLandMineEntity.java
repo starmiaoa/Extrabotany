@@ -40,6 +40,7 @@ public class MagicLandMineEntity extends Entity {
 	@Nullable
 	private Entity cachedOwner;
 	private float damage;
+	private boolean exploded;
 
 	public MagicLandMineEntity(EntityType<? extends MagicLandMineEntity> type, Level level) {
 		super(type, level);
@@ -60,6 +61,10 @@ public class MagicLandMineEntity extends Entity {
 			return;
 		}
 
+		if (exploded) {
+			return;
+		}
+		exploded = true;
 		explode();
 	}
 

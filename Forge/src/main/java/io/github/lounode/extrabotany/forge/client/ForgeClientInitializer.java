@@ -51,11 +51,13 @@ public class ForgeClientInitializer {
 
 	@SubscribeEvent
 	public static void clientInit(FMLClientSetupEvent evt) {
-		BlockRenderLayers.skipPlatformBlocks = true; // platforms can use standard rendering on Forge
-		BlockRenderLayers.init(ItemBlockRenderTypes::setRenderLayer);
+		evt.enqueueWork(() -> {
+			BlockRenderLayers.skipPlatformBlocks = true; // platforms can use standard rendering on Forge
+			BlockRenderLayers.init(ItemBlockRenderTypes::setRenderLayer);
+			hud = new HUD(Minecraft.getInstance());
+		});
 
 		var bus = MinecraftForge.EVENT_BUS;
-		hud = new HUD(Minecraft.getInstance());
 
 		PatchouliAPI.get().setConfigFlag("otaku_mode", ExtraBotanyConfig.client().otakuMode());
 		/*
@@ -128,7 +130,11 @@ public class ForgeClientInitializer {
 	@SubscribeEvent
 	public static void registerGuiOverlays(RegisterGuiOverlaysEvent e) {
 		e.registerAbove(VanillaGuiOverlay.EXPERIENCE_BAR.id(), "hud",
-				(gui, poseStack, partialTick, width, height) -> hud.onDrawScreenPost(poseStack, partialTick));
+				(gui, poseStack, partialTick, width, height) -> {
+					if (hud != null) {
+						hud.onDrawScreenPost(poseStack, partialTick);
+					}
+				});
 	}
 
 	@SubscribeEvent

@@ -93,7 +93,7 @@ public class AdvancementProvider extends vazkii.botania.data.AdvancementProvider
 					.display(simple(ExtraBotanyItems.shadowium, LibAdvancementNames.STYGIAN_TWINS, FrameType.TASK))
 					.parent(goodtek)
 					.addCriterion("craft_shadowium", onPickup(ExtraBotanyTags.Items.INGOTS_SHADOWIUM))
-					.addCriterion("craft_photonium", onPickup(ExtraBotanyTags.Items.INGOTS_SHADOWIUM))
+					.addCriterion("craft_photonium", onPickup(ExtraBotanyTags.Items.INGOTS_PHOTONIUM))
 					.save(consumer, mainId(LibAdvancementNames.STYGIAN_TWINS));
 			Advancement gaiaTrial = Advancement.Builder.advancement()
 					.display(simple(ExtraBotanyItems.challengeTicket, LibAdvancementNames.GAIA_TRIAL, FrameType.CHALLENGE))

@@ -22,19 +22,21 @@ import vazkii.botania.common.lib.BotaniaTags;
 import vazkii.botania.xplat.BotaniaConfig;
 import vazkii.botania.xplat.XplatAbstractions;
 
+import io.github.lounode.extrabotany.common.entity.MotorEntity;
 import io.github.lounode.extrabotany.common.item.relic.CameraItem;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.variants.Camera;
-import io.github.lounode.extrabotany.common.entity.MotorEntity;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import static io.github.lounode.extrabotany.common.lib.ResourceLocationHelper.prefix;
+
 public final class HUD {
 	public static HUD INSTANCE;
 	private static final ResourceLocation manaBar = ResourceLocation.tryParse("botania:textures/gui/mana_hud.png");
-
+	private static final ResourceLocation MOTOR_HUD = prefix("textures/gui/motorhud.png");
 
 	private final Minecraft minecraft;
 	private final ColorfulBossBarOverlay bossOverlay;
@@ -48,7 +50,7 @@ public final class HUD {
 
 	public void onDrawScreenPost(GuiGraphics gui, float partialTicks) {
 		PoseStack ms = gui.pose();
-		if (minecraft.options.hideGui) {
+		if (minecraft.options.hideGui || minecraft.player == null) {
 			return;
 		}
 		ProfilerFiller profiler = minecraft.getProfiler();
@@ -86,23 +88,33 @@ public final class HUD {
 			return;
 		}
 		int energy = motor.getTectonicEnergy();
-		int barW = 82;
-		int barH = 5;
+		int barW = 64;
+		int barH = 6;
 		int cx = minecraft.getWindow().getGuiScaledWidth() / 2;
 		int x = cx - barW / 2;
 		int y = minecraft.getWindow().getGuiScaledHeight() - 56;
+		int fillW = Mth.clamp((int) Math.round(barW * (energy / 800.0D)), 0, barW);
 
-		int fillW = (int) (barW * energy / 800.0D);
-		int fillColor = energy >= 400 ? 0xFF00E5FF : energy >= 200 ? 0xFF00ACC1 : 0xFF00838F;
-
-		gui.fill(x - 1, y - 1, x + barW + 1, y + barH + 1, 0xA0000000);
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		gui.blit(MOTOR_HUD, x, y, 0, 0, barW, barH, 256, 256);
 		if (fillW > 0) {
-			gui.fill(x, y, x + fillW, y + barH, fillColor);
+			gui.blit(MOTOR_HUD, x, y, 0, 6, fillW, barH, 256, 256);
 		}
+		RenderSystem.disableBlend();
 
 		String text = energy + " / 800";
+		int textColor;
+		if (!motor.isCharged() && motor.getRidingTicks() < 120) {
+			textColor = 0xFFAAAAAA;
+		} else if (energy >= 400) {
+			textColor = 0xFF40F8FF;
+		} else {
+			textColor = 0xFF00C8E0;
+		}
 		int tw = minecraft.font.width(text);
-		gui.drawString(minecraft.font, text, cx - tw / 2, y - 10, 0xFFFFFFFF, true);
+		gui.drawString(minecraft.font, text, cx - tw / 2, y - 10, textColor, true);
 	}
 
 	private void renderManaBar(GuiGraphics gui, float partialTicks) {
@@ -132,6 +144,9 @@ public final class HUD {
 
 		for (ItemStack stack : Iterables.concat(items, acc)) {
 			ManaItem manaItem = XplatAbstractions.INSTANCE.findManaItem(stack);
+			if (manaItem == null) {
+				continue;
+			}
 			if (!manaItem.isNoExport()) {
 				totalMana = totalMana.add(BigDecimal.valueOf(manaItem.getMana()));
 				totalMaxMana = totalMaxMana.add(BigDecimal.valueOf(manaItem.getMaxMana()));
@@ -191,7 +206,9 @@ public final class HUD {
 
 	//TODO ClientPlayerNetworkEvent
 	public static void onDisconnected() {
-		HUD.getInstance().getBossOverlay().reset();
+		if (INSTANCE != null) {
+			INSTANCE.getBossOverlay().reset();
+		}
 	}
 
 }

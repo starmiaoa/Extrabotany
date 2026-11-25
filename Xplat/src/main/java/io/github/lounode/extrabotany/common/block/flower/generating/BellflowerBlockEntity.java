@@ -56,7 +56,6 @@ public class BellflowerBlockEntity extends GeneratingFlowerBlockEntity implement
 		super.tickFlower();
 
 		if (isDying()) {
-			sync();
 			dyingAnime();
 			dyingTicks++;
 			return;
@@ -80,13 +79,16 @@ public class BellflowerBlockEntity extends GeneratingFlowerBlockEntity implement
 			getLevel().playSound(null, getEffectivePos(), ExtraBotanySounds.BELL_FLOWER_RING, SoundSource.BLOCKS,
 					0.5F, SoundEventUtil.randomPitch(getLevel()));
 		}
-		addMana(Math.max(0, getGenerateMana()));
-		sync();
+		int generated = Math.max(0, getGenerateMana());
+		if (generated > 0 && getMana() < getMaxMana()) {
+			addMana(generated);
+			sync();
+		}
 	}
 
 	private void dyingAnime() {
 		if (dyingTicks < 3 * 20) {
-			if (dyingTicks % 10 == 0) {
+			if (getLevel().isClientSide() && dyingTicks % 10 == 0) {
 				for (int i = 0; i < 3; i++) {
 					double offsetX = getLevel().getRandom().nextDouble() * 2 - 1;
 					double offsetY = getLevel().getRandom().nextDouble() * 0.5;
@@ -174,7 +176,12 @@ public class BellflowerBlockEntity extends GeneratingFlowerBlockEntity implement
 			return;
 		}
 
-		dying = true;
+		if (!dying) {
+			dying = true;
+			if (getLevel() != null && !getLevel().isClientSide()) {
+				sync();
+			}
+		}
 	}
 
 	public int getSpaceRequire() {

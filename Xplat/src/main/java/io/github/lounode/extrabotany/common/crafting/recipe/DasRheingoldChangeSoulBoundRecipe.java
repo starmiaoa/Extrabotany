@@ -48,6 +48,8 @@ public final class DasRheingoldChangeSoulBoundRecipe extends CustomRecipe {
 					return false;
 				}
 				findRelic = true;
+			} else {
+				return false;
 			}
 		}
 
@@ -65,10 +67,18 @@ public final class DasRheingoldChangeSoulBoundRecipe extends CustomRecipe {
 				continue;
 			}
 
-			if (stack.getItem() == ExtraBotanyItems.dasRheingold) {
+			if (stack.is(ExtraBotanyItems.dasRheingold)) {
+				if (!rheingold.isEmpty()) {
+					return ItemStack.EMPTY;
+				}
 				rheingold = stack;
-			} else {
+			} else if (EXplatAbstractions.INSTANCE.findRelic(stack) != null) {
+				if (!relic.isEmpty()) {
+					return ItemStack.EMPTY;
+				}
 				relic = stack;
+			} else {
+				return ItemStack.EMPTY;
 			}
 		}
 

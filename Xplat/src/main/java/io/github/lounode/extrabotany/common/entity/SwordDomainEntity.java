@@ -7,6 +7,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -40,7 +42,7 @@ public class SwordDomainEntity extends Entity {
 		this(ExtraBotanyEntityType.SWORD_DOMAIN, level);
 		this.target = target;
 		this.source = source;
-		this.floorY = source.getY() + 5;
+		this.floorY = source.getY() + 4;
 		this.setType(type);
 	}
 
@@ -48,35 +50,38 @@ public class SwordDomainEntity extends Entity {
 	public void tick() {
 		super.tick();
 		if (level().isClientSide()) {
-			level().addParticle(ParticleTypes.END_ROD, getX(), getY(), getZ(), 0, 0, 0);
+			if (this.tickCount % 2 == 0) {
+				level().addParticle(ParticleTypes.END_ROD, getX(), getY(), getZ(), 0, -0.02D, 0);
+			}
 			return;
 		}
-		if (tickCount > 201 || !hasHostAround()) {
+		if (tickCount > 181 || !hasHostAround()) {
 			discard();
 			return;
 		}
-		setPos(getX(), Math.max(getY() - 0.01D, floorY), getZ());
-		if (target != null && level() instanceof ServerLevel serverLevel && serverLevel.getEntity(target) instanceof Player player) {
-			if (tickCount > 70) {
-				keepInsideArena(player);
-				double dx = player.getX() - source.getX();
-				double dz = player.getZ() - source.getZ();
-				if (dx * dx + dz * dz > 20D * 20D) {
-					player.teleportTo(source.getX(), source.getY(), source.getZ());
+		setPos(getX(), Math.max(getY() - 0.015D, floorY), getZ());
+		if (target != null && level() instanceof ServerLevel serverLevel && serverLevel.getEntity(target) instanceof Player player && player.isAlive() && !player.isCreative() && !player.isSpectator()) {
+			if (tickCount > 45) {
+				keepInsideDomain(player);
+			}
+			if (getDomainType() == 0) {
+				if (tickCount % 60 == 0) {
+					player.hurt(damageSources().magic(), 3.0F);
+					serverLevel.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + 1.0D, player.getZ(), 8, 0.35D, 0.5D, 0.35D, 0.08D);
 				}
-			}
-			if (tickCount % 50 == 0) {
-				player.hurt(damageSources().magic(), 1F);
-			}
-			if (tickCount == 200) {
-				HerrscherCombatHelper.dealTrueMagicDamage(player, this, 1F);
+				if (tickCount == 180) {
+					player.hurt(damageSources().magic(), 5.0F);
+					HerrscherCombatHelper.dealTrueMagicDamage(player, this, 4.0F);
+					level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TRIDENT_THUNDER, SoundSource.HOSTILE, 0.7F, 1.5F);
+					serverLevel.sendParticles(ParticleTypes.END_ROD, player.getX(), player.getY() + 1.2D, player.getZ(), 20, 0.6D, 1.2D, 0.6D, 0.14D);
+				}
 			}
 		}
 	}
 
 	@Override
 	protected void defineSynchedData() {
-		this.entityData.define(TYPE, 0);
+		entityData.define(TYPE, 0);
 	}
 
 	@Override
@@ -110,25 +115,31 @@ public class SwordDomainEntity extends Entity {
 	}
 
 	private boolean hasHostAround() {
-		AABB area = new AABB(blockPosition()).inflate(15D);
+		AABB area = new AABB(blockPosition()).inflate(20D);
 		return !level().getEntitiesOfClass(VoidHerrscher.class, area, Entity::isAlive).isEmpty()
 				|| !level().getEntitiesOfClass(GaiaIII.class, area, Entity::isAlive).isEmpty();
 	}
 
-	private void keepInsideArena(Player player) {
-		Vec3 center = new Vec3(source.getX() + 0.5D, source.getY() + 0.5D, source.getZ() + 0.5D);
-		Vec3 playerCenter = player.position().add(0, player.getBbHeight() * 0.5D, 0);
-		Vec3 delta = center.subtract(playerCenter);
-		if (delta.lengthSqr() < 4D * 4D) {
+	private void keepInsideDomain(Player player) {
+		double dx = player.getX() - (source.getX() + 0.5D);
+		double dz = player.getZ() - (source.getZ() + 0.5D);
+		double horizSq = dx * dx + dz * dz;
+		if (horizSq <= 10.5D * 10.5D) {
 			return;
 		}
-		Vec3 motion = delta.normalize();
-		player.setDeltaMovement(motion.x, 0.2D, motion.z);
+		if (horizSq > 18.0D * 18.0D) {
+			player.teleportTo(source.getX() + 0.5D, source.getY() + 1.0D, source.getZ() + 0.5D);
+			return;
+		}
+		Vec3 inward = new Vec3(-dx, 0.0D, -dz).normalize().scale(0.45D);
+		player.setDeltaMovement(inward.x, 0.15D, inward.z);
 		player.hurtMarked = true;
 		if (player.getVehicle() != null) {
-			player.getVehicle().setDeltaMovement(motion.x, 0.2D, motion.z);
+			player.getVehicle().setDeltaMovement(inward.x, 0.15D, inward.z);
 			player.getVehicle().hurtMarked = true;
 		}
-		player.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 400, 4));
+		if (tickCount % 20 == 0) {
+			player.addEffect(new MobEffectInstance(MobEffects.UNLUCK, 120, 1));
+		}
 	}
 }

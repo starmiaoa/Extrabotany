@@ -25,7 +25,7 @@ public class PlayerUtil {
 	}
 
 	public static boolean tryBreakBlock(Player player, ItemStack stack, Level world, BlockPos pos) {
-		if (world.isClientSide()) {
+		if (world.isClientSide() || !(player instanceof ServerPlayer sp)) {
 			return false;
 		}
 		if (!world.hasChunkAt(pos)) {
@@ -41,16 +41,18 @@ public class PlayerUtil {
 		}
 		ItemStack save = player.getMainHandItem();
 		player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+		try {
+			SimulateDestroyBlockPos simulatePos = new SimulateDestroyBlockPos(pos.getX(), pos.getY(), pos.getZ());
 
-		SimulateDestroyBlockPos simulatePos = new SimulateDestroyBlockPos(pos.getX(), pos.getY(), pos.getZ());
-
-		boolean result = ((ServerPlayer) player).gameMode.destroyBlock(simulatePos);
-		if (result) {
-			((ServerPlayer) player).connection.send(
-					new ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockstate), false));
+			boolean result = sp.gameMode.destroyBlock(simulatePos);
+			if (result && sp.connection != null) {
+				sp.connection.send(
+						new ClientboundLevelEventPacket(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockstate), false));
+			}
+			return result;
+		} finally {
+			player.setItemInHand(InteractionHand.MAIN_HAND, save);
 		}
-		player.setItemInHand(InteractionHand.MAIN_HAND, save);
-		return result;
 	}
 
 	public static class SimulateDestroyBlockPos extends BlockPos {

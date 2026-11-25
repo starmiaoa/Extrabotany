@@ -53,9 +53,8 @@ public class TerrasteelHammerItem extends ManasteelHammerItem implements Sequent
 			return InteractionResultHolder.pass(stack);
 		}
 
-		setEnabled(stack, !isEnabled(stack));
-
 		if (!level.isClientSide) {
+			setEnabled(stack, !isEnabled(stack));
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), ExtraBotanySounds.HAMMER_USE, SoundSource.PLAYERS, 1F, 1F);
 		}
 
@@ -113,7 +112,7 @@ public class TerrasteelHammerItem extends ManasteelHammerItem implements Sequent
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		super.inventoryTick(stack, world, entity, slot, selected);
-		if (!(entity instanceof Player player)) {
+		if (world.isClientSide() || !(entity instanceof Player player)) {
 			return;
 		}
 		if (!isEnabled(stack)) {

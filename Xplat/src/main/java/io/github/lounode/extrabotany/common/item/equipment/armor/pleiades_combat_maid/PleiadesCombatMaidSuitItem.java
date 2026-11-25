@@ -34,7 +34,7 @@ public class PleiadesCombatMaidSuitItem extends PleiadesCombatMaidArmorItem impl
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		super.inventoryTick(stack, world, entity, slot, selected);
-		if (!(entity instanceof Player player)) {
+		if (world.isClientSide() || !(entity instanceof Player player)) {
 			return;
 		}
 		if (player.getItemBySlot(EquipmentSlot.CHEST) != stack) {
@@ -82,7 +82,7 @@ public class PleiadesCombatMaidSuitItem extends PleiadesCombatMaidArmorItem impl
 				return;
 			}
 
-			if (player.getMainHandItem() == ItemStack.EMPTY &&
+			if (player.getMainHandItem().isEmpty() &&
 					ManaItemHandler.instance().requestManaExactForTool(suitStack, player, COMMON_COST, true)) {
 				event.setAmount(event.getAmount() + suit.getEmptyHandBonus());
 			}

@@ -45,6 +45,8 @@ public class WandOfTheForestExtendRecipe extends CustomRecipe {
 					return false;
 				}
 				findReader = true;
+			} else {
+				return false;
 			}
 		}
 
@@ -64,9 +66,17 @@ public class WandOfTheForestExtendRecipe extends CustomRecipe {
 			}
 
 			if (stack.getItem() instanceof WandOfTheForestItem) {
+				if (!wand.isEmpty()) {
+					return ItemStack.EMPTY;
+				}
 				wand = stack;
-			} else {
+			} else if (stack.is(ExtraBotanyItems.manaReader)) {
+				if (!reader.isEmpty()) {
+					return ItemStack.EMPTY;
+				}
 				reader = stack;
+			} else {
+				return ItemStack.EMPTY;
 			}
 		}
 

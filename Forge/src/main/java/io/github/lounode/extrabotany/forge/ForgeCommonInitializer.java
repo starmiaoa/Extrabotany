@@ -5,6 +5,7 @@ import com.mojang.logging.LogUtils;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -31,9 +32,9 @@ import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -65,7 +66,6 @@ import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyBrews;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.brew.effect.EternityMobEffect;
-import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 import io.github.lounode.extrabotany.common.crafting.ExtraBotanyRecipeTypes;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyEntityType;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyMemoryType;
@@ -73,6 +73,7 @@ import io.github.lounode.extrabotany.common.handler.OldExbotanyStatRewardHandler
 import io.github.lounode.extrabotany.common.impl.WindImpl;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.item.brew.InfiniteWineItem;
+import io.github.lounode.extrabotany.common.item.equipment.armor.pleiades_combat_maid.SanguinePleiadesCombatMaidSuitItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.AquaStoneItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.BaubleBoxSimulatorItem;
 import io.github.lounode.extrabotany.common.item.equipment.bauble.FeatherOfJingweiItem;
@@ -87,7 +88,6 @@ import io.github.lounode.extrabotany.common.item.relic.*;
 import io.github.lounode.extrabotany.common.item.relic.void_archives.VoidArchivesItem;
 import io.github.lounode.extrabotany.common.item.relic.voidcore.CoreOfTheVoidItem;
 import io.github.lounode.extrabotany.common.lib.LibMisc;
-import io.github.lounode.extrabotany.common.loot.RewardBagManager;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.forge.fluid.ForgeExtraBotanyFluids;
 import io.github.lounode.extrabotany.forge.network.ForgePacketHandler;
@@ -126,11 +126,6 @@ public class ForgeCommonInitializer {
 			ExtraBotanyBlocks.registerFlowerPotPlants(consumer);
 			ExtrabotanyFlowerBlocks.registerFlowerPotPlants(consumer);
 		});
-
-		//Integration
-		if (ModList.get().isLoaded("tconstruc")) {
-			//modEventBus.addListener(this::registerTinkersMaterials);
-		}
 	}
 
 	private void coreInit(ModLoadingContext context) {
@@ -215,14 +210,13 @@ public class ForgeCommonInitializer {
 		bus.addListener(this::onPlayerTick);
 		bus.addListener(this::onLeftClickBlock);
 		bus.addListener(this::onAdvancementEarned);
+		bus.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> SanguinePleiadesCombatMaidSuitItem.onPlayerLoggedOut(event.getEntity()));
 		bus.addListener((RegisterCommandsEvent event) -> ForgeExtrabotanyCommands.register(event.getDispatcher()));
-
-		RewardBagManager.registerListener();
 	}
 
 	private void onLivingAttack(LivingAttackEvent event) {
 		if (MoonPendantItem.shouldCancelFireDamage(event.getSource(), event.getEntity())
-				|| EternityMobEffect.shouldCancelDamage(event.getEntity())) {
+				|| EternityMobEffect.shouldCancelDamage(event.getSource(), event.getEntity())) {
 			event.setCanceled(true);
 		}
 	}
@@ -235,7 +229,6 @@ public class ForgeCommonInitializer {
 
 	private void onPlayerTick(TickEvent.PlayerTickEvent event) {
 		if (event.phase == TickEvent.Phase.END) {
-			HerrscherCombatHelper.sanitizeHealth(event.player);
 			EternityMobEffect.onPlayerTick(event.player);
 			FlamescionWeaponItem.onPlayerTick(event.player);
 			PureDaisyPendantItem.onPlayerTick(event.player);
@@ -310,6 +303,7 @@ public class ForgeCommonInitializer {
 		var stack = e.getObject();
 
 		if (stack.getItem() instanceof BaubleItem
+				&& LibMisc.MOD_ID.equals(BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace())
 				&& EquipmentHandler.instance instanceof CurioIntegration ci) {
 			e.addCapability(prefix("curio"), ci.initCapability(stack));
 		}

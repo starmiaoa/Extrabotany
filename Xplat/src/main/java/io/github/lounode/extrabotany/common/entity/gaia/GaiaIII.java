@@ -6,6 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -15,6 +16,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Unit;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
@@ -39,6 +42,7 @@ import vazkii.botania.common.handler.BotaniaSounds;
 import io.github.lounode.extrabotany.api.gaia.GaiaArena;
 import io.github.lounode.extrabotany.common.entity.EgoMinionEntity;
 import io.github.lounode.extrabotany.common.entity.ExtraBotanyEntityType;
+import io.github.lounode.extrabotany.common.entity.ExtraBotanyMemoryType;
 import io.github.lounode.extrabotany.common.entity.SkullLandMineEntity;
 import io.github.lounode.extrabotany.common.lib.LibAdvancementNames;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
@@ -60,9 +64,12 @@ public class GaiaIII extends Gaia {
 	private static final EntityDataAccessor<Integer> EGO_STAGE = SynchedEntityData.defineId(GaiaIII.class, EntityDataSerializers.INT);
 	// >0 时客户端把模型渲染成"本我"形态(二阶段每隔一阵闪现 <1s,仅视觉)。
 	private static final EntityDataAccessor<Integer> EGO_FLICKER = SynchedEntityData.defineId(GaiaIII.class, EntityDataSerializers.INT);
+	// >0 时处于二阶段觉醒演出动画(60 tick = 3.0s)。
+	private static final EntityDataAccessor<Integer> TRANSITION_TICKS = SynchedEntityData.defineId(GaiaIII.class, EntityDataSerializers.INT);
 
 	private static final String TAG_BIG_PHASE = "BigPhase";
 	private static final String TAG_EGO_STAGE = "EgoStage";
+	private static final String TAG_TRANSITION_TICKS = "Phase2TransitionTicks";
 	// 瞬态子阶段状态(雾幕/仆从/闪现)NBT 对称:避免存读档于子阶段中途丢状态导致 Boss 无敌空转。
 	private static final String TAG_IN_FOG = "InFogBarrage";
 	private static final String TAG_FOG_WAVE_INDEX = "FogWaveIndex";
@@ -70,6 +77,8 @@ public class GaiaIII extends Gaia {
 	private static final String TAG_IN_MINION = "InMinionPhase";
 	private static final String TAG_MINION_TIMER = "MinionPhaseTimer";
 	private static final String TAG_FLICKER_CD = "FlickerCooldown";
+
+	public static final int PHASE2_TRANSITION_TICKS = 60;
 
 	// 阈值(占最大血量比例):总血 600 → 一阶段 600..400,二阶段 400..0。随玩家数缩放。
 	public static final float PHASE_EGO_THRESHOLD = 2F / 3F;   // 掉到 2/3(满编=400) 进二阶段
@@ -199,7 +208,7 @@ public class GaiaIII extends Gaia {
 
 	@Override
 	public void remove(net.minecraft.world.entity.Entity.RemovalReason reason) {
-		if (!level().isClientSide()) {
+		if (!level().isClientSide() && reason.shouldDestroy()) {
 			discardMinions();
 		}
 		super.remove(reason);
@@ -233,18 +242,16 @@ public class GaiaIII extends Gaia {
 		return io.github.lounode.extrabotany.common.item.ExtraBotanyItems.voidArchives;
 	}
 
-	// 用户要求:取消本我 BGM 交叉淡入,二阶段一直沿用盖亚III 原曲。
-	// getEgoBGM 返回 null + isEgoPhase 返回 false,Gaia.DopplegangerMusic 永不切轨。
-	// (注意 isEgoPhase != isEgo();isEgo() 仍驱动二阶段战斗/弹幕/仆从/名称闪烁,保留。)
+	// 二阶段(本我)恢复 EXBOT 原版 EGO BGM(swordland.ogg),随觉醒演出交叉淡入。
 	@Override
 	@Nullable
 	public SoundEvent getEgoBGM() {
-		return null;
+		return ExtraBotanySounds.MUSIC_EGO;
 	}
 
 	@Override
 	public boolean isEgoPhase() {
-		return false;
+		return isEgo();
 	}
 
 	/// === 本我 二阶段:数据 / 存档 / 阶段推进(里程碑1 结构层) ===
@@ -278,12 +285,34 @@ public class GaiaIII extends Gaia {
 		entityData.set(EGO_FLICKER, ticks);
 	}
 
+	public int getTransitionTicks() {
+		return entityData.get(TRANSITION_TICKS);
+	}
+
+	public void setTransitionTicks(int ticks) {
+		entityData.set(TRANSITION_TICKS, Math.max(0, ticks));
+	}
+
+	public boolean isTransitioning() {
+		return getTransitionTicks() > 0;
+	}
+
+	public float getTransitionProgress(float partialTick) {
+		int ticks = getTransitionTicks();
+		if (ticks <= 0) {
+			return 0.0F;
+		}
+		float remaining = Math.max(0.0F, ticks - partialTick);
+		return Mth.clamp(1.0F - remaining / (float) PHASE2_TRANSITION_TICKS, 0.0F, 1.0F);
+	}
+
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
 		this.entityData.define(BIG_PHASE, 1);
 		this.entityData.define(EGO_STAGE, 0);
 		this.entityData.define(EGO_FLICKER, 0);
+		this.entityData.define(TRANSITION_TICKS, 0);
 	}
 
 	@Override
@@ -291,6 +320,7 @@ public class GaiaIII extends Gaia {
 		super.addAdditionalSaveData(cmp);
 		cmp.putInt(TAG_BIG_PHASE, getBigPhase());
 		cmp.putInt(TAG_EGO_STAGE, getEgoStage());
+		cmp.putInt(TAG_TRANSITION_TICKS, getTransitionTicks());
 		cmp.putBoolean(TAG_IN_FOG, inFogBarrage);
 		cmp.putInt(TAG_FOG_WAVE_INDEX, fogWaveIndex);
 		cmp.putInt(TAG_FOG_WAVE_TIMER, fogWaveTimer);
@@ -308,6 +338,9 @@ public class GaiaIII extends Gaia {
 		if (cmp.contains(TAG_EGO_STAGE)) {
 			setEgoStage(cmp.getInt(TAG_EGO_STAGE));
 		}
+		if (cmp.contains(TAG_TRANSITION_TICKS)) {
+			setTransitionTicks(cmp.getInt(TAG_TRANSITION_TICKS));
+		}
 		inFogBarrage = cmp.getBoolean(TAG_IN_FOG);
 		fogWaveIndex = cmp.getInt(TAG_FOG_WAVE_INDEX);
 		fogWaveTimer = cmp.getInt(TAG_FOG_WAVE_TIMER);
@@ -319,14 +352,139 @@ public class GaiaIII extends Gaia {
 	}
 
 	@Override
+	public void aiStep() {
+		super.aiStep();
+		if (level().isClientSide() && isTransitioning()) {
+			spawnTransitionParticles();
+		}
+	}
+
+	private void spawnTransitionParticles() {
+		float progress = getTransitionProgress(0.0F);
+		double radius = Mth.lerp(progress, 4.0D, 1.2D);
+		double cx = getX();
+		double cy = getY();
+		double cz = getZ();
+
+		// Twin counter-rotating ascending spiral vortex rings
+		double baseAngle = tickCount * 0.35D;
+		for (int arm = 0; arm < 2; arm++) {
+			double angle = baseAngle + arm * Math.PI;
+			double px = cx + Math.cos(angle) * radius;
+			double pz = cz + Math.sin(angle) * radius;
+			double py = cy + 0.2D + ((tickCount + arm * 10) % 20) * 0.12D;
+			level().addParticle(ParticleTypes.END_ROD, px, py, pz, (cx - px) * 0.08D, 0.06D, (cz - pz) * 0.08D);
+			level().addParticle(ParticleTypes.WITCH, px, py - 0.15D, pz, 0.0D, 0.04D, 0.0D);
+		}
+
+		double counterAngle = -tickCount * 0.42D;
+		for (int arm = 0; arm < 2; arm++) {
+			double angle = counterAngle + arm * Math.PI;
+			double r2 = radius * 0.85D;
+			double px = cx + Math.cos(angle) * r2;
+			double pz = cz + Math.sin(angle) * r2;
+			double py = cy + 0.4D + ((tickCount + arm * 7) % 16) * 0.11D;
+			level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, px, py, pz, (cx - px) * 0.06D, 0.05D, (cz - pz) * 0.06D);
+			level().addParticle(ParticleTypes.PORTAL, px, py + 0.2D, pz, (cx - px) * 0.18D, -0.05D, (cz - pz) * 0.18D);
+		}
+
+		// Rising light sparks from the beacon below
+		BlockPos home = getHome().pos();
+		for (int i = 0; i < 3; i++) {
+			double a = random.nextDouble() * Math.PI * 2.0D;
+			double r = random.nextDouble() * 1.4D;
+			double sx = home.getX() + 0.5D + Math.cos(a) * r;
+			double sy = home.getY() + 0.6D + random.nextDouble() * 0.6D;
+			double sz = home.getZ() + 0.5D + Math.sin(a) * r;
+			level().addParticle(i == 0 ? ParticleTypes.END_ROD : ParticleTypes.SOUL_FIRE_FLAME, sx, sy, sz, 0.0D, 0.16D + progress * 0.14D, 0.0D);
+		}
+	}
+
+	@Override
 	protected void customServerAiStep() {
 		super.customServerAiStep();
+		tickPhaseTransition();
 		tickFogBarrage();
 		tickMinionPhase();
 		tickEgoPhases();
 		// 闪现独立于无敌评估:整个二阶段持续(无敌弹幕/仆从期也在闪),才能每 ~12s 闪现一次。
 		if (isEgo()) {
 			tickFlicker();
+		}
+	}
+
+	private void tickPhaseTransition() {
+		int current = getTransitionTicks();
+		if (current <= 0) {
+			return;
+		}
+		int t = current - 1;
+		setTransitionTicks(t);
+		getBrain().setMemory(ExtraBotanyMemoryType.TELEPORT_DELAY, 20);
+
+		BlockPos home = getHome().pos();
+		float p = 1.0F - (float) t / (float) PHASE2_TRANSITION_TICKS;
+		double rise = 1.5D + Math.sin(Math.min(1.0D, p * 1.15D) * Math.PI * 0.5D) * 2.5D;
+		setPos(home.getX() + 0.5D, home.getY() + rise, home.getZ() + 0.5D);
+		setDeltaMovement(Vec3.ZERO);
+
+		// Boss bar dramatic glitch
+		if (t > 12) {
+			boolean showEgo = ((PHASE2_TRANSITION_TICKS - t) / 5) % 2 == 0;
+			if (showEgo != nameShowingEgo) {
+				nameShowingEgo = showEgo;
+				bossEvent.setName(showEgo ? EGO_NAME : getType().getDescription());
+			}
+		} else if (t > 0) {
+			if (!nameShowingEgo) {
+				nameShowingEgo = true;
+				bossEvent.setName(EGO_NAME);
+			}
+		} else {
+			nameShowingEgo = false;
+			bossEvent.setName(getType().getDescription());
+		}
+
+		// Audio cues & awakening burst
+		if (t == 30) {
+			playSound(SoundEvents.BEACON_ACTIVATE, 1.2F, 1.2F);
+		} else if (t == 12) {
+			playSound(BotaniaSounds.gaiaTeleport, 1.3F, 0.7F);
+		} else if (t == 0) {
+			playSound(SoundEvents.GENERIC_EXPLODE, 1.6F, 0.75F);
+			playSound(SoundEvents.LIGHTNING_BOLT_THUNDER, 0.85F, 1.15F);
+
+			if (level() instanceof ServerLevel server) {
+				double cx = getX();
+				double cy = getY() + getBbHeight() * 0.5D;
+				double cz = getZ();
+				server.sendParticles(ParticleTypes.EXPLOSION_EMITTER, cx, cy, cz, 2, 0.6D, 0.4D, 0.6D, 0.0D);
+				for (int i = 0; i < 36; i++) {
+					double angle = (Math.PI * 2.0D * i) / 36.0D;
+					double dx = Math.cos(angle);
+					double dz = Math.sin(angle);
+					server.sendParticles(ParticleTypes.END_ROD, cx + dx * 0.6D, cy, cz + dz * 0.6D, 0, dx, 0.08D, dz, 0.55D);
+					server.sendParticles(ParticleTypes.DRAGON_BREATH, cx + dx * 0.4D, cy - 0.2D, cz + dz * 0.4D, 0, dx, 0.04D, dz, 0.42D);
+				}
+				server.sendParticles(ParticleTypes.END_ROD, cx, cy, cz, 28, 0.8D, 1.0D, 0.8D, 0.25D);
+			}
+
+			for (Player player : getPlayersAround()) {
+				if (player.isSpectator()) {
+					continue;
+				}
+				if (player.distanceTo(this) <= 7.0D) {
+					Vec3 away = player.position().subtract(this.position());
+					Vec3 horiz = new Vec3(away.x, 0.0D, away.z);
+					if (horiz.lengthSqr() < 1.0E-4D) {
+						horiz = new Vec3(1.0D, 0.0D, 0.0D);
+					} else {
+						horiz = horiz.normalize();
+					}
+					player.push(horiz.x * 0.9D, 0.35D, horiz.z * 0.9D);
+					player.hurtMarked = true;
+				}
+			}
 		}
 	}
 
@@ -340,6 +498,7 @@ public class GaiaIII extends Gaia {
 
 		if (getBigPhase() == 1 && frac <= PHASE_EGO_THRESHOLD) {
 			enterEgoPhase();
+			return;
 		}
 
 		if (getBigPhase() >= 2) {
@@ -354,19 +513,25 @@ public class GaiaIII extends Gaia {
 		}
 	}
 
-	// 进入二阶段"本我"。里程碑1 只做骨架:置位 + 一个变身提示音;
-	// 音乐交叉淡入(swordland)、AI 切换、外观渲染留待后续里程碑。
+	// 进入二阶段"本我":触发 60-tick 觉醒演出 + BGM 交叉淡入(swordland)。
 	private void enterEgoPhase() {
 		setBigPhase(2);
 		setEgoStage(0);
+		setTransitionTicks(PHASE2_TRANSITION_TICKS);
+		setInvulTime(PHASE2_TRANSITION_TICKS + 10);
 		setEgoFlicker(0);
 		flickerCooldown = FLICKER_INTERVAL;
-		playSound(BotaniaSounds.gaiaSummon, 1F, 0.6F);
+		getBrain().setMemory(ExtraBotanyMemoryType.TELEPORT_DELAY, 20);
+		playSound(BotaniaSounds.gaiaSummon, 1.5F, 0.55F);
+		playSound(SoundEvents.BEACON_POWER_SELECT, 1.2F, 0.6F);
 	}
 
 	// 二阶段每 ~12s 闪现 <1s 的"本我":同时驱动 (a) 客户端模型扭曲(读 EGO_FLICKER)
 	// 和 (b) Boss 血条名称在闪现窗口内显示"本我",其余时间恢复"盖亚守护者III"。
 	private void tickFlicker() {
+		if (isTransitioning()) {
+			return;
+		}
 		int flicker = getEgoFlicker();
 		if (flicker > 0) {
 			setEgoFlicker(flicker - 1);
@@ -437,9 +602,9 @@ public class GaiaIII extends Gaia {
 		switch (wave) {
 			case 0 -> {
 				for (int i = 0; i < 8; i++) {
-					unit = unit.yRot((float) (Math.PI / 4F * i));
+					Vec3 dir = unit.yRot((float) (Math.PI / 4F * i));
 					for (int j = 0; j < 8; j++) {
-						spawnFogMine(center.add(unit.scale(j + 1)), j % 4 == 0 ? 2 : 0);
+						spawnFogMine(center.add(dir.scale(j + 1)), j % 4 == 0 ? 2 : 0);
 					}
 				}
 			}

@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -106,6 +106,12 @@ public class CameraItem extends RelicItem implements IShadowium {
 	public static InteractionResultHolder<ItemStack> executeCapture(Level world, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		var relic = XplatAbstractions.INSTANCE.findRelic(stack);
+		if (world.isClientSide()) {
+			return relic != null && (player.isCreative() || (relic.isRightPlayer(player) &&
+					ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_USE, false)))
+					? InteractionResultHolder.success(stack)
+					: InteractionResultHolder.pass(stack);
+		}
 		if (relic != null && (player.isCreative() || (relic.isRightPlayer(player) &&
 				ManaItemHandler.instance().requestManaExactForTool(stack, player, MANA_PER_USE, true)))) {
 
@@ -120,8 +126,8 @@ public class CameraItem extends RelicItem implements IShadowium {
 				livingEntity.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.LINK, 20 * 10));
 			}
 
-			if (!world.isClientSide() && livingEntities.size() >= ADVANCEMENT_REQUIRE) {
-				PlayerHelper.grantCriterion((ServerPlayer) player, prefix("main/" + LibAdvancementNames.I_SEE_EVERYTHING), "code_triggered");
+			if (player instanceof ServerPlayer serverPlayer && livingEntities.size() >= ADVANCEMENT_REQUIRE) {
+				PlayerHelper.grantCriterion(serverPlayer, prefix("main/" + LibAdvancementNames.I_SEE_EVERYTHING), "code_triggered");
 			}
 
 			List<Projectile> projectiles = world.getEntitiesOfClass(Projectile.class, getFreezeBounds(player)).stream()
@@ -145,6 +151,9 @@ public class CameraItem extends RelicItem implements IShadowium {
 			return;
 		}
 		super.inventoryTick(stack, world, entity, slot, selected);
+		if (world.isClientSide()) {
+			return;
+		}
 		ItemStack usingItem = player.getUseItem();
 
 		if (usingItem.isEmpty() || !(usingItem.getItem() instanceof CameraItem)) {

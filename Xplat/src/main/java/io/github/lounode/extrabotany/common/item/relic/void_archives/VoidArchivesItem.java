@@ -58,9 +58,17 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 		output.accept(getDefaultItemStack());
 	}
 
+	private static boolean isRightPlayer(ItemStack stack, Player player) {
+		var relic = XplatAbstractions.INSTANCE.findRelic(stack);
+		return relic != null && relic.isRightPlayer(player);
+	}
+
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
 		ItemStack stack = player.getItemInHand(usedHand);
+		if (!isRightPlayer(stack, player)) {
+			return InteractionResultHolder.pass(stack);
+		}
 
 		if (player.isShiftKeyDown()) {
 			switchVariant(stack);
@@ -84,18 +92,22 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-		if (!level.isClientSide && entity instanceof Player player) {
-			var relic = XplatAbstractions.INSTANCE.findRelic(stack);
-			if (relic != null) {
-				relic.tickBinding(player);
+		super.inventoryTick(stack, level, entity, slotId, isSelected);
+		if (entity instanceof Player player) {
+			if (!level.isClientSide) {
+				var relic = XplatAbstractions.INSTANCE.findRelic(stack);
+				if (relic != null) {
+					relic.tickBinding(player);
+				}
 			}
-			if (getVariant(stack) != VoidArchivesVariant.DEFAULT &&
+			if (!isRightPlayer(stack, player)) {
+				return;
+			}
+			if (!level.isClientSide && getVariant(stack) != VoidArchivesVariant.DEFAULT &&
 					!ManaItemHandler.instance().requestManaExactForTool(stack, player, getKeepVariantRequire(), true)) {
-
 				setVariant(stack, VoidArchivesVariant.DEFAULT);
 			}
 		}
-		super.inventoryTick(stack, level, entity, slotId, isSelected);
 		getVariant(stack).inventoryTick(stack, level, entity, slotId, isSelected);
 	}
 
@@ -170,6 +182,9 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 	@Override
 	public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
 		super.onUseTick(level, livingEntity, stack, remainingUseDuration);
+		if (livingEntity instanceof Player player && !isRightPlayer(stack, player)) {
+			return;
+		}
 		getVariant(stack).onUseTick(level, livingEntity, stack, remainingUseDuration);
 	}
 
@@ -181,6 +196,9 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 
 	@Override
 	public InteractionResult useOn(UseOnContext context) {
+		if (context.getPlayer() != null && !isRightPlayer(context.getItemInHand(), context.getPlayer())) {
+			return InteractionResult.PASS;
+		}
 		return getVariant(context.getItemInHand()).useOn(context);
 	}
 
@@ -191,6 +209,9 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 
 	@Override
 	public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
+		if (livingEntity instanceof Player player && !isRightPlayer(stack, player)) {
+			return stack;
+		}
 		return getVariant(stack).finishUsingItem(stack, level, livingEntity);
 	}
 
@@ -206,11 +227,17 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 
 	@Override
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+		if (attacker instanceof Player player && !isRightPlayer(stack, player)) {
+			return false;
+		}
 		return getVariant(stack).hurtEnemy(stack, target, attacker);
 	}
 
 	@Override
 	public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
+		if (miningEntity instanceof Player player && !isRightPlayer(stack, player)) {
+			return false;
+		}
 		return getVariant(stack).mineBlock(stack, level, state, pos, miningEntity);
 	}
 
@@ -226,6 +253,9 @@ public class VoidArchivesItem extends Item implements CustomCreativeTabContents 
 
 	@Override
 	public void releaseUsing(ItemStack stack, Level level, LivingEntity livingEntity, int timeCharged) {
+		if (livingEntity instanceof Player player && !isRightPlayer(stack, player)) {
+			return;
+		}
 		getVariant(stack).releaseUsing(stack, level, livingEntity, timeCharged);
 	}
 

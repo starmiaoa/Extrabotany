@@ -29,4 +29,8 @@ public interface Proxy extends vazkii.botania.common.proxy.Proxy {
 	default void displayClientMessage(Component chatComponent, boolean actionBar) {
 
 	}
+
+	default void tickJackieChanRing(LivingEntity entity) {
+
+	}
 }

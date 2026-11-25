@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
@@ -17,14 +18,16 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.block_entity.GeneratingFlowerBlockEntity;
 import vazkii.botania.api.block_entity.RadiusDescriptor;
 
-import io.github.lounode.eventwrapper.EventsWrapper;
 import io.github.lounode.eventwrapper.event.PlayLevelSoundEventWrapper;
+import io.github.lounode.eventwrapper.eventbus.api.EventBusSubscriberWrapper;
 import io.github.lounode.eventwrapper.eventbus.api.SubscribeEventWrapper;
 import io.github.lounode.extrabotany.common.block.flower.ExtrabotanyFlowerBlocks;
 import io.github.lounode.extrabotany.xplat.ExtraBotanyConfig;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 
 public class ResoncundBlockEntity extends GeneratingFlowerBlockEntity {
@@ -38,6 +41,7 @@ public class ResoncundBlockEntity extends GeneratingFlowerBlockEntity {
 
 	public static final int MAX_MANA = 1200;
 	public static final int MANA_LOSS_PER_HEARD = 50;
+	private static final Set<ResoncundBlockEntity> LISTENERS = new CopyOnWriteArraySet<>();
 
 	private final LoadingCache<SoundEvent, Integer> SOUND_HEARD = CacheBuilder.newBuilder()
 			.maximumSize(getCacheSize())
@@ -46,7 +50,42 @@ public class ResoncundBlockEntity extends GeneratingFlowerBlockEntity {
 
 	public ResoncundBlockEntity(BlockPos pos, BlockState blockState) {
 		super(ExtrabotanyFlowerBlocks.RESONCUND, pos, blockState);
-		EventsWrapper.register(this);
+	}
+
+	public static Set<ResoncundBlockEntity> listeners() {
+		return LISTENERS;
+	}
+
+	private static void register(ResoncundBlockEntity listener) {
+		LISTENERS.add(listener);
+	}
+
+	private static void unregister(ResoncundBlockEntity listener) {
+		LISTENERS.remove(listener);
+	}
+
+	@Override
+	public void setLevel(Level level) {
+		super.setLevel(level);
+		if (level != null && !level.isClientSide()) {
+			register(this);
+		} else {
+			unregister(this);
+		}
+	}
+
+	@Override
+	public void clearRemoved() {
+		super.clearRemoved();
+		if (level != null && !level.isClientSide()) {
+			register(this);
+		}
+	}
+
+	@Override
+	public void setRemoved() {
+		unregister(this);
+		super.setRemoved();
 	}
 
 	@Override
@@ -148,17 +187,16 @@ public class ResoncundBlockEntity extends GeneratingFlowerBlockEntity {
 		SOUND_HEARD.putAll(soundHeard);
 	}
 
-	@SubscribeEventWrapper
 	public void onPlayLevelSound(PlayLevelSoundEventWrapper.AtPosition event) {
 		if (getLevel() == null) {
 			return;
 		}
 		if (getLevel().isClientSide()) {
-			EventsWrapper.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (this.isRemoved()) {
-			EventsWrapper.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (event.getLevel() != getLevel()) {
@@ -174,17 +212,16 @@ public class ResoncundBlockEntity extends GeneratingFlowerBlockEntity {
 		}
 	}
 
-	@SubscribeEventWrapper
 	public void onPlayLevelSound(PlayLevelSoundEventWrapper.AtEntity event) {
 		if (getLevel() == null) {
 			return;
 		}
 		if (getLevel().isClientSide()) {
-			EventsWrapper.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (this.isRemoved()) {
-			EventsWrapper.unregister(this);
+			unregister(this);
 			return;
 		}
 		if (event.getLevel() != getLevel()) {
@@ -196,6 +233,23 @@ public class ResoncundBlockEntity extends GeneratingFlowerBlockEntity {
 		var aabb = new AABB(getEffectivePos()).inflate(RANGE);
 		if (aabb.contains(event.getEntity().position())) {
 			onSoundHeard(event.getSound().value());
+		}
+	}
+
+	@EventBusSubscriberWrapper
+	public static class EventHandler {
+		@SubscribeEventWrapper
+		public static void onPlayLevelSound(PlayLevelSoundEventWrapper.AtPosition event) {
+			for (ResoncundBlockEntity listener : LISTENERS) {
+				listener.onPlayLevelSound(event);
+			}
+		}
+
+		@SubscribeEventWrapper
+		public static void onPlayLevelSound(PlayLevelSoundEventWrapper.AtEntity event) {
+			for (ResoncundBlockEntity listener : LISTENERS) {
+				listener.onPlayLevelSound(event);
+			}
 		}
 	}
 }

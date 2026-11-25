@@ -66,9 +66,11 @@ public class SilentEternityItem extends RelicBaubleItem {
 			return;
 		}
 
-		setMana(stack, MAX_MANA);
 		if (player.level().isClientSide) {
 			return;
+		}
+		if (getMana(stack) != MAX_MANA) {
+			setMana(stack, MAX_MANA);
 		}
 
 		boolean wasOnGround = player.onGround();
@@ -80,18 +82,22 @@ public class SilentEternityItem extends RelicBaubleItem {
 			player.setOnGround(wasOnGround);
 		}
 
-		if (isStill(stack, player)) {
-			int stillTicks = getStopTicks(stack) + 1;
-			setStopTicks(stack, stillTicks);
-			if (stillTicks > STILL_TICKS_TO_HEAL) {
+		if (!ItemNBTHelper.verifyExistance(stack, TAG_X) || !isStill(stack, player)) {
+			if (getStopTicks(stack) != 0) {
+				setStopTicks(stack, 0);
+			}
+			setLastPosition(stack, player);
+		} else {
+			int stillTicks = getStopTicks(stack);
+			if (stillTicks <= STILL_TICKS_TO_HEAL) {
+				stillTicks++;
+				setStopTicks(stack, stillTicks);
+			}
+			if (stillTicks > STILL_TICKS_TO_HEAL && player.isAlive() && player.getHealth() > 0F) {
 				player.setHealth(Math.min(player.getMaxHealth(), player.getHealth() + HEAL_AMOUNT));
 				player.addEffect(new MobEffectInstance(ExtraBotanyMobEffects.ETERNITY, 10));
 			}
-		} else {
-			setStopTicks(stack, 0);
 		}
-
-		setLastPosition(stack, player);
 	}
 
 	@Override

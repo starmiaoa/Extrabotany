@@ -1,7 +1,12 @@
 package io.github.lounode.extrabotany.common.entity;
 
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -13,12 +18,18 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 
+import org.joml.Vector3f;
+
 import io.github.lounode.extrabotany.common.handler.DamageHandler;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 
 import java.util.List;
 
 public class SubspaceSpearEntity extends ThrowableItemProjectile {
+	private static final DustParticleOptions GOLD_DUST = new DustParticleOptions(new Vector3f(1.0F, 0.84F, 0.30F), 1.0F);
+	private static final DustParticleOptions VIOLET_DUST = new DustParticleOptions(new Vector3f(0.68F, 0.25F, 0.98F), 1.05F);
+
 	private static final String TAG_DAMAGE = "Damage";
 	private static final String TAG_LIFE = "Life";
 	private static final double HIT_XZ = 1D;
@@ -45,13 +56,37 @@ public class SubspaceSpearEntity extends ThrowableItemProjectile {
 		this.setNoGravity(true);
 
 		if (this.level().isClientSide()) {
-			this.level().addParticle(ParticleTypes.END_ROD, this.getX(), this.getY(), this.getZ(), 0, 0, 0);
+			spawnFlightTrail();
 			return;
 		}
 
 		hitEntities();
 		if (this.tickCount > this.life || !(this.getOwner() instanceof LivingEntity owner) || !owner.isAlive()) {
 			this.discard();
+		}
+	}
+
+	private void spawnFlightTrail() {
+		int steps = 4;
+		for (int i = 0; i < steps; i++) {
+			double t = i / (double) steps;
+			double px = Mth.lerp(t, this.xOld, this.getX());
+			double py = Mth.lerp(t, this.yOld, this.getY()) + 0.25D;
+			double pz = Mth.lerp(t, this.zOld, this.getZ());
+
+			double jx = (this.random.nextDouble() - 0.5D) * 0.10D;
+			double jy = (this.random.nextDouble() - 0.5D) * 0.10D;
+			double jz = (this.random.nextDouble() - 0.5D) * 0.10D;
+
+			DustParticleOptions dust = (i % 2 == 0) ? GOLD_DUST : VIOLET_DUST;
+			this.level().addParticle(dust, px + jx, py + jy, pz + jz, 0.0D, 0.0D, 0.0D);
+
+			if (i == 0 || i == 2) {
+				this.level().addParticle(ParticleTypes.END_ROD, px, py, pz,
+						(this.random.nextDouble() - 0.5D) * 0.025D,
+						(this.random.nextDouble() - 0.5D) * 0.025D,
+						(this.random.nextDouble() - 0.5D) * 0.025D);
+			}
 		}
 	}
 
@@ -63,22 +98,26 @@ public class SubspaceSpearEntity extends ThrowableItemProjectile {
 			if (target.hurtTime > 0) {
 				continue;
 			}
-			dealTrueDamage(target, this.damage * 0.4F);
+			HerrscherCombatHelper.dealTrueMagicDamage(target, owner, this.damage * 0.4F);
 			target.hurt(makeDamageSource(), this.damage * 1.5F);
+			emitImpactBurst(target);
 		}
 	}
 
-	private void dealTrueDamage(LivingEntity target, float amount) {
-		if (!target.isAlive() || amount <= 0F) {
+	private void emitImpactBurst(LivingEntity target) {
+		if (!(this.level() instanceof ServerLevel serverLevel)) {
 			return;
 		}
-		float health = target.getHealth();
-		if (health <= amount) {
-			target.hurt(this.damageSources().indirectMagic(this, this.getOwner()), Float.MAX_VALUE);
-		} else {
-			target.setHealth(Math.max(1F, health - amount));
-			target.hurt(this.damageSources().indirectMagic(this, this.getOwner()), 0.01F);
-		}
+		double hx = target.getX();
+		double hy = target.getY() + target.getBbHeight() * 0.5D;
+		double hz = target.getZ();
+		serverLevel.sendParticles(ParticleTypes.END_ROD, hx, hy, hz, 12, 0.35D, 0.35D, 0.35D, 0.14D);
+		serverLevel.sendParticles(ParticleTypes.WITCH, hx, hy, hz, 10, 0.35D, 0.35D, 0.35D, 0.08D);
+		serverLevel.sendParticles(GOLD_DUST, hx, hy, hz, 14, 0.45D, 0.45D, 0.45D, 0.05D);
+		serverLevel.sendParticles(VIOLET_DUST, hx, hy, hz, 10, 0.45D, 0.45D, 0.45D, 0.05D);
+		SoundSource source = this.getOwner() instanceof Player ? SoundSource.PLAYERS : SoundSource.HOSTILE;
+		this.level().playSound(null, hx, hy, hz, SoundEvents.AMETHYST_CLUSTER_BREAK, source,
+				0.45F, 1.45F + this.random.nextFloat() * 0.30F);
 	}
 
 	private DamageSource makeDamageSource() {

@@ -26,5 +26,7 @@ public class ExtrabotanyLayerDefinitions {
 		consumer.accept(ExtrabotanyModelLayers.MOTOR, MotorModel::createLayer);
 		consumer.accept(ExtrabotanyModelLayers.VOID_HERRSCHER, ModelVoidHerrscher::createLayer);
 		consumer.accept(ExtrabotanyModelLayers.SUBSPACE_SPEAR, SubspaceSpearModel::createLayer);
+		consumer.accept(ExtrabotanyModelLayers.JUDAH_OATH, JudahOathModel::createLayer);
+		consumer.accept(ExtrabotanyModelLayers.JUDAH_SPEAR, JudahSpearModel::createLayer);
 	}
 }

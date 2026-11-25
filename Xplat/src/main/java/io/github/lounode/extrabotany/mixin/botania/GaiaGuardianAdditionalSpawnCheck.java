@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import vazkii.botania.common.entity.GaiaGuardianEntity;
 
 import io.github.lounode.extrabotany.api.gaia.GaiaArena;
-import io.github.lounode.extrabotany.common.entity.gaia.GaiaIII;
+import io.github.lounode.extrabotany.common.entity.gaia.Gaia;
 
 @Mixin(value = GaiaGuardianEntity.class, remap = false)
 public abstract class GaiaGuardianAdditionalSpawnCheck {
@@ -23,6 +23,6 @@ public abstract class GaiaGuardianAdditionalSpawnCheck {
 	)
 	private static void onCountGaia(Level world, BlockPos source, CallbackInfoReturnable<Integer> cir) {
 		int origin = cir.getReturnValue();
-		cir.setReturnValue(origin + GaiaArena.countGaiaAround(world, source, 15.0F, GaiaIII.class));
+		cir.setReturnValue(origin + GaiaArena.countGaiaAround(world, source, 15.0F, Gaia.class));
 	}
 }

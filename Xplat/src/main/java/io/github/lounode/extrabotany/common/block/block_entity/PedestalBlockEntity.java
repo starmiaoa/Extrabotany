@@ -152,6 +152,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 	public int tickCount;
 	private int strikes;
 	private int tier;
+	private boolean syncPending;
 	private Map<ItemStack, ItemFrame> automaticHammers = new HashMap<>();
 
 	public PedestalBlockEntity(BlockPos pos, BlockState state) {
@@ -177,6 +178,12 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		if (hand == InteractionHand.OFF_HAND) {
 			return InteractionResult.PASS;
 		}
+		if (isEmpty() && player.getMainHandItem().isEmpty() && player.getOffhandItem().isEmpty()) {
+			return InteractionResult.PASS;
+		}
+		if (world.isClientSide()) {
+			return InteractionResult.sidedSuccess(true);
+		}
 
 		List<Function<Void, Map.Entry<InteractionResult, Boolean>>> handlers = Arrays.asList(
 				(Void v) -> handleExtractFinishItem(state, world, pos, player, hand, hit),
@@ -196,7 +203,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 		}
 		player.swing(result.getValue() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
 
-		return result.getKey();
+		return InteractionResult.sidedSuccess(false);
 	}
 
 	public Map.Entry<InteractionResult, Boolean> handleExtractFinishItem(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
@@ -261,6 +268,8 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 				}
 
 				if (strikes > 0 && strikes < recipe.getStrike()) {
+					this.setChanged();
+					this.syncPending = true;
 					level.playSound(null, pos, SoundEvents.STONE_HIT, SoundSource.PLAYERS, .8f,
 							((player.level().random.nextFloat() - player.level().random.nextFloat()) * .7f + 1) * 2);
 					continue;
@@ -275,6 +284,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 					createExperience((ServerLevel) level, player.position(), recipe.getExp() /* * expBoost*/);
 				}
 				strikes = FINISH_CRAFT_STRIKE_FLAG;
+				this.markUpdated();
 				break;
 			}
 
@@ -398,12 +408,12 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 	public void setItem(int index, ItemStack stack) {
 		this.setStrikes(0);
 
-		BlockState state = getBlockState();
-
-		this.level.blockEvent(getBlockPos(), state.getBlock(), 0, 0);
-		this.level.gameEvent(GameEvent.BLOCK_CHANGE, this.getBlockPos(), GameEvent.Context.of(this.getBlockState()));
-
-		this.level.setBlock(getBlockPos(), state.setValue(PedestalBlock.HAS_ITEM, !stack.isEmpty()), 3);
+		if (this.level != null) {
+			BlockState state = getBlockState();
+			this.level.blockEvent(getBlockPos(), state.getBlock(), 0, 0);
+			this.level.gameEvent(GameEvent.BLOCK_CHANGE, this.getBlockPos(), GameEvent.Context.of(state));
+			this.level.setBlock(getBlockPos(), state.setValue(PedestalBlock.HAS_ITEM, !stack.isEmpty()), 3);
+		}
 
 		super.setItem(index, stack);
 
@@ -419,12 +429,12 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 	public ItemStack removeItem(int index, int count) {
 		this.setStrikes(0);
 
-		BlockState state = getBlockState();
-
-		this.level.blockEvent(getBlockPos(), state.getBlock(), 0, 0);
-		this.level.gameEvent(GameEvent.BLOCK_CHANGE, this.getBlockPos(), GameEvent.Context.of(this.getBlockState()));
-
-		this.level.setBlock(getBlockPos(), state.setValue(PedestalBlock.HAS_ITEM, false), 3);
+		if (this.level != null) {
+			BlockState state = getBlockState();
+			this.level.blockEvent(getBlockPos(), state.getBlock(), 0, 0);
+			this.level.gameEvent(GameEvent.BLOCK_CHANGE, this.getBlockPos(), GameEvent.Context.of(state));
+			this.level.setBlock(getBlockPos(), state.setValue(PedestalBlock.HAS_ITEM, false), 3);
+		}
 
 		ItemStack superItemStack = super.removeItem(index, count);
 		this.markUpdated();
@@ -433,12 +443,15 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 
 	private void markUpdated() {
 		this.setChanged();
-		this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+		if (this.level != null) {
+			this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+		}
+		this.syncPending = false;
 	}
 
 	//TODO 精神燃料自动化
 	public static void serverTick(Level level, BlockPos pos, BlockState state, PedestalBlockEntity self) {
-		if (self.tickCount % 10 == 0) {
+		if (self.syncPending && self.tickCount % 10 == 0) {
 			self.markUpdated();
 		}
 
@@ -455,6 +468,8 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 			}
 
 			if (self.chargeNatureItem(natureItem)) {
+				self.setChanged();
+				self.syncPending = true;
 				WispParticleData data = WispParticleData.wisp(0.5F, 0.15F, 0.8F, 0.15F);
 				((ServerLevel) level).sendParticles(data, pos.getX() + 0.5F, pos.getY() + 1.1F, pos.getZ() + 0.5, 1, 0, 0, 0, 0);
 			}
@@ -567,6 +582,8 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 
 			this.strikes += 1 /*+ efficiency*/;
 			if (strikes > 0 && strikes < recipe.getStrike()) {
+				this.setChanged();
+				this.syncPending = true;
 				level.playSound(null, worldPosition, SoundEvents.STONE_HIT, SoundSource.BLOCKS, .8f,
 						((level.random.nextFloat() - level.random.nextFloat()) * .7f + 1) * 2);
 				return true;
@@ -577,6 +594,7 @@ public class PedestalBlockEntity extends ExposedSimpleInventoryBlockEntity imple
 			level.playSound(null, worldPosition, SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, .8F,
 					((level.random.nextFloat() - level.random.nextFloat()) * .7f + 1) * 2);
 			strikes = FINISH_CRAFT_STRIKE_FLAG;
+			this.markUpdated();
 
 			//Mending
 			/*

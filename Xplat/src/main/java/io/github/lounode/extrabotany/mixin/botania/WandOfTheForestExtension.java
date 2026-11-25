@@ -29,7 +29,7 @@ import io.github.lounode.extrabotany.common.block.flower.functional.ManalinkBloc
 import io.github.lounode.extrabotany.common.item.WandOfTheForestItemExtension;
 import io.github.lounode.extrabotany.common.proxy.Proxy;
 
-import java.awt.*;
+import java.util.Optional;
 
 @Mixin(value = WandOfTheForestItem.class, remap = false)
 public abstract class WandOfTheForestExtension {
@@ -37,6 +37,11 @@ public abstract class WandOfTheForestExtension {
 	@Shadow
 	public static boolean getBindMode(ItemStack stack) {
 		return false;
+	}
+
+	@Shadow
+	public static Optional<BlockPos> getBindingAttempt(ItemStack stack) {
+		return Optional.empty();
 	}
 
 	@Inject(
@@ -68,6 +73,9 @@ public abstract class WandOfTheForestExtension {
 		BlockEntity tile = world.getBlockEntity(pos);
 
 		if (player == null || !player.isSecondaryUseActive()) {
+			return;
+		}
+		if (getBindingAttempt(stack).isPresent()) {
 			return;
 		}
 

@@ -14,6 +14,7 @@ import net.minecraft.world.phys.HitResult;
 
 import io.github.lounode.extrabotany.common.handler.DamageHandler;
 import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
+import io.github.lounode.extrabotany.common.util.HerrscherCombatHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -63,23 +64,9 @@ public class PhotonShotgunProjectileEntity extends ThrowableItemProjectile {
 				continue;
 			}
 			if (target.hurt(makeDamageSource(), DAMAGE)) {
-				dealTrueDamage(target);
+				HerrscherCombatHelper.dealTrueMagicDamage(target, owner, TRUE_DAMAGE);
 				this.damaged.add(target.getUUID());
 			}
-		}
-	}
-
-	private void dealTrueDamage(LivingEntity target) {
-		if (!target.isAlive() || TRUE_DAMAGE <= 0F) {
-			return;
-		}
-
-		float health = target.getHealth();
-		if (health <= TRUE_DAMAGE) {
-			target.hurt(this.damageSources().indirectMagic(this, this.getOwner()), Float.MAX_VALUE);
-		} else {
-			target.setHealth(Math.max(1F, health - TRUE_DAMAGE));
-			target.hurt(this.damageSources().indirectMagic(this, this.getOwner()), 0.01F);
 		}
 	}
 

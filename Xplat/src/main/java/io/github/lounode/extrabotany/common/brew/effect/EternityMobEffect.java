@@ -1,5 +1,7 @@
 package io.github.lounode.extrabotany.common.brew.effect;
 
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,6 +17,10 @@ public class EternityMobEffect extends MobEffect {
 
 	public static boolean shouldCancelDamage(LivingEntity entity) {
 		return entity instanceof Player player && player.hasEffect(ExtraBotanyMobEffects.ETERNITY);
+	}
+
+	public static boolean shouldCancelDamage(DamageSource source, LivingEntity entity) {
+		return !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && shouldCancelDamage(entity);
 	}
 
 	public static void onPlayerTick(Player player) {

@@ -19,24 +19,7 @@ public class JackieChanRingItem extends BaubleItem {
 		entity.fallDistance = 0;
 
 		if (entity.level().isClientSide()) {
-			handleClientJumpLogic(stack, entity);
-		}
-	}
-
-	private static void handleClientJumpLogic(ItemStack stack, LivingEntity entity) {
-		if (!(entity instanceof net.minecraft.client.player.LocalPlayer player)) {
-			return;
-		}
-		if (player != Proxy.INSTANCE.getClientPlayer()) {
-			return;
-		}
-		JackieChanRingItem item = ((JackieChanRingItem) stack.getItem());
-
-		if (player.getDeltaMovement().y() > 0 && !player.onClimbable()) {
-			return;
-		}
-		if (player.input.jumping && player.horizontalCollision) {
-			player.jumpFromGround();
+			Proxy.INSTANCE.tickJackieChanRing(entity);
 		}
 	}
 }

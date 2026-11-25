@@ -91,6 +91,9 @@ public class ReikarlilyBlockEntity extends GeneratingFlowerBlockEntity {
 		}
 
 		LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(getLevel());
+		if (lightningBolt == null) {
+			return false;
+		}
 		double xOffset = (getLevel().getRandom().nextDouble() - 0.5) * 0.5; // [-0.25, 0.25]
 		double zOffset = (getLevel().getRandom().nextDouble() - 0.5) * 0.5; // [-0.25, 0.25]
 		lightningBolt.moveTo(

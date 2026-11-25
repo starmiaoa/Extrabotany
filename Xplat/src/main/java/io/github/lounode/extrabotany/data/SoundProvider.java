@@ -34,6 +34,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		take(soundEvents, PLAYER_BACKFIRE);
 		take(soundEvents, MUSIC_GAIA3);
 		take(soundEvents, MUSIC_HERRSCHER);
+		take(soundEvents, MUSIC_EGO);
 		take(soundEvents, REWARD_BAG_OPEN);
 		take(soundEvents, PANDORAS_BOX_OPEN);
 
@@ -100,6 +101,14 @@ public class SoundProvider extends SoundDefinitionsProvider {
 				)
 		);
 
+		this.add(MUSIC_EGO, SoundDefinitionsProvider.definition()
+				.with(
+						SoundDefinitionsProvider.sound(ResourceLocation.tryBuild(LibMisc.MOD_ID, "music/swordland"))
+								.stream()
+								.volume(1.3F)
+				)
+		);
+
 		take(soundEvents, WALKING_CANE_USE);
 		this.add(WALKING_CANE_USE, SoundDefinitionsProvider.definition()
 				.subtitle(title(WALKING_CANE_USE))
@@ -150,6 +159,24 @@ public class SoundProvider extends SoundDefinitionsProvider {
 		this.add(MOTOR_CYCLONE, SoundDefinitionsProvider.definition()
 				.subtitle(title(MOTOR_CYCLONE))
 				.with(SoundDefinitionsProvider.sound(new ResourceLocation(LibMisc.MOD_ID, "cyclone")))
+		);
+
+		take(soundEvents, MOTOR_RIDEON);
+		this.add(MOTOR_RIDEON, SoundDefinitionsProvider.definition()
+				.subtitle(title(MOTOR_RIDEON))
+				.with(SoundDefinitionsProvider.sound(new ResourceLocation(LibMisc.MOD_ID, "rideon")))
+		);
+
+		take(soundEvents, MOTOR_SHOOT);
+		this.add(MOTOR_SHOOT, SoundDefinitionsProvider.definition()
+				.subtitle(title(MOTOR_SHOOT))
+				.with(SoundDefinitionsProvider.sound(new ResourceLocation(LibMisc.MOD_ID, "shoot")))
+		);
+
+		take(soundEvents, FLAMESCION_SLASH);
+		this.add(FLAMESCION_SLASH, SoundDefinitionsProvider.definition()
+				.subtitle(title(FLAMESCION_SLASH))
+				.with(SoundDefinitionsProvider.sound(new ResourceLocation(LibMisc.MOD_ID, "slash")))
 		);
 
 		for (SoundEvent soundEvent : soundEvents) {

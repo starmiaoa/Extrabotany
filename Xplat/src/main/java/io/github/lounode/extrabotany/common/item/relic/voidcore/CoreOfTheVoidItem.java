@@ -51,9 +51,10 @@ import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
 import io.github.lounode.extrabotany.common.util.SoundEventUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @EventBusSubscriberWrapper
 public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabContents {
@@ -65,7 +66,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 	private static final int BACKFIRE_THRESHOLD = 100;
 	private static final float BACKFIRE_DAMAGE = 2.0F;
 
-	private static final List<String> playersWithFlight = Collections.synchronizedList(new ArrayList<>());
+	private static final Set<UUID> playersWithFlight = ConcurrentHashMap.newKeySet();
 
 	public CoreOfTheVoidItem(Properties properties) {
 		super(properties);
@@ -103,32 +104,38 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 
 	@SubscribeEventWrapper
 	public static void updatePlayerFlyStatus(LivingEventWrapper.LivingTickEvent event) {
-		if (!(event.getEntity() instanceof Player player)) {
+		if (!(event.getEntity() instanceof Player player) || player.level().isClientSide()) {
 			return;
 		}
 		ItemStack tiara = EquipmentHandler.findOrEmpty(ExtraBotanyItems.coreOfTheVoid, player);
+		UUID playerId = player.getUUID();
 
-		if (playersWithFlight.contains(playerStr(player))) {
+		if (playersWithFlight.contains(playerId)) {
 			if (shouldPlayerHaveFlight(player)) {
-				player.getAbilities().mayfly = true;
-				if (player.getAbilities().flying) {
-					if (!player.level().isClientSide) {
-						if (!player.isCreative() && !player.isSpectator()) {
-							ManaItemHandler.instance().requestManaExact(tiara, player, getFlyCost(), true);
-						}
-					}
+				if (!player.getAbilities().mayfly) {
+					player.getAbilities().mayfly = true;
+					player.onUpdateAbilities();
+				}
+				if (player.getAbilities().flying && !player.isCreative() && !player.isSpectator()) {
+					ManaItemHandler.instance().requestManaExact(tiara, player, getFlyCost(), true);
 				}
 			} else {
 				if (!player.isSpectator() && !player.getAbilities().instabuild) {
+					boolean changed = player.getAbilities().mayfly || player.getAbilities().flying;
 					player.getAbilities().mayfly = false;
 					player.getAbilities().flying = false;
-					player.getAbilities().invulnerable = false;
+					if (changed) {
+						player.onUpdateAbilities();
+					}
 				}
-				playersWithFlight.remove(playerStr(player));
+				playersWithFlight.remove(playerId);
 			}
 		} else if (shouldPlayerHaveFlight(player)) {
-			playersWithFlight.add(playerStr(player));
-			player.getAbilities().mayfly = true;
+			playersWithFlight.add(playerId);
+			if (!player.getAbilities().mayfly) {
+				player.getAbilities().mayfly = true;
+				player.onUpdateAbilities();
+			}
 		}
 	}
 
@@ -152,9 +159,7 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 
 	@SubscribeEventWrapper
 	public static void playerLoggedOut(PlayerEventWrapper.PlayerLoggedOutEvent event) {
-		String username = event.getEntity().getGameProfile().getName();
-		playersWithFlight.remove(username + ":false");
-		playersWithFlight.remove(username + ":true");
+		playersWithFlight.remove(event.getEntity().getUUID());
 	}
 
 	private static boolean shouldPlayerHaveFlight(Player player) {
@@ -171,10 +176,6 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 			return true;
 		}
 		return false;
-	}
-
-	private static String playerStr(Player player) {
-		return player.getGameProfile().getName() + ":" + player.level().isClientSide;
 	}
 
 	public static boolean shouldBackFire(ItemStack stack, LivingEntity entity) {
@@ -346,12 +347,18 @@ public class CoreOfTheVoidItem extends BaubleItem implements CustomCreativeTabCo
 
 	//Harmful potion remove
 	protected void tryRemoveHarmfulPotion(ItemStack stack, LivingEntity entity) {
+		if (!(entity instanceof Player player)) {
+			return;
+		}
+		var relic = XplatAbstractions.INSTANCE.findRelic(stack);
+		if (relic == null || !relic.isRightPlayer(player)) {
+			return;
+		}
 		List<MobEffectInstance> effects = entity.getActiveEffects().stream()
 				.filter(effect -> effect.getEffect().getCategory() == MobEffectCategory.HARMFUL)
 				.toList();
 
 		if (!effects.isEmpty() &&
-				entity instanceof Player player &&
 				ManaItemHandler.instance().requestManaExactForTool(stack, player, getCureCost(), true)) {
 			effects.forEach(e -> entity.removeEffect(e.getEffect()));
 		}

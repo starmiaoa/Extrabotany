@@ -5,7 +5,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -13,6 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import org.jetbrains.annotations.Nullable;
 
 import vazkii.botania.api.item.Relic;
 import vazkii.botania.api.mana.ManaBarTooltip;
@@ -59,19 +60,25 @@ public class MasterBandOfManaItem extends RelicBaubleItem implements CustomCreat
 	@Override
 	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flags) {
 		super.appendHoverText(stack, world, tooltip, flags);
+		ExtendManaItemImpl manaItem = getManaItem(stack);
+		if (manaItem == null) {
+			return;
+		}
 		tooltip.add(Component.literal(""));
-		String manaString = getManaItem(stack).getRealMana() + "/" + getManaItem(stack).getRealMaxMana();
+		String manaString = manaItem.getRealMana() + "/" + manaItem.getRealMaxMana();
 		tooltip.add(Component.translatable("message.extrabotany.actionbar.mana_left", manaString).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean held) {
 		super.inventoryTick(stack, world, entity, slot, held);
-		if (!world.isClientSide && entity instanceof Player player) {
+		if (!world.isClientSide && entity instanceof ServerPlayer player) {
 			var relic = XplatAbstractions.INSTANCE.findRelic(stack);
 			if (relic != null && relic.isRightPlayer(player) && player.tickCount % 10 == 0) {
 				ExtendManaItemImpl manaItem = getManaItem(stack);
-				ManaChargeTrigger.INSTANCE.trigger((ServerPlayer) player, stack, manaItem.getRealMana());
+				if (manaItem != null) {
+					ManaChargeTrigger.INSTANCE.trigger(player, stack, manaItem.getRealMana());
+				}
 			}
 		}
 	}
@@ -124,19 +131,21 @@ public class MasterBandOfManaItem extends RelicBaubleItem implements CustomCreat
 
 		@Override
 		public void addMana(int mana) {
-			long current = getRealMana();
+			long realMax = getRealMaxMana();
+			long current = Math.min(realMax, Math.max(0L, getRealMana()));
+			long updated;
 
 			if (mana > 0) {
-				long maxAdd = Long.MAX_VALUE - current;
-				current = (mana > maxAdd) ? Long.MAX_VALUE : (current + mana);
+				long maxAdd = realMax - current;
+				updated = (mana >= maxAdd) ? realMax : (current + mana);
 			} else if (mana < 0) {
-				long minSub = current - Long.MIN_VALUE;
-				current = ((long) -mana > minSub) ? (current + mana) : Long.MIN_VALUE;
+				long sub = -(long) mana;
+				updated = (sub >= current) ? 0L : (current - sub);
+			} else {
+				return;
 			}
 
-			long realMax = getRealMaxMana();
-			long clamped = (current < 0) ? 0 : (Math.min(current, realMax));
-			setMana(stack, clamped);
+			setMana(stack, updated);
 		}
 
 		@Override
@@ -180,14 +189,20 @@ public class MasterBandOfManaItem extends RelicBaubleItem implements CustomCreat
 		return Mth.hsvToRgb(getFractionForDisplay(stack) / 3.0F, 1.0F, 1.0F);
 	}
 
+	@Nullable
 	private ExtendManaItemImpl getManaItem(ItemStack stack) {
-		return (ExtendManaItemImpl) XplatAbstractions.INSTANCE.findManaItem(stack);
+		if (XplatAbstractions.INSTANCE.findManaItem(stack) instanceof ExtendManaItemImpl impl) {
+			return impl;
+		}
+		return null;
 	}
 
 	private float getFractionForDisplay(ItemStack stack) {
-		long mana = getManaItem(stack).getRealMana();
-		long max = getManaItem(stack).getRealMaxMana();
-		return (float) mana / (float) max;
+		ExtendManaItemImpl manaItem = getManaItem(stack);
+		if (manaItem == null || manaItem.getRealMaxMana() <= 0) {
+			return 0F;
+		}
+		return (float) manaItem.getRealMana() / (float) manaItem.getRealMaxMana();
 	}
 
 }

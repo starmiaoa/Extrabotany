@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -241,7 +242,10 @@ public class Gaia extends Monster {
 			}
 
 			getArena().ifPresent(arena -> {
-				player.getAbilities().flying &= player.getAbilities().instabuild;
+				if (player.getAbilities().flying && !player.getAbilities().instabuild) {
+					player.getAbilities().flying = false;
+					player.onUpdateAbilities();
+				}
 			});
 		}
 	}
@@ -355,7 +359,7 @@ public class Gaia extends Monster {
 	///
 	@Override
 	protected float getDamageAfterArmorAbsorb(DamageSource source, float damage) {
-		return super.getDamageAfterArmorAbsorb(source, Math.min(DAMAGE_CAP, damage));
+		return super.getDamageAfterArmorAbsorb(source, Math.min(getDamageCap(), damage));
 	}
 
 	@Override
@@ -367,13 +371,11 @@ public class Gaia extends Monster {
 
 	@Override
 	public void kill() {
-		//this.remove(Entity.RemovalReason.KILLED);
-		//this.gameEvent(GameEvent.ENTITY_DIE);
-		this.setHealth(0.0F);
 		this.bossEvent.setProgress(0.0F);
 		getArena().ifPresent(arena -> {
 			arena.cleanup(this.level());
 		});
+		super.kill();
 	}
 
 	@Override
@@ -587,8 +589,8 @@ public class Gaia extends Monster {
 			playerCount = 1;
 		}
 
-		if (cmp.contains(TAG_PLAYER_ATTACKED, CompoundTag.TAG_LIST)) {
-			ListTag uuids = cmp.getList(TAG_PLAYER_ATTACKED, CompoundTag.TAG_LIST);
+		if (cmp.contains(TAG_PLAYER_ATTACKED, Tag.TAG_LIST)) {
+			ListTag uuids = cmp.getList(TAG_PLAYER_ATTACKED, Tag.TAG_INT_ARRAY);
 			getPlayersWhoAttacked().clear();
 			for (var uuid : uuids) {
 				playersWhoAttacked.add(NbtUtils.loadUUID(uuid));
@@ -673,7 +675,7 @@ public class Gaia extends Monster {
 		private final boolean egoTrack;
 		private boolean spawnedEgo = false;
 
-		private DopplegangerMusic(Gaia guardian, SoundEvent track, boolean egoTrack) {
+		private DopplegangerMusic(Gaia guardian, SoundEvent track, boolean egoTrack, float initialVolume) {
 			super(track, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 			this.guardian = guardian;
 			this.egoTrack = egoTrack;
@@ -681,16 +683,30 @@ public class Gaia extends Monster {
 			this.y = guardian.getHome().pos().getY();
 			this.z = guardian.getHome().pos().getZ();
 			this.looping = true;
-			this.volume = egoTrack ? 0F : MAX_VOLUME;
+			this.volume = initialVolume;
 		}
 
 		public static void play(Gaia guardian) {
-			Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getBGM(), false));
+			Minecraft.getInstance().tell(() -> {
+				if (guardian.isRemoved() || !guardian.isAlive()) {
+					return;
+				}
+				if (guardian.getEgoBGM() != null && guardian.isEgoPhase()) {
+					Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getEgoBGM(), true, MAX_VOLUME));
+				} else {
+					Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getBGM(), false, MAX_VOLUME));
+				}
+			});
+		}
+
+		@Override
+		public boolean canStartSilent() {
+			return true;
 		}
 
 		@Override
 		public void tick() {
-			if (!guardian.isAlive()) {
+			if (guardian.isRemoved() || !guardian.isAlive()) {
 				stop();
 				return;
 			}
@@ -700,9 +716,17 @@ public class Gaia extends Monster {
 				this.volume = Math.min(MAX_VOLUME, this.volume + FADE_STEP);
 			} else if (ego) {
 				// 一阶段曲:进入二阶段后渐出;并仅启动一次本我曲(交叉淡入)
+				// 必须用 tell() 强制入队到 pendingRunnables(不能用 execute(), 在渲染线程上 execute 会同步立刻执行导致 ConcurrentModificationException)
 				if (!spawnedEgo) {
 					spawnedEgo = true;
-					Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, guardian.getEgoBGM(), true));
+					SoundEvent egoBgm = guardian.getEgoBGM();
+					if (egoBgm != null) {
+						Minecraft.getInstance().tell(() -> {
+							if (!guardian.isRemoved() && guardian.isAlive()) {
+								Minecraft.getInstance().getSoundManager().play(new DopplegangerMusic(guardian, egoBgm, true, 0.02F));
+							}
+						});
+					}
 				}
 				this.volume = Math.max(0F, this.volume - FADE_STEP);
 				if (this.volume <= 0.01F) {

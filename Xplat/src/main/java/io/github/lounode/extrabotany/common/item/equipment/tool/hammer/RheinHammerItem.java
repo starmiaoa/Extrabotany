@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -59,13 +61,40 @@ public class RheinHammerItem extends TerrasteelHammerItem implements IShadowium,
 		RelicImpl.addDefaultTooltip(stack, tooltipComponents);
 	}
 
+	private static boolean isRightPlayer(ItemStack stack, Player player) {
+		var relic = XplatAbstractions.INSTANCE.findRelic(stack);
+		return relic != null && relic.isRightPlayer(player);
+	}
+
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!isRightPlayer(stack, player)) {
+			return InteractionResultHolder.pass(stack);
+		}
+		return super.use(level, player, hand);
+	}
+
+	@Override
+	public void breakOtherBlock(Player player, ItemStack stack, BlockPos pos, BlockPos originPos, Direction side) {
+		if (!isRightPlayer(stack, player)) {
+			return;
+		}
+		super.breakOtherBlock(player, stack, pos, originPos, side);
+	}
+
 	@Override
 	public void inventoryTick(ItemStack stack, Level world, Entity entity, int slot, boolean selected) {
 		super.inventoryTick(stack, world, entity, slot, selected);
-		if (!world.isClientSide && entity instanceof Player player) {
-			var relic = XplatAbstractions.INSTANCE.findRelic(stack);
-			if (relic != null) {
-				relic.tickBinding(player);
+		if (entity instanceof Player player) {
+			if (!world.isClientSide) {
+				var relic = XplatAbstractions.INSTANCE.findRelic(stack);
+				if (relic != null) {
+					relic.tickBinding(player);
+				}
+			}
+			if (!isRightPlayer(stack, player)) {
+				return;
 			}
 		}
 		if (entity instanceof ServerPlayer serverPlayer && checkAdvancement(stack, serverPlayer)) {
@@ -105,7 +134,7 @@ public class RheinHammerItem extends TerrasteelHammerItem implements IShadowium,
 			return;
 		}
 
-		if (!RheinHammerItem.isEnabled(stack)) {
+		if (!isRightPlayer(stack, wrapper.getEntity()) || !RheinHammerItem.isEnabled(stack)) {
 			wrapper.setNewSpeed(0);
 			wrapper.setCanceled(true);
 		}

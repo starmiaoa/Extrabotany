@@ -201,19 +201,20 @@ public class GaiaArena {
 	public void tick(Gaia gaia) {
 		if (gaia.level().isClientSide()) {
 			particles(gaia);
+			return;
 		}
 
 		List<Player> players = getPlayersAround(gaia.level());
 
 		if (players.isEmpty() && !gaia.level().players().isEmpty()) {
-			gaia.discard();
+			cleanup(gaia.level());
 			ExtraBotanyTelemetry.Event.onGaiaBattleFinish(gaia);
+			gaia.discard();
+			return;
 		}
 
-		if (!gaia.level().isClientSide()) {
-			for (Player player : players) {
-				keepInsideArena(player);
-			}
+		for (Player player : players) {
+			keepInsideArena(player);
 		}
 	}
 

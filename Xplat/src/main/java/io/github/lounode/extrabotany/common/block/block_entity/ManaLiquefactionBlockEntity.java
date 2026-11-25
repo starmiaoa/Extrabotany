@@ -325,7 +325,7 @@ public class ManaLiquefactionBlockEntity extends BlockEntity implements ManaRece
 	@Override
 	public void receiveMana(int amount) {
 		int oldMana = mana;
-		mana = Mth.clamp(getCurrentMana() + amount, 0, getMaxMana());
+		mana = (int) Math.max(0L, Math.min((long) getMaxMana(), (long) getCurrentMana() + amount));
 		if (oldMana != mana) {
 			setChanged();
 			// Sparks and bursts call this outside serverTick, so the sync flag must live here.

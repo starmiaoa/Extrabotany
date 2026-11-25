@@ -34,6 +34,7 @@ public class Metrics {
 
 	private final Set<Chart> customCharts = new HashSet<>();
 	private final MinecraftServer server;
+	private Timer timer;
 
 	public Metrics(
 			String platform,
@@ -56,13 +57,20 @@ public class Metrics {
 	}
 
 	private void startSubmitting() {
-		final Timer timer = new Timer(true);
-		timer.scheduleAtFixedRate(new TimerTask() {
+		this.timer = new Timer(true);
+		this.timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
 				submitData();
 			}
 		}, 1000 * 60 * 5, 1000 * 60 * 30);
+	}
+
+	public void shutdown() {
+		if (this.timer != null) {
+			this.timer.cancel();
+			this.timer = null;
+		}
 	}
 
 	private void submitData() {
@@ -104,6 +112,8 @@ public class Metrics {
 
 		String url = String.format(REPORT_URL, platform);
 		HttpsURLConnection connection = (HttpsURLConnection) new URL(url).openConnection();
+		connection.setConnectTimeout(5000);
+		connection.setReadTimeout(5000);
 
 		byte[] compressedData = compress(data.toString());
 

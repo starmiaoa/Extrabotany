@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.item.equipment.bauble;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -32,6 +33,9 @@ public class PotatoChipsItem extends SimpleBaubleItem {
 	public static class EventHandler {
 		@SubscribeEventWrapper
 		public static void onPlayerDeath(LivingDeathEventWrapper event) {
+			if (event.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+				return;
+			}
 			if (!(event.getEntity() instanceof Player player)) {
 				return;
 			}
@@ -46,7 +50,7 @@ public class PotatoChipsItem extends SimpleBaubleItem {
 
 			event.setCanceled(true);
 			player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.TOTEM_USE, SoundSource.PLAYERS, 1.0F, 1.0F);
-			player.setHealth(5.0F);
+			player.setHealth(Math.min(5.0F, player.getMaxHealth()));
 			player.removeAllEffects();
 			player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 900, 1));
 			player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));

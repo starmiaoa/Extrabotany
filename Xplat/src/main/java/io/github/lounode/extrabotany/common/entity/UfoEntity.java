@@ -1,11 +1,15 @@
 package io.github.lounode.extrabotany.common.entity;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,9 +25,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
-
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
+
+import io.github.lounode.extrabotany.common.item.ExtraBotanyItems;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +37,10 @@ public class UfoEntity extends Entity {
 	private static final EntityDataAccessor<Integer> CAUGHT_ID = SynchedEntityData.defineId(UfoEntity.class, EntityDataSerializers.INT);
 	private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(UfoEntity.class, EntityDataSerializers.FLOAT);
 	private static final EntityDataAccessor<Boolean> ACCESSORY_MOUNT = SynchedEntityData.defineId(UfoEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final TagKey<EntityType<?>> BOSSES = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("forge", "bosses"));
+	private static final DustParticleOptions TRACTOR_BEAM_DUST = new DustParticleOptions(new Vector3f(0.10F, 0.95F, 1.0F), 1.0F);
+	private static final DustParticleOptions HOVER_GLOW_DUST = new DustParticleOptions(new Vector3f(0.20F, 0.85F, 1.0F), 0.75F);
+
 	private static final String TAG_CAUGHT_UUID = "CaughtUuid";
 	private static final String TAG_DAMAGE_TAKEN = "DamageTaken";
 	private static final String TAG_ACCESSORY_MOUNT = "AccessoryMount";
@@ -52,6 +61,14 @@ public class UfoEntity extends Entity {
 	@Nullable
 	private UUID caughtUuid;
 
+	private boolean hasLastTickPos;
+	private double lastTickX;
+	private double lastTickZ;
+	private float prevBankRoll;
+	private float bankRoll;
+	private float prevBankPitch;
+	private float bankPitch;
+
 	public UfoEntity(EntityType<? extends UfoEntity> entityType, Level level) {
 		super(entityType, level);
 		this.blocksBuilding = true;
@@ -64,6 +81,9 @@ public class UfoEntity extends Entity {
 		this.xo = x;
 		this.yo = y;
 		this.zo = z;
+		this.lastTickX = x;
+		this.lastTickZ = z;
+		this.hasLastTickPos = true;
 	}
 
 	@Override
@@ -71,6 +91,11 @@ public class UfoEntity extends Entity {
 		this.entityData.define(CAUGHT_ID, -1);
 		this.entityData.define(DAMAGE_TAKEN, 0F);
 		this.entityData.define(ACCESSORY_MOUNT, false);
+	}
+
+	@Override
+	public boolean ignoreExplosion() {
+		return true;
 	}
 
 	@Override
@@ -107,52 +132,139 @@ public class UfoEntity extends Entity {
 		super.tick();
 		this.tickLerp();
 		Entity passenger = getControllingPassenger();
-		if (!this.level().isClientSide()) {
-			if (passenger instanceof Player player) {
-				this.setYRot(player.getYRot());
-				this.setDeltaMovement(getInputMotion(player));
-			} else if (isAccessoryMount() && this.tickCount > 3) {
+		if (passenger instanceof Player player) {
+			this.setYRot(player.getYRot());
+			if (this.isControlledByLocalInstance()) {
+				Vec3 target = getInputMotion(player);
+				Vec3 current = this.getDeltaMovement();
+				Vec3 next = new Vec3(
+					Mth.lerp(0.32D, current.x, target.x),
+					Mth.lerp(0.32D, current.y, target.y),
+					Mth.lerp(0.32D, current.z, target.z)
+				);
+				if (target.lengthSqr() == 0.0D && next.lengthSqr() < 1.0E-5D) {
+					next = Vec3.ZERO;
+				}
+				this.setDeltaMovement(next);
+				this.move(MoverType.SELF, this.getDeltaMovement());
+			} else {
+				this.setDeltaMovement(Vec3.ZERO);
+			}
+		} else {
+			clearInput();
+			if (!this.level().isClientSide() && isAccessoryMount() && this.tickCount > 3) {
 				this.discard();
 				return;
-			} else {
-				clearInput();
-				this.setDeltaMovement(this.getDeltaMovement().scale(0.6D));
 			}
+			this.setDeltaMovement(this.getDeltaMovement().scale(0.68D));
+			if (this.getDeltaMovement().lengthSqr() < 1.0E-5D) {
+				this.setDeltaMovement(Vec3.ZERO);
+			}
+			this.move(MoverType.SELF, this.getDeltaMovement());
+		}
+
+		updateBankAngles();
+
+		if (this.level().isClientSide()) {
+			spawnClientParticles();
+		} else {
 			updateCaughtEntity();
 		}
 
-		this.move(MoverType.SELF, this.getDeltaMovement());
-		this.setDeltaMovement(this.getDeltaMovement().scale(0.9D));
 		this.fallDistance = 0F;
 	}
 
+	private void updateBankAngles() {
+		double moveDx = 0.0D;
+		double moveDz = 0.0D;
+		if (this.hasLastTickPos) {
+			moveDx = this.getX() - this.lastTickX;
+			moveDz = this.getZ() - this.lastTickZ;
+		}
+		this.lastTickX = this.getX();
+		this.lastTickZ = this.getZ();
+		this.hasLastTickPos = true;
+
+		float yawRad = this.getYRot() * Mth.DEG_TO_RAD;
+		double fwdX = -Mth.sin(yawRad);
+		double fwdZ = Mth.cos(yawRad);
+		double rightX = -Mth.cos(yawRad);
+		double rightZ = -Mth.sin(yawRad);
+
+		double fwdSpeed = moveDx * fwdX + moveDz * fwdZ;
+		double rightSpeed = moveDx * rightX + moveDz * rightZ;
+
+		float targetPitch = (float) Mth.clamp((fwdSpeed / 0.78D) * 12.0D, -12.0D, 12.0D);
+		float targetRoll = (float) Mth.clamp((rightSpeed / 0.78D) * 14.0D, -14.0D, 14.0D);
+
+		this.prevBankPitch = this.bankPitch;
+		this.bankPitch = Mth.lerp(0.25F, this.bankPitch, targetPitch);
+
+		this.prevBankRoll = this.bankRoll;
+		this.bankRoll = Mth.lerp(0.25F, this.bankRoll, targetRoll);
+	}
+
+	private void spawnClientParticles() {
+		if (this.isVehicle() && this.tickCount % 2 == 0) {
+			float angle = (this.tickCount * 0.45F) % Mth.TWO_PI;
+			double rx = this.getX() + Mth.cos(angle) * 0.95D;
+			double rz = this.getZ() + Mth.sin(angle) * 0.95D;
+			this.level().addParticle(HOVER_GLOW_DUST, rx, this.getY() + 0.05D, rz, 0.0D, -0.02D, 0.0D);
+			if (this.tickCount % 6 == 0) {
+				this.level().addParticle(ParticleTypes.END_ROD,
+					this.getX() + (this.random.nextDouble() - 0.5D) * 0.8D,
+					this.getY() - 0.05D,
+					this.getZ() + (this.random.nextDouble() - 0.5D) * 0.8D,
+					0.0D, -0.04D, 0.0D);
+			}
+		}
+
+		if (hasCaughtEntity()) {
+			Entity caught = this.level().getEntity(getCaughtId());
+			double bottomY = caught != null ? caught.getY() + caught.getBbHeight() * 0.5D : this.getY() - 2.6D;
+			for (int i = 0; i < 3; i++) {
+				double t = this.random.nextDouble();
+				double angle = this.tickCount * 0.35D + i * 2.1D;
+				double radius = Mth.lerp(t, 0.75D, 0.25D);
+				double px = this.getX() + Math.cos(angle) * radius;
+				double py = Mth.lerp(t, bottomY, this.getY() - 0.15D);
+				double pz = this.getZ() + Math.sin(angle) * radius;
+				this.level().addParticle(TRACTOR_BEAM_DUST, px, py, pz, 0.0D, 0.08D, 0.0D);
+			}
+			if (this.tickCount % 2 == 0) {
+				this.level().addParticle(ParticleTypes.END_ROD,
+					this.getX() + (this.random.nextDouble() - 0.5D) * 0.6D,
+					bottomY,
+					this.getZ() + (this.random.nextDouble() - 0.5D) * 0.6D,
+					0.0D, 0.12D, 0.0D);
+			}
+		}
+	}
+
 	private Vec3 getInputMotion(Player player) {
-		float yaw = player.getYRot() * Mth.DEG_TO_RAD;
-		float pitch = player.getXRot() * Mth.DEG_TO_RAD;
-		double speed = 0.75D;
-		Vec3 forward = new Vec3(-Mth.sin(yaw) * Mth.cos(pitch), 0D, Mth.cos(yaw) * Mth.cos(pitch)).scale(speed);
-		Vec3 left = forward.yRot((float) (Math.PI * 0.5D)).scale(0.75D);
-		Vec3 right = forward.yRot((float) -(Math.PI * 0.5D)).scale(0.75D);
-		Vec3 back = forward.yRot((float) Math.PI).scale(0.6D);
-		Vec3 motion = Vec3.ZERO;
-		if (forwardInputDown) {
-			motion = motion.add(forward);
+		float yawRad = player.getYRot() * Mth.DEG_TO_RAD;
+		Vec3 forward = new Vec3(-Mth.sin(yawRad), 0D, Mth.cos(yawRad));
+		Vec3 left = new Vec3(Mth.cos(yawRad), 0D, Mth.sin(yawRad));
+
+		double fwdIn = (forwardInputDown ? 1.0D : 0.0D) - (backInputDown ? 1.0D : 0.0D);
+		double leftIn = (leftInputDown ? 1.0D : 0.0D) - (rightInputDown ? 1.0D : 0.0D);
+		Vec3 horiz = forward.scale(fwdIn).add(left.scale(leftIn));
+		if (horiz.lengthSqr() > 1.0E-4D) {
+			horiz = horiz.normalize().scale(0.78D);
 		}
-		if (backInputDown) {
-			motion = motion.add(back);
-		}
-		if (leftInputDown) {
-			motion = motion.add(left);
-		}
-		if (rightInputDown) {
-			motion = motion.add(right);
-		}
+
+		double vert = 0.0D;
 		if (upInputDown) {
-			motion = motion.add(0D, 0.35D, 0D);
-		} else if (downInputDown) {
-			motion = motion.add(0D, -0.35D, 0D);
+			vert += 0.48D;
 		}
-		return motion;
+		if (downInputDown) {
+			vert -= 0.48D;
+		}
+		if (this.onGround() && vert < 0.0D) {
+			vert = 0.0D;
+		}
+
+		return new Vec3(horiz.x, vert, horiz.z);
 	}
 
 	private void updateCaughtEntity() {
@@ -164,10 +276,10 @@ public class UfoEntity extends Entity {
 				? serverLevel.getEntity(caughtUuid)
 				: this.level().getEntity(id);
 		if (caught == null) {
-			setCaughtId(-1);
+			clearCaughtEntity();
 			return;
 		}
-		if (!(caught instanceof LivingEntity living) || !living.isAlive() || living.distanceTo(this) >= 16F || caught.isPassenger()) {
+		if (!(caught instanceof LivingEntity living) || !isCapturable(living) || living.distanceTo(this) >= 16F) {
 			clearCaughtEntity();
 			return;
 		}
@@ -175,15 +287,16 @@ public class UfoEntity extends Entity {
 		if (id != caught.getId()) {
 			setCaughtId(caught.getId());
 		}
-		Vec3 target = new Vec3(this.getX() - caught.getX(), this.getY() - 2F - caught.getY(), this.getZ() - caught.getZ());
-		if (target.lengthSqr() > 0.0001D) {
-			caught.setDeltaMovement(target.normalize().scale(0.75D));
+
+		Vec3 target = new Vec3(this.getX() - caught.getX(), this.getY() - 2.2D - caught.getY(), this.getZ() - caught.getZ());
+		double dist = target.length();
+		if (dist > 0.08D) {
+			double pull = Math.min(0.65D, dist * 0.35D);
+			caught.setDeltaMovement(target.scale(pull / dist));
+		} else {
+			caught.setDeltaMovement(Vec3.ZERO);
 		}
-		if (upInputDown) {
-			caught.setPos(caught.getX(), caught.getY() + 0.33D, caught.getZ());
-		} else if (downInputDown) {
-			caught.setPos(caught.getX(), caught.getY() - 0.37D, caught.getZ());
-		}
+		caught.hurtMarked = true;
 		caught.fallDistance = 0F;
 	}
 
@@ -208,6 +321,14 @@ public class UfoEntity extends Entity {
 		this.downInputDown = false;
 	}
 
+	private boolean isCapturable(LivingEntity living) {
+		return living.isAlive()
+				&& !(living instanceof Player)
+				&& !living.getType().is(BOSSES)
+				&& !living.isPassenger()
+				&& !this.hasPassenger(living);
+	}
+
 	private void toggleCaughtEntity() {
 		if (this.level().isClientSide()) {
 			return;
@@ -216,18 +337,31 @@ public class UfoEntity extends Entity {
 			clearCaughtEntity();
 			return;
 		}
-		for (LivingEntity living : getEntitiesBelow(this.blockPosition(), this.level())) {
-			if (living.isAlive() && living != getControllingPassenger() && !living.isPassenger()) {
-				setCaughtEntity(living);
-				return;
+		AABB searchBox = new AABB(
+			this.getX() - 2.0D, this.getY() - 16.0D, this.getZ() - 2.0D,
+			this.getX() + 2.0D, this.getY() - 0.5D, this.getZ() + 2.0D
+		);
+		List<LivingEntity> entities = this.level().getEntitiesOfClass(LivingEntity.class, searchBox);
+		LivingEntity closest = null;
+		double bestDistSqr = Double.MAX_VALUE;
+		for (LivingEntity living : entities) {
+			if (!isCapturable(living)) {
+				continue;
+			}
+			double dx = living.getX() - this.getX();
+			double dz = living.getZ() - this.getZ();
+			if (dx * dx + dz * dz > 4.0D) {
+				continue;
+			}
+			double distSqr = living.distanceToSqr(this);
+			if (distSqr < bestDistSqr) {
+				bestDistSqr = distSqr;
+				closest = living;
 			}
 		}
-	}
-
-	public static List<LivingEntity> getEntitiesBelow(BlockPos source, Level level) {
-		return level.getEntitiesOfClass(LivingEntity.class,
-				new AABB(source.getX() - 1.5F, source.getY() - 16F, source.getZ() - 1.5F,
-						source.getX() + 2F, source.getY() - 0.5F, source.getZ() + 2F));
+		if (closest != null) {
+			setCaughtEntity(closest);
+		}
 	}
 
 	@Override
@@ -270,7 +404,7 @@ public class UfoEntity extends Entity {
 	@Override
 	protected void positionRider(Entity passenger, MoveFunction callback) {
 		if (this.hasPassenger(passenger)) {
-			callback.accept(passenger, this.getX(), this.getY() + 0.6D, this.getZ());
+			callback.accept(passenger, this.getX(), this.getY() + 0.55D, this.getZ());
 		}
 	}
 
@@ -284,6 +418,11 @@ public class UfoEntity extends Entity {
 	@Override
 	protected boolean canAddPassenger(Entity passenger) {
 		return this.getPassengers().isEmpty();
+	}
+
+	@Override
+	public boolean canBeCollidedWith() {
+		return true;
 	}
 
 	@Override
@@ -319,6 +458,18 @@ public class UfoEntity extends Entity {
 
 	public void setCaughtId(int id) {
 		this.entityData.set(CAUGHT_ID, id);
+	}
+
+	public boolean hasCaughtEntity() {
+		return getCaughtId() != -1;
+	}
+
+	public float getBankRoll(float partialTick) {
+		return Mth.lerp(partialTick, this.prevBankRoll, this.bankRoll);
+	}
+
+	public float getBankPitch(float partialTick) {
+		return Mth.lerp(partialTick, this.prevBankPitch, this.bankPitch);
 	}
 
 	private void setCaughtEntity(Entity entity) {

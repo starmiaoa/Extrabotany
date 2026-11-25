@@ -102,7 +102,10 @@ public class MoonPendantItem extends NimbusAmuletItem {
 	}
 
 	public static boolean shouldCancelFireDamage(DamageSource source, LivingEntity entity) {
-		return source.is(DamageTypeTags.IS_FIRE)
-				&& !EquipmentHandler.findOrEmpty(ExtraBotanyItems.moonPendant, entity).isEmpty();
+		if (!source.is(DamageTypeTags.IS_FIRE) || !(entity instanceof Player player)) {
+			return false;
+		}
+		ItemStack stack = EquipmentHandler.findOrEmpty(ExtraBotanyItems.moonPendant, player);
+		return !stack.isEmpty() && isRightPlayer(stack, player);
 	}
 }

@@ -23,20 +23,27 @@ public class MotorRenderer extends EntityRenderer<MotorEntity> {
 
 	public MotorRenderer(EntityRendererProvider.Context context) {
 		super(context);
+		this.shadowRadius = 0.8F;
 		this.model = new MotorModel(context.bakeLayer(ExtrabotanyModelLayers.MOTOR));
 	}
 
 	@Override
 	public void render(MotorEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
 		poseStack.pushPose();
+		// Rotate around ground contact center (0, 0, 0) so corner lean & slope pitch stay tire-planted
+		poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - entityYaw + entity.getCycloneSpin(partialTick)));
+		poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getLean(partialTick)));
+		poseStack.mulPose(Axis.XP.rotationDegrees(entity.getPitch(partialTick)));
 		poseStack.translate(0.0D, 1.5D, 0.0D);
-		poseStack.mulPose(Axis.YP.rotationDegrees(180F - entityYaw));
-		poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getLean()));
-		poseStack.mulPose(Axis.XP.rotationDegrees(entity.getPitch()));
 		poseStack.scale(-1.0F, -1.0F, 1.0F);
+
+		float ageInTicks = entity.tickCount + partialTick;
+		this.model.setupAnim(entity, partialTick, ageInTicks);
+
 		VertexConsumer vertex = buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-		this.model.setupAnim(entity, 0F, 0F, entity.tickCount + partialTick, 0F, 0F);
-		this.model.renderToBuffer(poseStack, vertex, packedLight, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+		this.model.renderBase(poseStack, vertex, packedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+		this.model.renderGlow(poseStack, vertex, OverlayTexture.NO_OVERLAY);
+
 		poseStack.popPose();
 		super.render(entity, entityYaw, partialTick, poseStack, buffer, packedLight);
 	}

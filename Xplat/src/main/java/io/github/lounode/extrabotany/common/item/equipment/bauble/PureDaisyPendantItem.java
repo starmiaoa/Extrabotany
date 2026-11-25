@@ -2,6 +2,7 @@ package io.github.lounode.extrabotany.common.item.equipment.bauble;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -16,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.api.mana.ManaItemHandler;
 import vazkii.botania.api.recipe.PureDaisyRecipe;
 import vazkii.botania.common.crafting.BotaniaRecipeTypes;
-import vazkii.botania.common.helper.ItemNBTHelper;
 import vazkii.botania.common.handler.EquipmentHandler;
+import vazkii.botania.common.helper.ItemNBTHelper;
 import vazkii.botania.common.item.equipment.bauble.BaubleItem;
 
 import io.github.lounode.eventwrapper.event.entity.player.PlayerInteractEventWrapper;
@@ -39,6 +40,9 @@ public class PureDaisyPendantItem extends BaubleItem {
 	}
 
 	public static void onPlayerTick(Player player) {
+		if (player.level().isClientSide()) {
+			return;
+		}
 		ItemStack stack = EquipmentHandler.findOrEmpty(s -> s.getItem() instanceof PureDaisyPendantItem, player);
 		if (stack.isEmpty()) {
 			return;
@@ -49,7 +53,7 @@ public class PureDaisyPendantItem extends BaubleItem {
 			setCooldown(stack, cooldown - 1);
 		}
 
-		if (!player.level().isClientSide && player.level().isDay() && player.level().getDayTime() % DAYTIME_HEAL_INTERVAL == 0) {
+		if (player.level().isDay() && player.level().getDayTime() % DAYTIME_HEAL_INTERVAL == 0) {
 			player.heal(1F);
 		}
 	}
@@ -59,6 +63,9 @@ public class PureDaisyPendantItem extends BaubleItem {
 
 		@SubscribeEventWrapper
 		public static void onPlayerInteract(PlayerInteractEventWrapper.RightClickBlock event) {
+			if (event.getHand() != InteractionHand.MAIN_HAND) {
+				return;
+			}
 			if (!(event.getEntity() instanceof ServerPlayer serverPlayer)) {
 				return;
 			}

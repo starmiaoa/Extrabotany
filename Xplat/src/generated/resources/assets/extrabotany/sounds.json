@@ -11,6 +11,18 @@
     ],
     "subtitle": "subtitles.extrabotany:entity.motor.cyclone"
   },
+  "entity.motor.rideon": {
+    "sounds": [
+      "extrabotany:rideon"
+    ],
+    "subtitle": "subtitles.extrabotany:entity.motor.rideon"
+  },
+  "entity.motor.shoot": {
+    "sounds": [
+      "extrabotany:shoot"
+    ],
+    "subtitle": "subtitles.extrabotany:entity.motor.shoot"
+  },
   "entity.player.hurt_backfire": {
     "sounds": [
       {
@@ -182,5 +194,11 @@
       }
     ],
     "subtitle": "subtitles.extrabotany:item.flamescion_weapon.ult"
+  },
+  "item.flamescion_weapon.slash": {
+    "sounds": [
+      "extrabotany:slash"
+    ],
+    "subtitle": "subtitles.extrabotany:item.flamescion_weapon.slash"
   }
 }

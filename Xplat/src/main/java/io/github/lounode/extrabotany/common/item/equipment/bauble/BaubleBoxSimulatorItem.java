@@ -174,6 +174,45 @@ public class BaubleBoxSimulatorItem extends RelicBaubleItem {
 		return ItemStack.EMPTY;
 	}
 
+	/**
+	 * Persists a mutated stack returned by {@link #findSimulated} back into the player's
+	 * Bauble Box if the item is not genuinely equipped in a worn slot.
+	 */
+	public static void saveIfSimulated(Player player, ItemStack mutatedStack) {
+		if (player.level().isClientSide() || mutatedStack.isEmpty()) {
+			return;
+		}
+		Container worn = EquipmentHandler.getAllWorn(player);
+		if (worn == null) {
+			return;
+		}
+		int slots = 0;
+		for (int i = 0; i < worn.getContainerSize(); i++) {
+			ItemStack wornStack = worn.getItem(i);
+			if (wornStack == mutatedStack || wornStack.is(mutatedStack.getItem())) {
+				return;
+			}
+			if (wornStack.getItem() instanceof BaubleBoxSimulatorItem simulator && isRightPlayer(wornStack, player)) {
+				slots = Math.max(slots, simulator.simulatedSlots);
+			}
+		}
+		if (slots == 0) {
+			return;
+		}
+		BoxView box = findBox(player, slots);
+		if (box == null) {
+			return;
+		}
+		for (int slot = 0; slot < box.slots(); slot++) {
+			ItemStack candidate = box.contents().getItem(slot);
+			if (canSimulate(candidate, player) && candidate.is(mutatedStack.getItem())) {
+				box.contents().setItem(slot, mutatedStack.copy());
+				box.contents().setChanged();
+				return;
+			}
+		}
+	}
+
 	public static boolean canSimulate(ItemStack stack, Player player) {
 		if (stack.isEmpty()
 				|| !(stack.getItem() instanceof BaubleItem)

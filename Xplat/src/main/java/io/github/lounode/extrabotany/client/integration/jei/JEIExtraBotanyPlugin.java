@@ -85,7 +85,6 @@ public class JEIExtraBotanyPlugin implements IModPlugin {
 
 	@Override
 	public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
-		//registration.getCraftingCategory().addCategoryExtension(CopyBrewFormFlaskRecipe.class, CopyBrewFormFlaskRecipeWrapper::new);
 	}
 
 	@Override

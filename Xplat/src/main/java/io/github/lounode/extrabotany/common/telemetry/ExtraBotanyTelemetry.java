@@ -59,6 +59,19 @@ public class ExtraBotanyTelemetry {
 			return;
 		}
 		String telemetryUUID = ExtraBotanyConfig.common().telemetryUUID();
+		UUID parsedUuid;
+		try {
+			parsedUuid = UUID.fromString(telemetryUUID);
+		} catch (IllegalArgumentException e) {
+			parsedUuid = UUID.randomUUID();
+			telemetryUUID = parsedUuid.toString();
+		}
+
+		var oldMetrics = getInstance().metrics;
+		if (oldMetrics != null) {
+			oldMetrics.shutdown();
+			getInstance().metrics = null;
+		}
 
 		getInstance().metrics = new Metrics(
 				"sponge",
@@ -80,7 +93,7 @@ public class ExtraBotanyTelemetry {
 
 		getInstance().metricsNew = new MetricsNew(
 				getInstance().deviceSessionProperties,
-				MetricsNew.getServerUUID(server, UUID.fromString(telemetryUUID)),
+				MetricsNew.getServerUUID(server, parsedUuid),
 				server
 		);
 		getInstance().metricsNew.start();
@@ -88,6 +101,11 @@ public class ExtraBotanyTelemetry {
 
 	@SubscribeEventWrapper
 	public static void onServerStopping(ServerStoppingEventWrapper event) {
+		var metrics = getInstance().metrics;
+		if (metrics != null) {
+			metrics.shutdown();
+			getInstance().metrics = null;
+		}
 		var metricsNew = getInstance().metricsNew;
 		if (metricsNew != null) {
 			metricsNew.shutdown();

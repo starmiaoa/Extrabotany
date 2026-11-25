@@ -84,9 +84,11 @@ public class TradeOrchidBlockEntity extends FunctionalFlowerBlockEntity {
 
 	@Override
 	public void setRemoved() {
-		List<Villager> villagers = getLevel().getEntitiesOfClass(Villager.class, ((RadiusDescriptor.Rectangle) getRadius()).aabb());
-		for (var villager : villagers) {
-			villager.removeEffect(ExtraBotanyMobEffects.DISCOUNT);
+		if (getLevel() != null && !getLevel().isClientSide() && getLevel().isLoaded(getEffectivePos())) {
+			List<Villager> villagers = getLevel().getEntitiesOfClass(Villager.class, ((RadiusDescriptor.Rectangle) getRadius()).aabb());
+			for (var villager : villagers) {
+				villager.removeEffect(ExtraBotanyMobEffects.DISCOUNT);
+			}
 		}
 		super.setRemoved();
 	}

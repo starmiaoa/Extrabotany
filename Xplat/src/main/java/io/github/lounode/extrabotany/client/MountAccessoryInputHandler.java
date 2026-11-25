@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.Minecraft;
 
+import io.github.lounode.extrabotany.common.entity.UfoEntity;
 import io.github.lounode.extrabotany.common.item.equipment.tool.FlamescionWeaponItem;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionShiftPacket;
 import io.github.lounode.extrabotany.network.serverbound.FlamescionUltPacket;
@@ -32,7 +33,7 @@ public final class MountAccessoryInputHandler {
 		lastShift = shift;
 
 		boolean mount = InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_R);
-		if (mount && !lastMount) {
+		if (mount && !lastMount && !(minecraft.player.getVehicle() instanceof UfoEntity)) {
 			if (FlamescionWeaponItem.isFlamescionMode(minecraft.player)) {
 				ExClientXplatAbstractions.INSTANCE.sendToServer(new FlamescionUltPacket());
 			} else if (minecraft.player.getVehicle() == null) {

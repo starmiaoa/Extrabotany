@@ -1,16 +1,15 @@
 package io.github.lounode.extrabotany.common.item;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -22,10 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import vazkii.botania.common.helper.ItemNBTHelper;
 
 import io.github.lounode.extrabotany.api.item.RewardBag;
-import io.github.lounode.extrabotany.client.LootDataPoolClient;
 import io.github.lounode.extrabotany.common.sounds.ExtraBotanySounds;
-
-import java.util.List;
 
 public class RewardBagItem extends Item implements RewardBag {
 
@@ -41,10 +37,14 @@ public class RewardBagItem extends Item implements RewardBag {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
 		ItemStack stack = player.getItemInHand(usedHand);
+		ResourceLocation lootKey = getLoot(stack);
+		if (lootKey == null) {
+			return InteractionResultHolder.fail(stack);
+		}
 
-		if (!level.isClientSide()) {
-			LootTable table = level.getServer().getLootData().getLootTable(getLoot(stack));
-			LootParams.Builder parameter = new LootParams.Builder((ServerLevel) level)
+		if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
+			LootTable table = serverLevel.getServer().getLootData().getLootTable(lootKey);
+			LootParams.Builder parameter = new LootParams.Builder(serverLevel)
 					.withParameter(LootContextParams.THIS_ENTITY, player)
 					.withParameter(LootContextParams.ORIGIN, player.position())
 					.withLuck(player.getLuck());
@@ -54,31 +54,16 @@ public class RewardBagItem extends Item implements RewardBag {
 				stack.shrink(1);
 			}
 
-			table.getRandomItems(lootparams, player.getLootTableSeed(), itemStack -> player.spawnAtLocation(itemStack).setNoPickUpDelay());
+			table.getRandomItems(lootparams, player.getLootTableSeed(), itemStack -> {
+				ItemEntity spawned = player.spawnAtLocation(itemStack);
+				if (spawned != null) {
+					spawned.setNoPickUpDelay();
+				}
+			});
 			level.playSound(null, player.getX(), player.getY(), player.getZ(), getSound(), SoundSource.PLAYERS, 0.8F, 1);
-
-			return InteractionResultHolder.success(stack);
 		}
 
-		return InteractionResultHolder.fail(stack);
-	}
-
-	@Override
-	public void appendHoverText(ItemStack stack, Level world, List<Component> tooltip, TooltipFlag flags) {
-		super.appendHoverText(stack, world, tooltip, flags);
-		//TODO 显示概率
-		ResourceLocation tableKey = getLoot(stack);
-		if (tableKey == null) {
-			return;
-		}
-		var datas = LootDataPoolClient.getData(tableKey);
-		if (datas == null) {
-			return;
-		}
-
-		for (var data : datas) {
-			tooltip.add(Component.literal(Component.translatable(data.item().getDescriptionId()).getString() + " " + data.chance() + "%"));
-		}
+		return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
 	}
 
 	@Nullable

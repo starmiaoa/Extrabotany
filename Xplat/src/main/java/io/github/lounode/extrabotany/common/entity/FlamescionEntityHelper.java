@@ -1,15 +1,16 @@
 package io.github.lounode.extrabotany.common.entity;
 
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.phys.AABB;
 
 import org.jetbrains.annotations.Nullable;
 
+import io.github.lounode.extrabotany.common.ExtraBotanyDamageTypes;
 import io.github.lounode.extrabotany.common.brew.ExtraBotanyMobEffects;
 import io.github.lounode.extrabotany.common.handler.DamageHandler;
 
@@ -21,12 +22,15 @@ public final class FlamescionEntityHelper {
 	public static void damageAround(Entity source, @Nullable Entity owner, double range, float damage) {
 		AABB area = source.getBoundingBox().inflate(range);
 		List<LivingEntity> targets = source.level().getEntitiesOfClass(LivingEntity.class, area);
+		DamageSource damageSource = flameSource(source, owner);
 		for (LivingEntity target : DamageHandler.INSTANCE.getFilteredEntities(targets, owner)) {
 			if (target == owner) {
 				continue;
 			}
 			target.invulnerableTime = 0;
-			target.hurt(flameSource(source, owner), damage);
+			if (target.hurt(damageSource, damage)) {
+				target.setSecondsOnFire(3);
+			}
 		}
 	}
 
@@ -42,8 +46,12 @@ public final class FlamescionEntityHelper {
 
 	public static DamageSource flameSource(Entity source, @Nullable Entity owner) {
 		if (owner != null) {
-			return source.damageSources().indirectMagic(source, owner);
+			return ExtraBotanyDamageTypes.Sources.source(
+					source.level().registryAccess(),
+					ExtraBotanyDamageTypes.FLAMESCION_FLAME_DAMAGE,
+					source,
+					owner);
 		}
-		return source.damageSources().magic();
+		return ExtraBotanyDamageTypes.Sources.flamescionFlameDamage(source.level().registryAccess());
 	}
 }
